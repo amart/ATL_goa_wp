@@ -243,7 +243,8 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Vector<T> M = { 1.4, 0.7, 0.5, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
 
     //Estimated(read only)
-    atl::Vector<atl::Variable<T> > log_initial_population;
+    atl::Variable<T> log_initial_R;
+    atl::Vector<atl::Variable<T> > init_pop_devs;
     atl::Vector<atl::Variable<T> > initial_population;
 
     atl::Variable<T> log_mean_recruits;
@@ -339,10 +340,10 @@ public:
         est_srv_biomass.Resize(nsrvs,nyrs);
 
 
-        this->Register(log_fsh_sel_asc_alpha,1,"log_fsh_sel_asc_alpha");
-        this->Register(log_fsh_sel_asc_beta,1,"log_fsh_sel_asc_beta");
-        this->Register(log_fsh_sel_desc_alpha,1,"log_fsh_sel_desc_alpha");
-        this->Register(log_fsh_sel_desc_beta,1,"log_fsh_sel_desc_beta");
+        this->Register(log_fsh_sel_asc_alpha,3,"log_fsh_sel_asc_alpha");
+        this->Register(log_fsh_sel_asc_beta,3,"log_fsh_sel_asc_beta");
+        this->Register(log_fsh_sel_desc_alpha,3,"log_fsh_sel_desc_alpha");
+        this->Register(log_fsh_sel_desc_beta,3,"log_fsh_sel_desc_beta");
 
         log_fsh_sel_asc_alpha.SetBounds(0.0,2.0);
         log_fsh_sel_asc_beta.SetBounds(-5.0,5.0);
@@ -401,8 +402,8 @@ public:
 
         this->Register(log_mean_recruits,1,"log_mean_rec");
 
-        log_mean_recruits.SetBounds(5.0,35.0);
-        log_mean_recruits = atl::Variable<T>(20.723265836946411156161923092159);
+        log_mean_recruits.SetBounds(5.0,40.0);
+        log_mean_recruits = atl::Variable<T>(25.723265836946411156161923092159);
 
 
         this->Register(log_mean_fsh_mort,1,"log_mean_fsh_mort");
@@ -410,8 +411,13 @@ public:
         log_mean_fsh_mort.SetBounds(-10.0,10.0);
         log_mean_fsh_mort = atl::Variable<T>(-1.6);
 
+        this->Register(log_initial_R, 1, "log_init_R");
 
-        log_initial_population.Resize(nages);
+        log_initial_R.SetBounds(5.0, 40.0);
+        log_initial_R = atl::Variable<T>(25.0);
+
+
+        init_pop_devs.Resize(nages-1);
         initial_population.Resize(nages);
 
         recruit_devs.Resize(nyrs);
@@ -420,12 +426,12 @@ public:
         fsh_mort_devs.Resize(nyrs);
         fsh_mort.Resize(nyrs);
 
-        this->Register(log_initial_population, 1, "log_init_pop");
+        this->Register(init_pop_devs, 2, "init_pop_devs");
         this->Register(recruit_devs, 2, "recruit_devs");
         this->Register(fsh_mort_devs, 2,"fsh_mort_devs");
 
-        log_initial_population.SetBounds(-20.0, 35.0);
-        log_initial_population = atl::Variable<T>(15.0);
+        init_pop_devs.SetBounds(-15.0,15.0);
+        init_pop_devs = atl::Variable<T>(0.0);
 
         recruit_devs.SetBounds(-15.0, 15.0);
         recruit_devs = atl::Variable<T>(0.0);
@@ -480,7 +486,7 @@ public:
         {
             for ( int j = 0; j < nages ; j++ )
             {
-                srv_sel(k, j) = (1.0 / (1.0 + atl::exp(-srv_sel_asc_beta(k) * (T(j) - srv_sel_asc_alpha(k))))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv_sel_desc_beta(k) * (T(j) - srv_sel_desc_alpha(k))))));
+                // srv_sel(k, j) = (1.0 / (1.0 + atl::exp(-srv_sel_asc_beta(k) * (T(j) - srv_sel_asc_alpha(k))))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv_sel_desc_beta(k) * (T(j) - srv_sel_desc_alpha(k))))));
             }
 
             // lots of explicit operations
@@ -488,7 +494,7 @@ public:
             max_sel = atl::Max<T>(sel_row);
             for ( int j = 0; j < nages ; j++ )
             {
-                srv_sel(k,j ) /= max_sel;
+                // srv_sel(k,j ) /= max_sel;
             }
         }
     }
@@ -557,16 +563,29 @@ public:
 
     void NumbersAtAge()
     {
-        initial_population = atl::exp(log_initial_population);
+        initial_population(0) = atl::exp(log_initial_R + recruit_devs(0));
 
         for ( int j = 1; j < nages; j++ )
+        {
+            initial_population(j) = initial_population(j-1) * atl::exp(atl::Variable<T>(-M(j-1)));
+        }
+        initial_population(nages-1) /= (1.0 - atl::exp(atl::Variable<T>(-M(nages-1))));
+
+        for ( int j = 1; j < nages; j++ )
+        {
+            initial_population(j) *= atl::exp(init_pop_devs(j-1));
+        }
+
+        // can this operation be vectorized?
+        for ( int j = 0; j < nages; j++ )
         {
             N(0, j) = initial_population(j);
         }
 
         for ( int i = 0; i < nyrs; i++ )
         {
-            N(i, 0) = recruits(i) = atl::exp(log_mean_recruits + recruit_devs(i));
+            recruits(i) = atl::exp(log_mean_recruits + recruit_devs(i));
+            N(i, 0) = recruits(i);
 
             // this assumes continuous fishing
             for ( int j = 1; j < nages; j++ )
@@ -574,7 +593,7 @@ public:
                 N(i+1, j) = N(i, j-1) * expZ(i, j-1);
             }
             N(i+1, (nages-1)) = (N(i, (nages-1)) * expZ(i, (nages-1))) + (N(i, (nages-1)-1) * expZ(i, (nages-1)-1));
-            
+
             // calculate spawning biomass here
         }
     }
