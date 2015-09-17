@@ -480,7 +480,7 @@ public:
         {
             for ( int j = 0; j < nages ; j++ )
             {
-                srv_sel(k, j) = (1.0 / (1.0 + atl::exp(-srv_sel_asc_beta(k) * (T(j) - srv_sel_asc_alpha(k))))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv_sel_desc_beta(k) * (T(j) - srv_sel_desc_alpha(k))))));
+                // srv_sel(k, j) = (1.0 / (1.0 + atl::exp(-srv_sel_asc_beta(k) * (T(j) - srv_sel_asc_alpha(k))))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv_sel_desc_beta(k) * (T(j) - srv_sel_desc_alpha(k))))));
             }
 
             // lots of explicit operations
@@ -488,7 +488,7 @@ public:
             max_sel = atl::Max<T>(sel_row);
             for ( int j = 0; j < nages ; j++ )
             {
-                srv_sel(k,j ) /= max_sel;
+                // srv_sel(k,j ) /= max_sel;
             }
         }
     }
@@ -701,4 +701,3 @@ public:
 
 
 #endif /* CATCHATAGE_HPP */
-
