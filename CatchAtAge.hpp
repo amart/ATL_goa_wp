@@ -707,6 +707,10 @@ public:
         std::cout << "log fsh_sel_asc_beta " << log_fsh_sel_asc_beta << std::endl;
         std::cout << "log fsh_sel_desc_alpha " << log_fsh_sel_desc_alpha << std::endl;
         std::cout << "log fsh_sel_desc_beta " << log_fsh_sel_desc_beta << std::endl;
+        std::cout << "fsh_sel_asc_alpha " << fsh_sel_asc_alpha << std::endl;
+        std::cout << "fsh_sel_asc_beta " << fsh_sel_asc_beta << std::endl;
+        std::cout << "fsh_sel_desc_alpha " << fsh_sel_desc_alpha << std::endl;
+        std::cout << "fsh_sel_desc_beta " << fsh_sel_desc_beta << std::endl;
         std::cout << "fsh sel" << std::endl;
         std::cout << fsh_sel << std::endl;
         std::cout << std::endl;
@@ -749,4 +753,3 @@ public:
 
 
 #endif /* CATCHATAGE_HPP */
-
