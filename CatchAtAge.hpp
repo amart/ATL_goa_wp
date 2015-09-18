@@ -286,7 +286,6 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Variable<T> gr_a0;
 
     atl::Variable<T> log_mean_fsh_mort;
-    atl::Variable<T> mean_fsh_mort;
     atl::Vector<atl::Variable<T> > fsh_mort_devs;
     atl::Vector<atl::Variable<T> > fsh_mort;
 
@@ -340,10 +339,10 @@ public:
         est_srv_biomass.Resize(nsrvs,nyrs);
 
 
-        this->Register(log_fsh_sel_asc_alpha,3,"log_fsh_sel_asc_alpha");
-        this->Register(log_fsh_sel_asc_beta,3,"log_fsh_sel_asc_beta");
-        this->Register(log_fsh_sel_desc_alpha,3,"log_fsh_sel_desc_alpha");
-        this->Register(log_fsh_sel_desc_beta,3,"log_fsh_sel_desc_beta");
+        this->Register(log_fsh_sel_asc_alpha,4,"log_fsh_sel_asc_alpha");
+        this->Register(log_fsh_sel_asc_beta,4,"log_fsh_sel_asc_beta");
+        this->Register(log_fsh_sel_desc_alpha,4,"log_fsh_sel_desc_alpha");
+        this->Register(log_fsh_sel_desc_beta,4,"log_fsh_sel_desc_beta");
 
         log_fsh_sel_asc_alpha.SetBounds(0.0,2.0);
         log_fsh_sel_asc_beta.SetBounds(-5.0,5.0);
@@ -356,54 +355,54 @@ public:
         log_fsh_sel_desc_beta  = atl::Variable<T>(0.156959058);
 
 
-        // log_srv_sel_asc_alpha.Resize(nsrvs);
-        // log_srv_sel_asc_beta.Resize(nsrvs);
-        // srv_sel_asc_alpha.Resize(nsrvs);
-        // srv_sel_asc_beta.Resize(nsrvs);
+        log_srv_sel_asc_alpha.Resize(nsrvs);
+        log_srv_sel_asc_beta.Resize(nsrvs);
+        srv_sel_asc_alpha.Resize(nsrvs);
+        srv_sel_asc_beta.Resize(nsrvs);
 
         // this->Register(log_srv_sel_asc_alpha,1,"log_srv_sel_asc_alpha");
         // this->Register(log_srv_sel_asc_beta,1,"log_srv_sel_asc_beta");
 
-        // log_srv_sel_asc_alpha.SetBounds(0.0,5.0);
-        // log_srv_sel_asc_beta.SetBounds(-5.0,5.0);
+        log_srv_sel_asc_alpha.SetBounds(0.0,5.0);
+        log_srv_sel_asc_beta.SetBounds(-5.0,5.0);
 
-        // log_srv_sel_asc_alpha = atl::Variable<T>(0.0);
-        // log_srv_sel_asc_beta  = atl::Variable<T>(0.0);
+        log_srv_sel_asc_alpha = atl::Variable<T>(0.0);
+        log_srv_sel_asc_beta  = atl::Variable<T>(0.0);
 
 
-        // log_srv_sel_desc_alpha.Resize(nsrvs);
-        // log_srv_sel_desc_beta.Resize(nsrvs);
-        // srv_sel_desc_alpha.Resize(nsrvs);
-        // srv_sel_desc_beta.Resize(nsrvs);
+        log_srv_sel_desc_alpha.Resize(nsrvs);
+        log_srv_sel_desc_beta.Resize(nsrvs);
+        srv_sel_desc_alpha.Resize(nsrvs);
+        srv_sel_desc_beta.Resize(nsrvs);
 
         // this->Register(log_srv_sel_desc_alpha,1,"log_srv_sel_desc_alpha");
         // this->Register(log_srv_sel_desc_beta,1,"log_srv_sel_desc_beta");
 
-        // log_srv_sel_desc_alpha.SetBounds(1.0,5.0);
-        // log_srv_sel_desc_beta.SetBounds(-5.0,5.0);
+        log_srv_sel_desc_alpha.SetBounds(1.0,5.0);
+        log_srv_sel_desc_beta.SetBounds(-5.0,5.0);
 
-        // log_srv_sel_desc_alpha = atl::Variable<T>(0.0);
-        // log_srv_sel_desc_beta  = atl::Variable<T>(0.0);
+        log_srv_sel_desc_alpha = atl::Variable<T>(0.0);
+        log_srv_sel_desc_beta  = atl::Variable<T>(0.0);
 
 
         // this->Register(log_srv_1a_q,3,"log_srv_1a_q");
         // this->Register(log_srv_1b_q,3,"log_srv_1b_q");
 
-        // log_srv_1a_q.SetBounds(-10.0,10.0);
-        // log_srv_1a_q = atl::Variable<T>(0.0);
-        // log_srv_1b_q.SetBounds(-10.0,10.0);
-        // log_srv_1b_q = atl::Variable<T>(0.0);
+        log_srv_1a_q.SetBounds(-10.0,10.0);
+        log_srv_1a_q = atl::Variable<T>(0.0);
+        log_srv_1b_q.SetBounds(-10.0,10.0);
+        log_srv_1b_q = atl::Variable<T>(0.0);
 
-        // log_srv_q.Resize(nsrvs);    // srv 1, 2, 3
+        log_srv_q.Resize(nsrvs);    // srv 1, 2, 3
         // this->Register(log_srv_q,3,"log_srv_q");
-        // log_srv_q.SetBounds(-10.0,10.0);
-        // log_srv_q = atl::Variable<T>(0.0);
+        log_srv_q.SetBounds(-10.0,10.0);
+        log_srv_q = atl::Variable<T>(0.0);
 
 
         this->Register(log_mean_recruits,1,"log_mean_rec");
 
-        log_mean_recruits.SetBounds(5.0,40.0);
-        log_mean_recruits = atl::Variable<T>(25.723265836946411156161923092159);
+        log_mean_recruits.SetBounds(5.0, 50.0);
+        log_mean_recruits = atl::Variable<T>(21.723265836946411156161923092159);
 
 
         this->Register(log_mean_fsh_mort,1,"log_mean_fsh_mort");
@@ -413,21 +412,21 @@ public:
 
         this->Register(log_initial_R, 1, "log_init_R");
 
-        log_initial_R.SetBounds(5.0, 40.0);
-        log_initial_R = atl::Variable<T>(25.0);
+        log_initial_R.SetBounds(5.0, 50.0);
+        log_initial_R = atl::Variable<T>(21.0);
 
 
         init_pop_devs.Resize(nages-1);
         initial_population.Resize(nages);
 
         recruit_devs.Resize(nyrs);
-        recruits.Resize(nyrs);
+        recruits.Resize(nyrs+1);
 
         fsh_mort_devs.Resize(nyrs);
         fsh_mort.Resize(nyrs);
 
-        this->Register(init_pop_devs, 2, "init_pop_devs");
-        this->Register(recruit_devs, 2, "recruit_devs");
+        // this->Register(init_pop_devs, 2, "init_pop_devs");
+        this->Register(recruit_devs, 3, "recruit_devs");
         this->Register(fsh_mort_devs, 2,"fsh_mort_devs");
 
         init_pop_devs.SetBounds(-15.0,15.0);
@@ -521,10 +520,10 @@ public:
         srv_1b_q = atl::exp(log_srv_1b_q);
         srv_q   = atl::exp(log_srv_q);
 
-        fsh_mort = atl::exp(log_mean_fsh_mort + fsh_mort_devs);
-
         for (int i = 0; i < nyrs; i++)
         {
+            fsh_mort(i) = atl::exp(log_mean_fsh_mort + fsh_mort_devs(i));
+
             for (int j = 0; j < nages; j++)
             {
                 F(i, j) = fsh_mort(i) * fsh_sel(i, j);
@@ -576,16 +575,22 @@ public:
             initial_population(j) *= atl::exp(init_pop_devs(j-1));
         }
 
+        // std::cout << "init pop " << initial_population << std::endl;
+
         // can this operation be vectorized?
-        for ( int j = 0; j < nages; j++ )
+        for ( int j = 1; j < nages; j++ )
         {
             N(0, j) = initial_population(j);
         }
 
+        // could put a S-R relationship here
+        N(0, 0) = atl::exp(log_initial_R);
+
+        // std::cout << "first year N-at-age " << atl::Row(N, 0) << std::endl;
+
         for ( int i = 0; i < nyrs; i++ )
         {
-            recruits(i) = atl::exp(log_mean_recruits + recruit_devs(i));
-            N(i, 0) = recruits(i);
+            N(i, 0) *= atl::exp(recruit_devs(i));
 
             // this assumes continuous fishing
             for ( int j = 1; j < nages; j++ )
@@ -594,8 +599,14 @@ public:
             }
             N(i+1, (nages-1)) = (N(i, (nages-1)) * expZ(i, (nages-1))) + (N(i, (nages-1)-1) * expZ(i, (nages-1)-1));
 
+            N(i+1, 0) = atl::exp(log_mean_recruits);
+
+            // std::cout << "N-at-age in year " << i << " " << atl::Row(N, i) << std::endl;
+
             // calculate spawning biomass here
         }
+
+        recruits = atl::Column(N,0);
     }
 
     void FleetIndices()
@@ -658,21 +669,34 @@ public:
                 f -= (obs_fsh_N(i) * (obs_fsh_prop_at_age(i,j) + o) * (log(est_fsh_prop_at_age(i,j) + o) - log(obs_fsh_prop_at_age(i,j) + o)));
             }
         }
+
+        // penalty on initial population devs
+        f +=  (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs); 
+
+        // penalty on rec devs
+        f +=  (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs); 
+
+        // penalty to ensure that N(1964,0) and N(1965,0) are close
+        f += 1000.0 * (atl::log(N(0,0)) - atl::log(N(1,0))) * (atl::log(N(0,0)) - atl::log(N(1,0)));
+
     }
 
     void Report()
     {
+        atl::Variable<T> one_beeellion = 1000000000.0;	// conversion factor
+
         std::cout << std::endl;
 
         std::cout << "init pop " << initial_population << std::endl;
+        std::cout << "ratios " << (initial_population / initial_population(0)) << std::endl;
         std::cout << std::endl;
 
-        std::cout << "mean_recruits " << atl::exp(log_mean_recruits) << std::endl;
+        std::cout << "log mean_recruits " << log_mean_recruits << std::endl;
         std::cout << "recruit_devs " << recruit_devs << std::endl;
         std::cout << "recruits " << recruits << std::endl;
         std::cout << std::endl;
 
-        std::cout << "mean_fsh_mort " << mean_fsh_mort << std::endl;
+        std::cout << "log mean_fsh_mort " << log_mean_fsh_mort << std::endl;
         std::cout << "fsh_mort_devs " << fsh_mort_devs << std::endl;
         std::cout << "fsh_mort " << fsh_mort << std::endl;
         std::cout << std::endl;
@@ -712,6 +736,9 @@ public:
             std::cout << "estimated srv " << k << " " << atl::Row(est_srv_biomass, k) << std::endl;
         }
         std::cout << std::endl;
+
+        std::cout << "N at age" << std::endl;
+        std::cout << (N/one_beeellion) << std::endl;
 
         std::cout << std::endl;
     }
