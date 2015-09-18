@@ -401,7 +401,7 @@ public:
 
         this->Register(log_mean_recruits,1,"log_mean_rec");
 
-        log_mean_recruits.SetBounds(5.0, 50.0);
+        log_mean_recruits.SetBounds(5.0, 35.0);
         log_mean_recruits = atl::Variable<T>(21.723265836946411156161923092159);
 
 
@@ -412,7 +412,7 @@ public:
 
         this->Register(log_initial_R, 1, "log_init_R");
 
-        log_initial_R.SetBounds(5.0, 50.0);
+        log_initial_R.SetBounds(5.0, 35.0);
         log_initial_R = atl::Variable<T>(21.0);
 
 
@@ -687,7 +687,9 @@ public:
 
         std::cout << std::endl;
 
-        std::cout << "init pop " << initial_population << std::endl;
+        std::cout << "log initial_R " << log_initial_R << std::endl;
+        std::cout << "init devs " << init_pop_devs << std::endl;
+        std::cout << "init N-at-age " << initial_population << std::endl;
         std::cout << "ratios " << (initial_population / initial_population(0)) << std::endl;
         std::cout << std::endl;
 
@@ -701,10 +703,10 @@ public:
         std::cout << "fsh_mort " << fsh_mort << std::endl;
         std::cout << std::endl;
 
-        std::cout << "fsh_sel_asc_alpha " << fsh_sel_asc_alpha << std::endl;
-        std::cout << "fsh_sel_asc_beta " << fsh_sel_asc_beta << std::endl;
-        std::cout << "fsh_sel_desc_alpha " << fsh_sel_desc_alpha << std::endl;
-        std::cout << "fsh_sel_desc_beta " << fsh_sel_desc_beta << std::endl;
+        std::cout << "log fsh_sel_asc_alpha " << log_fsh_sel_asc_alpha << std::endl;
+        std::cout << "log fsh_sel_asc_beta " << log_fsh_sel_asc_beta << std::endl;
+        std::cout << "log fsh_sel_desc_alpha " << log_fsh_sel_desc_alpha << std::endl;
+        std::cout << "log fsh_sel_desc_beta " << log_fsh_sel_desc_beta << std::endl;
         std::cout << "fsh sel" << std::endl;
         std::cout << fsh_sel << std::endl;
         std::cout << std::endl;
