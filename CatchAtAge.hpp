@@ -243,7 +243,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Vector<T> M = { 1.4, 0.7, 0.5, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
 
     //Estimated(read only)
-    atl::Variable<T> log_initial_R;
+    atl::Variable<T> log_initial_R_dev;
     atl::Vector<atl::Variable<T> > init_pop_devs;
     atl::Vector<atl::Variable<T> > initial_population;
 
@@ -410,10 +410,10 @@ public:
         log_mean_fsh_mort.SetBounds(-10.0,10.0);
         log_mean_fsh_mort = atl::Variable<T>(-1.6);
 
-        this->Register(log_initial_R, 1, "log_init_R");
+        this->Register(log_initial_R_dev, 2, "log_init_R_dev");
 
-        log_initial_R.SetBounds(5.0, 35.0);
-        log_initial_R = atl::Variable<T>(21.0);
+        log_initial_R_dev.SetBounds(-5.0, 5.0);
+        log_initial_R_dev = atl::Variable<T>(0.0);
 
 
         init_pop_devs.Resize(nages-1);
@@ -425,7 +425,7 @@ public:
         fsh_mort_devs.Resize(nyrs);
         fsh_mort.Resize(nyrs);
 
-        // this->Register(init_pop_devs, 2, "init_pop_devs");
+        // this->Register(init_pop_devs, 3, "init_pop_devs");
         this->Register(recruit_devs, 3, "recruit_devs");
         this->Register(fsh_mort_devs, 2,"fsh_mort_devs");
 
@@ -562,7 +562,7 @@ public:
 
     void NumbersAtAge()
     {
-        initial_population(0) = atl::exp(log_initial_R + recruit_devs(0));
+        initial_population(0) = atl::exp(log_mean_recruits + log_initial_R_dev + recruit_devs(0));
 
         for ( int j = 1; j < nages; j++ )
         {
@@ -584,7 +584,7 @@ public:
         }
 
         // could put a S-R relationship here
-        N(0, 0) = atl::exp(log_initial_R);
+        N(0, 0) = atl::exp(log_mean_recruits + log_initial_R_dev);
 
         // std::cout << "first year N-at-age " << atl::Row(N, 0) << std::endl;
 
@@ -683,11 +683,11 @@ public:
 
     void Report()
     {
-        atl::Variable<T> one_beeellion = 1000000000.0;	// conversion factor
+        atl::Variable<T> one_meeellion = 1000000.0;	// conversion factor
 
         std::cout << std::endl;
 
-        std::cout << "log initial_R " << log_initial_R << std::endl;
+        std::cout << "log initial_R " << (log_mean_recruits + log_initial_R_dev) << std::endl;
         std::cout << "init devs " << init_pop_devs << std::endl;
         std::cout << "init N-at-age " << initial_population << std::endl;
         std::cout << "ratios " << (initial_population / initial_population(0)) << std::endl;
@@ -744,7 +744,7 @@ public:
         std::cout << std::endl;
 
         std::cout << "N at age" << std::endl;
-        std::cout << (N/one_beeellion) << std::endl;
+        std::cout << (N/one_meeellion) << std::endl;
 
         std::cout << std::endl;
     }
