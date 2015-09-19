@@ -249,7 +249,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Vector<int> yrs_srv2 = { 20, 23, 26, 29, 32, 35, 37, 39, 41, 43, 45, 47, 49 };
     atl::Vector<T> obs_srv_2_biomass = { 720547.655, 732659.961, 825608.654, 755786.27, 666521.466, 607408.6, 219072.367, 398468.871, 358016.726, 282356.056, 669504.722, 667130.945, 957817.487 };
     atl::Vector<T> obs_srv_2_CV = { 0.136962436, 0.195570637, 0.117026651, 0.159023699, 0.145984725, 0.383779365, 0.297659341, 0.12011675, 0.153660591, 0.138519958, 0.152453286, 0.145764033, 0.21086392 };
-    atl::Matrix<T> obs_srv2_wt_at_age = {
+    atl::Matrix<T> obs_srv_2_wt_at_age = {
         // 1984
         { 0.038, 0.149, 0.527, 0.659, 0.737, 0.833, 0.904, 0.96,  0.991, 1.245 },
         // 1987
@@ -279,9 +279,9 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     };
 
     int nyrs_srv2_prop_at_age = 12;
-    atl::Vector<int> yrs_srv2_prop_at_ages = { 20, 23, 26, 29, 32, 35, 37, 39, 41, 43, 45, 47 };
-    atl::Vector<int> obs_srv2_prop_at_age_N = { 73, 42, 38, 71, 74, 60, 60, 60, 60, 60, 60, 60 };
-    atl::Matrix<T> obs_srv2_prop_at_age = {
+    atl::Vector<int> yrs_srv2_prop_at_age = { 20, 23, 26, 29, 32, 35, 37, 39, 41, 43, 45, 47 };
+    atl::Vector<int> obs_srv_2_prop_at_age_N = { 73, 42, 38, 71, 74, 60, 60, 60, 60, 60, 60, 60 };
+    atl::Matrix<T> obs_srv_2_prop_at_age = {
         // 1984
         { 0.00080, 0.00864, 0.05846, 0.13429, 0.22515, 0.40913, 0.12509, 0.02138, 0.01430, 0.00275 },
         // 1987
@@ -315,6 +315,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
 
     atl::Vector<T> M = { 1.4, 0.7, 0.5, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
 
+
     //Estimated(read only)
     atl::Variable<T> log_initial_R_dev;
     atl::Vector<atl::Variable<T> > init_pop_devs;
@@ -341,15 +342,37 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Matrix<atl::Variable<T> > fsh_sel;
 
 
-    atl::Vector<atl::Variable<T> > log_srv_sel_asc_alpha;
-    atl::Vector<atl::Variable<T> > log_srv_sel_asc_beta;
-    atl::Vector<atl::Variable<T> > srv_sel_asc_alpha;
-    atl::Vector<atl::Variable<T> > srv_sel_asc_beta;
+    atl::Variable<T> log_srv1_sel_asc_alpha;
+    atl::Variable<T> log_srv1_sel_asc_beta;
+    atl::Variable<T> srv1_sel_asc_alpha;
+    atl::Variable<T> srv1_sel_asc_beta;
 
-    atl::Vector<atl::Variable<T> > log_srv_sel_desc_alpha;
-    atl::Vector<atl::Variable<T> > log_srv_sel_desc_beta;
-    atl::Vector<atl::Variable<T> > srv_sel_desc_alpha;
-    atl::Vector<atl::Variable<T> > srv_sel_desc_beta;
+    atl::Variable<T> log_srv1_sel_desc_alpha;
+    atl::Variable<T> log_srv1_sel_desc_beta;
+    atl::Variable<T> srv1_sel_desc_alpha;
+    atl::Variable<T> srv1_sel_desc_beta;
+
+
+    atl::Variable<T> log_srv2_sel_asc_alpha;
+    atl::Variable<T> log_srv2_sel_asc_beta;
+    atl::Variable<T> srv2_sel_asc_alpha;
+    atl::Variable<T> srv2_sel_asc_beta;
+
+    atl::Variable<T> log_srv2_sel_desc_alpha;
+    atl::Variable<T> log_srv2_sel_desc_beta;
+    atl::Variable<T> srv2_sel_desc_alpha;
+    atl::Variable<T> srv2_sel_desc_beta;
+
+
+    atl::Variable<T> log_srv3_sel_asc_alpha;
+    atl::Variable<T> log_srv3_sel_asc_beta;
+    atl::Variable<T> srv3_sel_asc_alpha;
+    atl::Variable<T> srv3_sel_asc_beta;
+
+    atl::Variable<T> log_srv3_sel_desc_alpha;
+    atl::Variable<T> log_srv3_sel_desc_beta;
+    atl::Variable<T> srv3_sel_desc_alpha;
+    atl::Variable<T> srv3_sel_desc_beta;
 
     atl::Matrix<atl::Variable<T> > srv_sel;
 
@@ -400,6 +423,9 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Vector<atl::Variable<T> > est_srv_1_biomass;
     atl::Vector<atl::Variable<T> > est_srv_2_biomass;
     atl::Vector<atl::Variable<T> > est_srv_3_biomass;
+    atl::Matrix<atl::Variable<T> > est_srv_1_prop_at_age;
+    atl::Matrix<atl::Variable<T> > est_srv_2_prop_at_age;
+    atl::Matrix<atl::Variable<T> > est_srv_3_prop_at_age;
 
 public:
 
@@ -426,6 +452,9 @@ public:
         est_srv_1_biomass.Resize(nyrs_srv1);
         est_srv_2_biomass.Resize(nyrs_srv2);
         est_srv_3_biomass.Resize(nyrs_srv3);
+        // est_srv_1_prop_at_age.Resize(wat,nages);
+        est_srv_2_prop_at_age.Resize(nyrs_srv2_prop_at_age,nages);
+        // est_srv_3_prop_at_age.Resize(wat,nages);
 
 
         this->Register(log_fsh_sel_asc_alpha,4,"log_fsh_sel_asc_alpha");
@@ -444,34 +473,49 @@ public:
         log_fsh_sel_desc_beta  = atl::Variable<T>(0.156959058);
 
 
-        log_srv_sel_asc_alpha.Resize(nsrvs);
-        log_srv_sel_asc_beta.Resize(nsrvs);
-        srv_sel_asc_alpha.Resize(nsrvs);
-        srv_sel_asc_beta.Resize(nsrvs);
+        // this->Register(log_srv1_sel_asc_alpha,5,"log_srv1_sel_asc_alpha");
+        // this->Register(log_srv1_sel_asc_beta,5,"log_srv1_sel_asc_beta");
+        log_srv1_sel_asc_alpha.SetBounds(0.0,5.0);
+        log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
+        log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
+        log_srv1_sel_asc_beta  = atl::Variable<T>(2.0);
 
-        // this->Register(log_srv_sel_asc_alpha,1,"log_srv_sel_asc_alpha");
-        // this->Register(log_srv_sel_asc_beta,1,"log_srv_sel_asc_beta");
-
-        log_srv_sel_asc_alpha.SetBounds(0.0,5.0);
-        log_srv_sel_asc_beta.SetBounds(-5.0,5.0);
-
-        log_srv_sel_asc_alpha = atl::Variable<T>(0.0);
-        log_srv_sel_asc_beta  = atl::Variable<T>(0.0);
+        // this->Register(log_srv1_sel_desc_alpha,5,"log_srv1_sel_desc_alpha");
+        // this->Register(log_srv1_sel_desc_beta,5,"log_srv1_sel_desc_beta");
+        log_srv1_sel_desc_alpha.SetBounds(1.0,5.0);
+        log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
+        log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
+        log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
 
 
-        log_srv_sel_desc_alpha.Resize(nsrvs);
-        log_srv_sel_desc_beta.Resize(nsrvs);
-        srv_sel_desc_alpha.Resize(nsrvs);
-        srv_sel_desc_beta.Resize(nsrvs);
+        this->Register(log_srv2_sel_asc_alpha,5,"log_srv2_sel_asc_alpha");
+        this->Register(log_srv2_sel_asc_beta,5,"log_srv2_sel_asc_beta");
+        log_srv2_sel_asc_alpha.SetBounds(0.0,5.0);
+        log_srv2_sel_asc_beta.SetBounds(-5.0,5.0);
+        log_srv2_sel_asc_alpha = atl::Variable<T>(2.0);
+        log_srv2_sel_asc_beta  = atl::Variable<T>(0.0);
 
-        // this->Register(log_srv_sel_desc_alpha,1,"log_srv_sel_desc_alpha");
-        // this->Register(log_srv_sel_desc_beta,1,"log_srv_sel_desc_beta");
+        this->Register(log_srv2_sel_desc_alpha,5,"log_srv2_sel_desc_alpha");
+        this->Register(log_srv2_sel_desc_beta,5,"log_srv2_sel_desc_beta");
+        log_srv2_sel_desc_alpha.SetBounds(1.0,5.0);
+        log_srv2_sel_desc_beta.SetBounds(-5.0,5.0);
+        log_srv2_sel_desc_alpha = atl::Variable<T>(2.0);
+        log_srv2_sel_desc_beta  = atl::Variable<T>(0.0);
 
-        log_srv_sel_desc_alpha.SetBounds(1.0,5.0);
-        log_srv_sel_desc_beta.SetBounds(-5.0,5.0);
 
-        log_srv_sel_desc_alpha = atl::Variable<T>(0.0);
-        log_srv_sel_desc_beta  = atl::Variable<T>(0.0);
+        // this->Register(log_srv3_sel_asc_alpha,5,"log_srv3_sel_asc_alpha");
+        // this->Register(log_srv3_sel_asc_beta,5,"log_srv3_sel_asc_beta");
+        log_srv3_sel_asc_alpha.SetBounds(0.0,5.0);
+        log_srv3_sel_asc_beta.SetBounds(-5.0,5.0);
+        log_srv3_sel_asc_alpha = atl::Variable<T>(1.0);
+        log_srv3_sel_asc_beta  = atl::Variable<T>(0.0);
+
+        // this->Register(log_srv3_sel_desc_alpha,5,"log_srv3_sel_desc_alpha");
+        // this->Register(log_srv3_sel_desc_beta,5,"log_srv3_sel_desc_beta");
+        log_srv3_sel_desc_alpha.SetBounds(1.0,5.0);
+        log_srv3_sel_desc_beta.SetBounds(-5.0,5.0);
+        log_srv3_sel_desc_alpha = atl::Variable<T>(0.0);
+        log_srv3_sel_desc_beta  = atl::Variable<T>(-20.0);
 
 
         // this->Register(log_srv_1a_q,3,"log_srv_1a_q");
@@ -571,24 +615,43 @@ public:
         }
 
 
-        srv_sel_asc_alpha  = atl::exp(log_srv_sel_asc_alpha);
-        srv_sel_asc_beta   = atl::exp(log_srv_sel_asc_beta);
-        srv_sel_desc_alpha = atl::exp(log_srv_sel_desc_alpha);
-        srv_sel_desc_beta  = atl::exp(log_srv_sel_desc_beta);
+        srv1_sel_asc_alpha  = atl::exp(log_srv1_sel_asc_alpha);
+        srv1_sel_asc_beta   = atl::exp(log_srv1_sel_asc_beta);
+        srv1_sel_desc_alpha = atl::exp(log_srv1_sel_desc_alpha);
+        srv1_sel_desc_beta  = atl::exp(log_srv1_sel_desc_beta);
+
+        srv2_sel_asc_alpha  = atl::exp(log_srv2_sel_asc_alpha);
+        srv2_sel_asc_beta   = atl::exp(log_srv2_sel_asc_beta);
+        srv2_sel_desc_alpha = atl::exp(log_srv2_sel_desc_alpha);
+        srv2_sel_desc_beta  = atl::exp(log_srv2_sel_desc_beta);
+
+        srv3_sel_asc_alpha  = atl::exp(log_srv3_sel_asc_alpha);
+        srv3_sel_asc_beta   = atl::exp(log_srv3_sel_asc_beta);
+        srv3_sel_desc_alpha = atl::exp(log_srv3_sel_desc_alpha);
+        srv3_sel_desc_beta  = atl::exp(log_srv3_sel_desc_beta);
+
+        for ( int j = 0; j < nages ; j++ )
+        {
+            // srv 1
+            // srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(j) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(j) - srv1_sel_desc_alpha)))));
+
+            // srv 2
+            srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-srv2_sel_asc_beta * (T(j) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv2_sel_desc_beta * (T(j) - srv2_sel_desc_alpha)))));
+
+            // srv 3
+            // srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-srv3_sel_asc_beta * (T(j) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv3_sel_desc_beta * (T(j) - srv3_sel_desc_alpha)))));
+        }
 
         for ( int k = 0; k < nsrvs; k++ )
         {
-            for ( int j = 0; j < nages ; j++ )
-            {
-                // srv_sel(k, j) = (1.0 / (1.0 + atl::exp(-srv_sel_asc_beta(k) * (T(j) - srv_sel_asc_alpha(k))))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv_sel_desc_beta(k) * (T(j) - srv_sel_desc_alpha(k))))));
-            }
+            max_sel = atl::Max<T>(atl::Row(srv_sel, k));
 
-            // lots of explicit operations
-            sel_row = atl::Row(srv_sel, k);
-            max_sel = atl::Max<T>(sel_row);
-            for ( int j = 0; j < nages ; j++ )
+            if ( max_sel > 0 )
             {
-                // srv_sel(k,j ) /= max_sel;
+                for ( int j = 0; j < nages ; j++ )
+                {
+                    srv_sel(k, j) /= max_sel;
+                }
             }
         }
     }
@@ -703,6 +766,26 @@ public:
         srv_2_q  = atl::exp(log_srv_2_q);
         srv_3_q  = atl::exp(log_srv_3_q);
 
+        // srv 1
+
+        // srv 2
+        for ( int i = 0; i < nyrs_srv2; i++ )
+        {
+            int y = yrs_srv2(i);
+
+            est_srv_2_biomass(i) = 0;
+
+            for ( int j = 0; j < nages; j++ )
+            {
+                est_srv_2_biomass(i) += (srv_2_q * obs_srv_2_wt_at_age(i, j) * srv_sel(1, j) * N(y, j) * expZ_yrfrac_srv2(y, j));
+            }
+
+            // convert from kg to mt
+            est_srv_2_biomass(i) /= 1000.0;
+        }
+
+        // srv 3
+
     }
 
     void CalculateCatchAtAge()
@@ -734,7 +817,7 @@ public:
 
     void ObjectiveFunction(atl::Variable<T>& f)
     {
-        atl::Variable<T> o = 0.00001;  // small value for proportions calculations
+        atl::Variable<T> o = 0.000001;  // small value for proportions calculations
 
         this->Selectivity();
         this->Growth();
@@ -749,7 +832,7 @@ public:
         // NLL for catch
         for (int i = 0; i < nyrs; i++)
         {
-            f += (1.0 / (2.0 * 0.1 * 0.1)) * (atl::log(obs_catch(i) + o) - atl::log(est_catch(i) + o)) * (atl::log(obs_catch(i) + o) - atl::log(est_catch(i) + o));
+            f += ((0.5 / (0.1 * 0.1)) * atl::pow<T>((atl::log(obs_catch(i) + o) - atl::log(est_catch(i) + o)),2));
         }
 
         // NLL for fsh proportions at age
@@ -757,7 +840,24 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                f -= (obs_fsh_N(i) * (obs_fsh_prop_at_age(i,j) + o) * (log(est_fsh_prop_at_age(i,j) + o) - log(obs_fsh_prop_at_age(i,j) + o)));
+                f -= (obs_fsh_N(i) * (obs_fsh_prop_at_age(i, j) + o) * (log(est_fsh_prop_at_age(i, j) + o) - log(obs_fsh_prop_at_age(i, j) + o)));
+            }
+        }
+
+        // NLL for srv 2 biomass
+        for ( int i = 0; i < nyrs_srv2; i++ )
+        {
+            f += (0.5 * atl::pow<T>(((atl::log(obs_srv_2_biomass(i) + o) - atl::log(est_srv_2_biomass(i) + o) + atl::pow<T>((((obs_srv_2_CV(i)) / 2.0) + o),2)) / obs_srv_2_CV(i)),2));
+        }
+
+        // NLL for srv2 proportions at age
+        for ( int i = 0; i < nyrs_srv2_prop_at_age; i++ )
+        {
+            int y = yrs_srv2_prop_at_age(i);
+
+            for ( int j = 0; j < nages; j++ )
+            {
+                f -= (obs_srv_2_prop_at_age_N(i) * (obs_srv_2_prop_at_age(i, j) + o) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
             }
         }
 
@@ -815,10 +915,21 @@ public:
         std::cout << "srv_1_q " << srv_1_q << std::endl;
         std::cout << "srv_2_q " << srv_2_q << std::endl;
         std::cout << "srv_3_q " << srv_3_q << std::endl;
-        std::cout << "srv_sel_asc_alpha " << srv_sel_asc_alpha << std::endl;
-        std::cout << "srv_sel_asc_beta " << srv_sel_asc_beta << std::endl;
-        std::cout << "srv_sel_desc_alpha " << srv_sel_desc_alpha << std::endl;
-        std::cout << "srv_sel_desc_beta " << srv_sel_desc_beta << std::endl;
+
+        std::cout << "srv1_sel_asc_alpha " << srv1_sel_asc_alpha << std::endl;
+        std::cout << "srv1_sel_asc_beta " << srv1_sel_asc_beta << std::endl;
+        std::cout << "srv1_sel_desc_alpha " << srv1_sel_desc_alpha << std::endl;
+        std::cout << "srv1_sel_desc_beta " << srv1_sel_desc_beta << std::endl;
+
+        std::cout << "srv2_sel_asc_alpha " << srv2_sel_asc_alpha << std::endl;
+        std::cout << "srv2_sel_asc_beta " << srv2_sel_asc_beta << std::endl;
+        std::cout << "srv2_sel_desc_alpha " << srv2_sel_desc_alpha << std::endl;
+        std::cout << "srv2_sel_desc_beta " << srv2_sel_desc_beta << std::endl;
+
+        std::cout << "srv3_sel_asc_alpha " << srv3_sel_asc_alpha << std::endl;
+        std::cout << "srv3_sel_asc_beta " << srv3_sel_asc_beta << std::endl;
+        std::cout << "srv3_sel_desc_alpha " << srv3_sel_desc_alpha << std::endl;
+        std::cout << "srv3_sel_desc_beta " << srv3_sel_desc_beta << std::endl;
 
         for ( int k = 0; k < nsrvs; k++ )
         {
@@ -832,8 +943,10 @@ public:
         std::cout << "estimated srv 1b " << est_srv_1b_biomass << std::endl;
         std::cout << "observed srv 1 " << obs_srv_1_biomass << std::endl;
         std::cout << "estimated srv 1 " << est_srv_1_biomass << std::endl;
+
         std::cout << "observed srv 2 " << obs_srv_2_biomass << std::endl;
         std::cout << "estimated srv 2 " << est_srv_2_biomass << std::endl;
+
         std::cout << "observed srv 3 " << obs_srv_3_biomass << std::endl;
         std::cout << "estimated srv 3 " << est_srv_3_biomass << std::endl;
         std::cout << std::endl;
