@@ -427,6 +427,8 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Matrix<atl::Variable<T> > est_srv_2_prop_at_age;
     atl::Matrix<atl::Variable<T> > est_srv_3_prop_at_age;
 
+    atl::Vector<atl::Variable<T> > nll_parts;
+
 public:
 
     void Initialize()
@@ -456,6 +458,8 @@ public:
         est_srv_2_prop_at_age.Resize(nyrs_srv2_prop_at_age,nages);
         // est_srv_3_prop_at_age.Resize(wat,nages);
 
+        nll_parts.Resize(7);
+
 
         this->Register(log_fsh_sel_asc_alpha,4,"log_fsh_sel_asc_alpha");
         this->Register(log_fsh_sel_asc_beta,4,"log_fsh_sel_asc_beta");
@@ -475,17 +479,17 @@ public:
 
         // this->Register(log_srv1_sel_asc_alpha,5,"log_srv1_sel_asc_alpha");
         // this->Register(log_srv1_sel_asc_beta,5,"log_srv1_sel_asc_beta");
-        log_srv1_sel_asc_alpha.SetBounds(0.0,5.0);
-        log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
-        log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
-        log_srv1_sel_asc_beta  = atl::Variable<T>(2.0);
+        // log_srv1_sel_asc_alpha.SetBounds(0.0,5.0);
+        // log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
+        // log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
+        // log_srv1_sel_asc_beta  = atl::Variable<T>(2.0);
 
         // this->Register(log_srv1_sel_desc_alpha,5,"log_srv1_sel_desc_alpha");
         // this->Register(log_srv1_sel_desc_beta,5,"log_srv1_sel_desc_beta");
-        log_srv1_sel_desc_alpha.SetBounds(1.0,5.0);
-        log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
-        log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
-        log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
+        // log_srv1_sel_desc_alpha.SetBounds(1.0,5.0);
+        // log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
+        // log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
+        // log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
 
 
         this->Register(log_srv2_sel_asc_alpha,5,"log_srv2_sel_asc_alpha");
@@ -505,43 +509,43 @@ public:
 
         // this->Register(log_srv3_sel_asc_alpha,5,"log_srv3_sel_asc_alpha");
         // this->Register(log_srv3_sel_asc_beta,5,"log_srv3_sel_asc_beta");
-        log_srv3_sel_asc_alpha.SetBounds(0.0,5.0);
-        log_srv3_sel_asc_beta.SetBounds(-5.0,5.0);
-        log_srv3_sel_asc_alpha = atl::Variable<T>(1.0);
-        log_srv3_sel_asc_beta  = atl::Variable<T>(0.0);
+        // log_srv3_sel_asc_alpha.SetBounds(0.0,5.0);
+        // log_srv3_sel_asc_beta.SetBounds(-5.0,5.0);
+        // log_srv3_sel_asc_alpha = atl::Variable<T>(1.0);
+        // log_srv3_sel_asc_beta  = atl::Variable<T>(0.0);
 
         // this->Register(log_srv3_sel_desc_alpha,5,"log_srv3_sel_desc_alpha");
         // this->Register(log_srv3_sel_desc_beta,5,"log_srv3_sel_desc_beta");
-        log_srv3_sel_desc_alpha.SetBounds(1.0,5.0);
-        log_srv3_sel_desc_beta.SetBounds(-5.0,5.0);
-        log_srv3_sel_desc_alpha = atl::Variable<T>(0.0);
-        log_srv3_sel_desc_beta  = atl::Variable<T>(-20.0);
+        // log_srv3_sel_desc_alpha.SetBounds(1.0,5.0);
+        // log_srv3_sel_desc_beta.SetBounds(-5.0,5.0);
+        // log_srv3_sel_desc_alpha = atl::Variable<T>(0.0);
+        // log_srv3_sel_desc_beta  = atl::Variable<T>(-20.0);
 
 
         // this->Register(log_srv_1a_q,3,"log_srv_1a_q");
         // this->Register(log_srv_1b_q,3,"log_srv_1b_q");
         // this->Register(log_srv_1_q,3,"log_srv_1_q");
 
-        log_srv_1a_q.SetBounds(-10.0,10.0);
-        log_srv_1a_q = atl::Variable<T>(0.0);
-        log_srv_1b_q.SetBounds(-10.0,10.0);
-        log_srv_1b_q = atl::Variable<T>(0.0);
-        log_srv_1_q.SetBounds(-10.0,10.0);
-        log_srv_1_q = atl::Variable<T>(0.0);
+        // log_srv_1a_q.SetBounds(-10.0,10.0);
+        // log_srv_1a_q = atl::Variable<T>(0.0);
+        // log_srv_1b_q.SetBounds(-10.0,10.0);
+        // log_srv_1b_q = atl::Variable<T>(0.0);
+        // log_srv_1_q.SetBounds(-10.0,10.0);
+        // log_srv_1_q = atl::Variable<T>(0.0);
 
         // this->Register(log_srv_2_q,3,"log_srv_2_q");
         log_srv_2_q.SetBounds(-10.0,10.0);
         log_srv_2_q = atl::Variable<T>(0.0);
 
         // this->Register(log_srv_3_q,3,"log_srv_3_q");
-        log_srv_3_q.SetBounds(-10.0,10.0);
-        log_srv_3_q = atl::Variable<T>(0.0);
+        // log_srv_3_q.SetBounds(-10.0,10.0);
+        // log_srv_3_q = atl::Variable<T>(0.0);
 
 
         this->Register(log_mean_recruits,1,"log_mean_rec");
 
         log_mean_recruits.SetBounds(5.0, 35.0);
-        log_mean_recruits = atl::Variable<T>(21.723265836946411156161923092159);
+        log_mean_recruits = atl::Variable<T>(23.723265836946411156161923092159);
 
 
         this->Register(log_mean_fsh_mort,1,"log_mean_fsh_mort");
@@ -765,7 +769,7 @@ public:
 
     void FleetIndices()
     {
-        atl::Variable<T> num_at_srv;
+        atl::Variable<T> est_srv_num;
 
         srv_1a_q = atl::exp(log_srv_1a_q);
         srv_1b_q = atl::exp(log_srv_1b_q);
@@ -803,13 +807,13 @@ public:
                 est_srv_2_prop_at_age(i, j) = srv_sel(1, j) * N(y, j) * expZ_yrfrac_srv2(y, j);
             }
 
-            num_at_srv = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
-            if ( num_at_srv > 0 )
+            est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
+            if ( est_srv_num > 0 )
             {
                 // can this operation be vectorized?
                 for ( int j = 0; j < nages; j++ )
                 {
-                    est_srv_2_prop_at_age(i, j) /= num_at_srv;
+                    est_srv_2_prop_at_age(i, j) /= est_srv_num;
                 }
             }
         }
@@ -836,18 +840,20 @@ public:
             est_catch(i) /= 1000.0;
 
             est_catch_num = atl::Sum(atl::Row(C,i));
-
-            // can this operation be vectorized?
-            for ( int j = 0; j < nages; j++ )
+            if ( est_catch_num > 0 )
             {
-                est_fsh_prop_at_age(i, j) = C(i, j) / est_catch_num;
+                // can this operation be vectorized?
+                for ( int j = 0; j < nages; j++ )
+                {
+                    est_fsh_prop_at_age(i, j) = C(i, j) / est_catch_num;
+                }
             }
         }
     }
 
     void ObjectiveFunction(atl::Variable<T>& f)
     {
-        atl::Variable<T> o = 0.000001;  // small value for proportions calculations
+        atl::Variable<T> o = 0.00001;  // small value for proportions calculations
 
         this->Selectivity();
         this->Growth();
@@ -860,50 +866,57 @@ public:
         f = 0;
 
         // NLL for catch
+        nll_parts(0) = 0;
         for (int i = 0; i < nyrs; i++)
         {
-            f += ((0.5 / (0.1 * 0.1)) * atl::pow<T>((atl::log(obs_catch(i) + o) - atl::log(est_catch(i) + o)),2));
+            nll_parts(0) += ((0.5 / (0.05 * 0.05)) * atl::pow<T>((atl::log(obs_catch(i) + o) - atl::log(est_catch(i) + o)),2));
         }
 
         // NLL for fsh proportions at age
+        nll_parts(1) = 0;
         for ( int i = 0; i < nyrs; i++ )
         {
             for ( int j = 0; j < nages; j++ )
             {
-                f -= (obs_fsh_N(i) * (obs_fsh_prop_at_age(i, j) + o) * (log(est_fsh_prop_at_age(i, j) + o) - log(obs_fsh_prop_at_age(i, j) + o)));
+                nll_parts(1) -= (obs_fsh_N(i) * (obs_fsh_prop_at_age(i, j) + o) * (log(est_fsh_prop_at_age(i, j) + o) - log(obs_fsh_prop_at_age(i, j) + o)));
             }
         }
 
         // NLL for srv 2 biomass
+        nll_parts(2) = 0;
         for ( int i = 0; i < nyrs_srv2; i++ )
         {
-            f += (0.5 * atl::pow<T>(((atl::log(obs_srv_2_biomass(i) + o) - atl::log(est_srv_2_biomass(i) + o) + atl::pow<T>((((obs_srv_2_CV(i)) / 2.0) + o),2)) / obs_srv_2_CV(i)),2));
+            nll_parts(2) += (0.5 * atl::pow<T>(((atl::log(obs_srv_2_biomass(i) + o) - atl::log(est_srv_2_biomass(i) + o) + atl::pow<T>((((obs_srv_2_CV(i)) / 2.0) + o),2)) / obs_srv_2_CV(i)),2));
         }
 
         // NLL for srv2 proportions at age
+        nll_parts(3) = 0;
         for ( int i = 0; i < nyrs_srv2_prop_at_age; i++ )
         {
             for ( int j = 0; j < nages; j++ )
             {
-                f -= (obs_srv_2_prop_at_age_N(i) * (obs_srv_2_prop_at_age(i, j) + o) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
+                nll_parts(3) -= (obs_srv_2_prop_at_age_N(i) * (obs_srv_2_prop_at_age(i, j) + o) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
             }
         }
 
         // penalty on initial population devs
-        f +=  (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs);
+        nll_parts(4) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs);
 
         // penalty on rec devs
-        f +=  (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs);
+        nll_parts(5) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
-        f += 1000.0 * (atl::log(N(0,0)) - atl::log(N(1,0))) * (atl::log(N(0,0)) - atl::log(N(1,0)));
+        nll_parts(6) = 1000.0 * atl::pow<T>((atl::log(N(0,0)) - atl::log(N(1,0))),2);
 
+        f = atl::Sum(nll_parts);
     }
 
     void Report()
     {
         atl::Variable<T> one_meeellion = 1000000.0;	// conversion factor
 
+        std::cout << std::endl;
+        std::cout << "objective function components " << nll_parts << std::endl;
         std::cout << std::endl;
 
         std::cout << "log initial_R " << (log_mean_recruits + log_initial_R_dev) << std::endl;
@@ -961,7 +974,7 @@ public:
 
         for ( int k = 0; k < nsrvs; k++ )
         {
-            std::cout << "srv_sel " << k << " " << atl::Row(srv_sel, k) << std::endl;
+            std::cout << "srv_sel " << (k + 1) << " " << atl::Row(srv_sel, k) << std::endl;
         }
         std::cout << std::endl;
 
