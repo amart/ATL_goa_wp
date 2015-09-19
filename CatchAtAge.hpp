@@ -233,13 +233,12 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
 
     int nsrvs = 3;
     atl::Vector<T> yrfrac_srv = { 0.209, 0.584, 0.60989 };
-    atl::Vector<T> obs_srv_1a_biomass = { 1, 1, 1 };
-    atl::Vector<T> obs_srv_1b_biomass = { 1, 1, 1 };
-    atl::Matrix<T> obs_srv_biomass = {
-        { 1, 1, 1 },
-        { 1, 1, 1 },
-        { 1, 1, 1 }
-    };
+    atl::Vector<T> obs_srv_1a_biomass = { -1, -1, -1 };     // early EIT survey
+    atl::Vector<T> obs_srv_1b_biomass = { -1, -1, -1 };     // middle EIT survey
+    atl::Vector<T> obs_srv_1_biomass = { -1, -1, -1 };      // recent EIT survey
+    atl::Vector<T> obs_srv_2_biomass = { 1, 1, 1 };         // NMFS bottom trawl survey
+    atl::Vector<T> obs_srv_3_biomass = { -1, -1, -1 };      // ADF&G nearshore trawl survey
+
     atl::Vector<T> M = { 1.4, 0.7, 0.5, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
 
     //Estimated(read only)
@@ -289,15 +288,23 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Vector<atl::Variable<T> > fsh_mort_devs;
     atl::Vector<atl::Variable<T> > fsh_mort;
 
-    // catchability for early srv 1
+    // catchability for srv 1 (EIT survey; 3 periods)
     atl::Variable<T> log_srv_1a_q;
     atl::Variable<T> srv_1a_q;
 
     atl::Variable<T> log_srv_1b_q;
     atl::Variable<T> srv_1b_q;
 
-    atl::Vector<atl::Variable<T> > log_srv_q;
-    atl::Vector<atl::Variable<T> > srv_q;
+    atl::Variable<T> log_srv_1_q;
+    atl::Variable<T> srv_1_q;
+
+    // catchability for srv 2 (bottom trawl survey)
+    atl::Variable<T> log_srv_2_q;
+    atl::Variable<T> srv_2_q;
+
+    // catchability for srv 3 (ADF&G survey)
+    atl::Variable<T> log_srv_3_q;
+    atl::Variable<T> srv_3_q;
 
     //Runtime(writable)
     atl::Matrix<atl::Variable<T> > wtAA;
@@ -305,7 +312,9 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Matrix<atl::Variable<T> > Z;
     atl::Matrix<atl::Variable<T> > expZ;
     atl::Matrix<atl::Variable<T> > expZ_sp;
-    atl::Array<atl::Variable<T> > expZ_yrfrac;
+    atl::Matrix<atl::Variable<T> > expZ_yrfrac_srv1;
+    atl::Matrix<atl::Variable<T> > expZ_yrfrac_srv2;
+    atl::Matrix<atl::Variable<T> > expZ_yrfrac_srv3;
     atl::Matrix<atl::Variable<T> > N;
     atl::Matrix<atl::Variable<T> > C;
 
@@ -314,7 +323,9 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Vector<atl::Variable<T> > est_sp_biomass;
     atl::Vector<atl::Variable<T> > est_srv_1a_biomass;
     atl::Vector<atl::Variable<T> > est_srv_1b_biomass;
-    atl::Matrix<atl::Variable<T> > est_srv_biomass;
+    atl::Vector<atl::Variable<T> > est_srv_1_biomass;
+    atl::Vector<atl::Variable<T> > est_srv_2_biomass;
+    atl::Vector<atl::Variable<T> > est_srv_3_biomass;
 
 public:
 
@@ -326,7 +337,9 @@ public:
         Z.Resize(nyrs, nages);
         expZ.Resize(nyrs, nages);
         expZ_sp.Resize(nyrs,nages);
-        expZ_yrfrac.Resize((nsrvs+1), nyrs, nages);
+        expZ_yrfrac_srv1.Resize(nyrs, nages);
+        expZ_yrfrac_srv2.Resize(nyrs, nages);
+        expZ_yrfrac_srv3.Resize(nyrs, nages);
         N.Resize((nyrs+1), nages);
         C.Resize(nyrs, nages);
         fsh_sel.Resize(nyrs,nages);
@@ -336,7 +349,9 @@ public:
         est_sp_biomass.Resize(nyrs);
         est_srv_1a_biomass.Resize(nyrs);
         est_srv_1b_biomass.Resize(nyrs);
-        est_srv_biomass.Resize(nsrvs,nyrs);
+        est_srv_1_biomass.Resize(nyrs);
+        est_srv_2_biomass.Resize(nyrs);
+        est_srv_3_biomass.Resize(nyrs);
 
 
         this->Register(log_fsh_sel_asc_alpha,4,"log_fsh_sel_asc_alpha");
@@ -387,16 +402,22 @@ public:
 
         // this->Register(log_srv_1a_q,3,"log_srv_1a_q");
         // this->Register(log_srv_1b_q,3,"log_srv_1b_q");
+        // this->Register(log_srv_1_q,3,"log_srv_1_q");
 
         log_srv_1a_q.SetBounds(-10.0,10.0);
         log_srv_1a_q = atl::Variable<T>(0.0);
         log_srv_1b_q.SetBounds(-10.0,10.0);
         log_srv_1b_q = atl::Variable<T>(0.0);
+        log_srv_1_q.SetBounds(-10.0,10.0);
+        log_srv_1_q = atl::Variable<T>(0.0);
 
-        log_srv_q.Resize(nsrvs);    // srv 1, 2, 3
-        // this->Register(log_srv_q,3,"log_srv_q");
-        log_srv_q.SetBounds(-10.0,10.0);
-        log_srv_q = atl::Variable<T>(0.0);
+        // this->Register(log_srv_2_q,3,"log_srv_2_q");
+        log_srv_2_q.SetBounds(-10.0,10.0);
+        log_srv_2_q = atl::Variable<T>(0.0);
+
+        // this->Register(log_srv_3_q,3,"log_srv_3_q");
+        log_srv_3_q.SetBounds(-10.0,10.0);
+        log_srv_3_q = atl::Variable<T>(0.0);
 
 
         this->Register(log_mean_recruits,1,"log_mean_rec");
@@ -516,11 +537,7 @@ public:
 
     void Mortality()
     {
-        srv_1a_q = atl::exp(log_srv_1a_q);
-        srv_1b_q = atl::exp(log_srv_1b_q);
-        srv_q   = atl::exp(log_srv_q);
-
-        for (int i = 0; i < nyrs; i++)
+         for (int i = 0; i < nyrs; i++)
         {
             fsh_mort(i) = atl::exp(log_mean_fsh_mort + fsh_mort_devs(i));
 
@@ -544,18 +561,12 @@ public:
             for ( int j = 0; j < nages; j++ )
             {
                 expZ(i, j)    = atl::exp(-1.0 * Z(i, j));
-                expZ_sp(i, j) = atl::exp(-yrfrac_sp * Z(i, j));
-            }
-        }
 
-        for ( int k = 0; k < nsrvs; k++ )
-        {
-            for ( int i = 0; i < nyrs; i++ )
-            {
-                for ( int j = 0; j < nages; j++ )
-                {
-                    expZ_yrfrac(k, i, j) = atl::exp(-yrfrac_srv(k) * Z(i, j));
-                }
+                expZ_sp(i, j) = atl::exp(-yrfrac_sp * Z(i, j));
+
+                expZ_yrfrac_srv1(i, j) = atl::exp(-yrfrac_srv(0) * Z(i, j));
+                expZ_yrfrac_srv2(i, j) = atl::exp(-yrfrac_srv(1) * Z(i, j));
+                expZ_yrfrac_srv3(i, j) = atl::exp(-yrfrac_srv(2) * Z(i, j));
             }
         }
     }
@@ -612,6 +623,12 @@ public:
     void FleetIndices()
     {
         // TODO
+        srv_1a_q = atl::exp(log_srv_1a_q);
+        srv_1b_q = atl::exp(log_srv_1b_q);
+        srv_1_q  = atl::exp(log_srv_1_q);
+        srv_2_q  = atl::exp(log_srv_2_q);
+        srv_3_q  = atl::exp(log_srv_3_q);
+
     }
 
     void CalculateCatchAtAge()
@@ -671,10 +688,10 @@ public:
         }
 
         // penalty on initial population devs
-        f +=  (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs); 
+        f +=  (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs);
 
         // penalty on rec devs
-        f +=  (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs); 
+        f +=  (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
         f += 1000.0 * (atl::log(N(0,0)) - atl::log(N(1,0))) * (atl::log(N(0,0)) - atl::log(N(1,0)));
@@ -721,11 +738,14 @@ public:
 
         std::cout << "srv_1a_q " << srv_1a_q << std::endl;
         std::cout << "srv_1b_q " << srv_1b_q << std::endl;
-        std::cout << "srv_q " << srv_q << std::endl;
+        std::cout << "srv_1_q " << srv_1_q << std::endl;
+        std::cout << "srv_2_q " << srv_2_q << std::endl;
+        std::cout << "srv_3_q " << srv_3_q << std::endl;
         std::cout << "srv_sel_asc_alpha " << srv_sel_asc_alpha << std::endl;
         std::cout << "srv_sel_asc_beta " << srv_sel_asc_beta << std::endl;
         std::cout << "srv_sel_desc_alpha " << srv_sel_desc_alpha << std::endl;
         std::cout << "srv_sel_desc_beta " << srv_sel_desc_beta << std::endl;
+
         for ( int k = 0; k < nsrvs; k++ )
         {
             std::cout << "srv_sel " << k << " " << atl::Row(srv_sel, k) << std::endl;
@@ -736,11 +756,12 @@ public:
         std::cout << "estimated srv 1a " << est_srv_1a_biomass << std::endl;
         std::cout << "observed srv 1b " << obs_srv_1b_biomass << std::endl;
         std::cout << "estimated srv 1b " << est_srv_1b_biomass << std::endl;
-        for ( int k = 0; k < nsrvs; k++ )
-        {
-            std::cout << "observed srv " << k << " " << atl::Row(obs_srv_biomass, k) << std::endl;
-            std::cout << "estimated srv " << k << " " << atl::Row(est_srv_biomass, k) << std::endl;
-        }
+        std::cout << "observed srv 1 " << obs_srv_1_biomass << std::endl;
+        std::cout << "estimated srv 1 " << est_srv_1_biomass << std::endl;
+        std::cout << "observed srv 2 " << obs_srv_2_biomass << std::endl;
+        std::cout << "estimated srv 2 " << est_srv_2_biomass << std::endl;
+        std::cout << "observed srv 3 " << obs_srv_3_biomass << std::endl;
+        std::cout << "estimated srv 3 " << est_srv_3_biomass << std::endl;
         std::cout << std::endl;
 
         std::cout << "N at age" << std::endl;
