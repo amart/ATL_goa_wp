@@ -233,11 +233,22 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
 
     int nsrvs = 3;
     atl::Vector<T> yrfrac_srv = { 0.209, 0.584, 0.60989 };
-    atl::Vector<T> obs_srv_1a_biomass = { -1, -1, -1 };     // early EIT survey
-    atl::Vector<T> obs_srv_1b_biomass = { -1, -1, -1 };     // middle EIT survey
-    atl::Vector<T> obs_srv_1_biomass = { -1, -1, -1 };      // recent EIT survey
+
+    int nyrs_srv1a = 1;
+    atl::Vector<T> obs_srv_1a_biomass = { -1 };     // early EIT survey
+
+    int nyrs_srv1b = 1;
+    atl::Vector<T> obs_srv_1b_biomass = { -1 };     // middle EIT survey
+
+    int nyrs_srv1 = 1;
+    atl::Vector<T> obs_srv_1_biomass = { -1 };      // recent EIT survey
+
+    int nyrs_srv2 = 3;
     atl::Vector<T> obs_srv_2_biomass = { 1, 1, 1 };         // NMFS bottom trawl survey
-    atl::Vector<T> obs_srv_3_biomass = { -1, -1, -1 };      // ADF&G nearshore trawl survey
+
+    int nyrs_srv3 = 1;
+    atl::Vector<T> obs_srv_3_biomass = { -1 };      // ADF&G nearshore trawl survey
+
 
     atl::Vector<T> M = { 1.4, 0.7, 0.5, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
 
@@ -347,11 +358,11 @@ public:
         est_catch.Resize(nyrs);
         est_fsh_prop_at_age.Resize(nyrs,nages);
         est_sp_biomass.Resize(nyrs);
-        est_srv_1a_biomass.Resize(nyrs);
-        est_srv_1b_biomass.Resize(nyrs);
-        est_srv_1_biomass.Resize(nyrs);
-        est_srv_2_biomass.Resize(nyrs);
-        est_srv_3_biomass.Resize(nyrs);
+        est_srv_1a_biomass.Resize(nyrs_srv1a);
+        est_srv_1b_biomass.Resize(nyrs_srv1b);
+        est_srv_1_biomass.Resize(nyrs_srv1);
+        est_srv_2_biomass.Resize(nyrs_srv2);
+        est_srv_3_biomass.Resize(nyrs_srv3);
 
 
         this->Register(log_fsh_sel_asc_alpha,4,"log_fsh_sel_asc_alpha");
