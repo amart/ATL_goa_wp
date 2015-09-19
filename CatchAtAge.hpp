@@ -581,6 +581,9 @@ public:
     void Selectivity()
     {
         atl::Variable<T> max_sel;
+        atl::Vector<atl::Variable<T> > sel_row;
+
+        sel_row.Resize(nages);
 
         fsh_sel_asc_alpha  = atl::exp(log_fsh_sel_asc_alpha);
         fsh_sel_asc_beta   = atl::exp(log_fsh_sel_asc_beta);
@@ -594,15 +597,15 @@ public:
 
         max_sel = atl::Max<T>(atl::Row(fsh_sel, 0));
 
-        // can this operation be vectorized?
-        for ( int j = 0; j < nages; j++ )
+        if ( max_sel > 0 )
         {
-            fsh_sel(0, j) /= max_sel;
+            // can this operation be vectorized?
+            for ( int j = 0; j < nages; j++ )
+            {
+                fsh_sel(0, j) /= max_sel;
+            }
         }
 
-        // lots of explicit operations...
-        atl::Vector<atl::Variable<T> > sel_row;
-        sel_row.Resize(nages);
         sel_row = atl::Row(fsh_sel, 0);
 
         for ( int i = 1; i < nyrs; i++ )
@@ -633,12 +636,14 @@ public:
         for ( int j = 0; j < nages ; j++ )
         {
             // srv 1
+            srv_sel(0, j) = 0;
             // srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(j) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(j) - srv1_sel_desc_alpha)))));
 
             // srv 2
             srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-srv2_sel_asc_beta * (T(j) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv2_sel_desc_beta * (T(j) - srv2_sel_desc_alpha)))));
 
             // srv 3
+            srv_sel(2, j) = 0;
             // srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-srv3_sel_asc_beta * (T(j) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv3_sel_desc_beta * (T(j) - srv3_sel_desc_alpha)))));
         }
 
@@ -648,6 +653,7 @@ public:
 
             if ( max_sel > 0 )
             {
+                // can this operation be vectorized?
                 for ( int j = 0; j < nages ; j++ )
                 {
                     srv_sel(k, j) /= max_sel;
@@ -759,7 +765,8 @@ public:
 
     void FleetIndices()
     {
-        // TODO
+        atl::Variable<T> num_at_srv;
+
         srv_1a_q = atl::exp(log_srv_1a_q);
         srv_1b_q = atl::exp(log_srv_1b_q);
         srv_1_q  = atl::exp(log_srv_1_q);
@@ -769,12 +776,14 @@ public:
         // srv 1
 
         // srv 2
+
         for ( int i = 0; i < nyrs_srv2; i++ )
         {
             int y = yrs_srv2(i);
 
             est_srv_2_biomass(i) = 0;
 
+            // can this operation be vectorized?
             for ( int j = 0; j < nages; j++ )
             {
                 est_srv_2_biomass(i) += (srv_2_q * obs_srv_2_wt_at_age(i, j) * srv_sel(1, j) * N(y, j) * expZ_yrfrac_srv2(y, j));
@@ -782,6 +791,27 @@ public:
 
             // convert from kg to mt
             est_srv_2_biomass(i) /= 1000.0;
+        }
+
+        // calculate proportions
+        for ( int i = 0; i < nyrs_srv2_prop_at_age; i++ )
+        {
+            int y = yrs_srv2_prop_at_age(i);
+
+            for ( int j = 0; j < nages; j++ )
+            {
+                est_srv_2_prop_at_age(i, j) = srv_sel(1, j) * N(y, j) * expZ_yrfrac_srv2(y, j);
+            }
+
+            num_at_srv = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
+            if ( num_at_srv > 0 )
+            {
+                // can this operation be vectorized?
+                for ( int j = 0; j < nages; j++ )
+                {
+                    est_srv_2_prop_at_age(i, j) /= num_at_srv;
+                }
+            }
         }
 
         // srv 3
@@ -853,8 +883,6 @@ public:
         // NLL for srv2 proportions at age
         for ( int i = 0; i < nyrs_srv2_prop_at_age; i++ )
         {
-            int y = yrs_srv2_prop_at_age(i);
-
             for ( int j = 0; j < nages; j++ )
             {
                 f -= (obs_srv_2_prop_at_age_N(i) * (obs_srv_2_prop_at_age(i, j) + o) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
