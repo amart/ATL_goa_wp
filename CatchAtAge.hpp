@@ -568,7 +568,7 @@ public:
         fsh_mort_devs.Resize(nyrs);
         fsh_mort.Resize(nyrs);
 
-        // this->Register(init_pop_devs, 3, "init_pop_devs");
+        this->Register(init_pop_devs, 3, "init_pop_devs");
         this->Register(recruit_devs, 3, "recruit_devs");
         this->Register(fsh_mort_devs, 2,"fsh_mort_devs");
 
@@ -900,10 +900,10 @@ public:
         }
 
         // penalty on initial population devs
-        nll_parts(4) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs);
+        nll_parts(4) = (1.0 / (2.0 * 0.5 * 0.5)) * atl::Norm2(init_pop_devs);
 
         // penalty on rec devs
-        nll_parts(5) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs);
+        nll_parts(5) = (1.0 / (2.0 * 0.5 * 0.5)) * atl::Norm2(recruit_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
         nll_parts(6) = 1000.0 * atl::pow<T>((atl::log(N(0,0)) - atl::log(N(1,0))),2);
@@ -913,7 +913,7 @@ public:
 
     void Report()
     {
-        atl::Variable<T> one_meeellion = 1000000.0;	// conversion factor
+        atl::Variable<T> one_meeellion = 1000000.0;     // conversion factor
 
         std::cout << std::endl;
         std::cout << "objective function components " << nll_parts << std::endl;
