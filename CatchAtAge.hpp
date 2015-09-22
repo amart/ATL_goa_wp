@@ -458,7 +458,7 @@ public:
         est_srv_2_prop_at_age.Resize(nyrs_srv2_prop_at_age,nages);
         // est_srv_3_prop_at_age.Resize(wat,nages);
 
-        nll_parts.Resize(7);
+        nll_parts.Resize(10);
 
 
         this->Register(log_fsh_sel_asc_alpha,4,"log_fsh_sel_asc_alpha");
@@ -555,7 +555,7 @@ public:
 
         this->Register(log_initial_R_dev, 2, "log_init_R_dev");
 
-        log_initial_R_dev.SetBounds(-5.0, 5.0);
+        log_initial_R_dev.SetBounds(-10.0, 10.0);
         log_initial_R_dev = atl::Variable<T>(0.0);
 
 
@@ -568,7 +568,7 @@ public:
         fsh_mort_devs.Resize(nyrs);
         fsh_mort.Resize(nyrs);
 
-        this->Register(init_pop_devs, 3, "init_pop_devs");
+        this->Register(init_pop_devs, 4, "init_pop_devs");
         this->Register(recruit_devs, 3, "recruit_devs");
         this->Register(fsh_mort_devs, 2,"fsh_mort_devs");
 
@@ -900,13 +900,22 @@ public:
         }
 
         // penalty on initial population devs
-        nll_parts(4) = (1.0 / (2.0 * 0.5 * 0.5)) * atl::Norm2(init_pop_devs);
+        nll_parts(4) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs);
 
         // penalty on rec devs
-        nll_parts(5) = (1.0 / (2.0 * 0.5 * 0.5)) * atl::Norm2(recruit_devs);
+        nll_parts(5) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
-        nll_parts(6) = 1000.0 * atl::pow<T>((atl::log(N(0,0)) - atl::log(N(1,0))),2);
+        nll_parts(6) = 100.0 * atl::pow<T>((atl::log(N(0,0)) - atl::log(N(1,0))),2);
+
+        // put a HUGE penalty on the init pop devs summing to 0
+        nll_parts(7) = 100000.0 * atl::pow<T>(atl::Sum(init_pop_devs),2);
+
+        // put a HUGE penalty on the rec devs summing to 0
+        nll_parts(8) = 100000.0 * atl::pow<T>(atl::Sum(recruit_devs),2);
+
+        // put a HUGE penalty on the fsh mort devs summing to 0
+        nll_parts(9) = 100000.0 * atl::pow<T>(atl::Sum(fsh_mort_devs),2);
 
         f = atl::Sum(nll_parts);
     }
