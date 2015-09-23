@@ -427,6 +427,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Vector<T> wt_fsh_proj   = { 0.125, 0.328, 0.635, 0.920, 1.253, 1.531, 1.716, 1.917, 2.084, 2.151 };
     atl::Vector<T> wt_srv_proj   = { 0.010, 0.092, 0.277, 0.591, 0.942, 1.287, 1.692, 1.860, 2.011, 2.102 };
 
+
     //Estimated(read only)
     atl::Variable<T> log_initial_R_dev;
     atl::Vector<atl::Variable<T> > init_pop_devs;
@@ -528,7 +529,6 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
 
     atl::Vector<atl::Variable<T> > est_catch;
     atl::Matrix<atl::Variable<T> > est_fsh_prop_at_age;
-    atl::Vector<atl::Variable<T> > est_sp_biomass;
     atl::Vector<atl::Variable<T> > est_srv_1a_biomass;
     atl::Vector<atl::Variable<T> > est_srv_1b_biomass;
     atl::Vector<atl::Variable<T> > est_srv_1_biomass;
@@ -537,6 +537,8 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Matrix<atl::Variable<T> > est_srv_1_prop_at_age;
     atl::Matrix<atl::Variable<T> > est_srv_2_prop_at_age;
     atl::Matrix<atl::Variable<T> > est_srv_3_prop_at_age;
+    atl::Vector<atl::Variable<T> > est_total_biomass;
+    atl::Vector<atl::Variable<T> > est_spawn_biomass;
 
     atl::Vector<atl::Variable<T> > nll_parts;
 
@@ -559,7 +561,6 @@ public:
         srv_sel.Resize(nsrvs,nages);
         est_catch.Resize(nyrs);
         est_fsh_prop_at_age.Resize(nyrs,nages);
-        est_sp_biomass.Resize(nyrs);
         est_srv_1a_biomass.Resize(nyrs_srv1a);
         est_srv_1b_biomass.Resize(nyrs_srv1b);
         est_srv_1_biomass.Resize(nyrs_srv1);
@@ -568,6 +569,8 @@ public:
         // est_srv_1_prop_at_age.Resize(wat,nages);
         est_srv_2_prop_at_age.Resize(nyrs_srv2_prop_at_age,nages);
         // est_srv_3_prop_at_age.Resize(wat,nages);
+        est_tot_biomass.Resize(nyrs);
+        est_spawn_biomass.Resize(nyrs);
 
         nll_parts.Resize(10);
 
@@ -1029,6 +1032,10 @@ public:
         nll_parts(9) = 100000.0 * atl::pow<T>(atl::Sum(fsh_mort_devs),2);
 
         f = atl::Sum(nll_parts);
+    }
+    
+    void CalculateHarvestStrategy()
+    {
     }
 
     void Report()
