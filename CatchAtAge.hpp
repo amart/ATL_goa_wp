@@ -834,6 +834,8 @@ public:
 
     void NumbersAtAge()
     {
+        atl::Vector<atl::Variable<T> > n_at_age_row;
+
         initial_population(0) = atl::exp(log_mean_recruits + log_initial_R_dev + recruit_devs(0));
 
         for ( int j = 1; j < nages; j++ )
@@ -875,8 +877,15 @@ public:
 
             // std::cout << "N-at-age in year " << i << " " << atl::Row(N, i) << std::endl;
 
-            // calculate spawning biomass here
+            // calculate total and spawning biomass - vector operations
+            n_at_age_row = atl::Row(N,i);
+            est_total_biomass(i) = atl::Sum(n_at_age_row * wt_pop);
+            est_spawn_biomass(i) = atl::Sum(n_at_age_row * atl::Row(expZ_sp,i) * wt_spawn * 0.5 * maturity);
         }
+        
+        // convert from kg to mt
+        est_total_biomass /= 1000.0;
+        est_spawn_biomass /= 1000.0;
 
         recruits = atl::Column(N,0);
     }
@@ -1119,6 +1128,9 @@ public:
         std::cout << "estimated srv 3 " << est_srv_3_biomass << std::endl;
         std::cout << std::endl;
 
+        std::cout << "total biomass " << est_total_biomass << std::endl;
+        std::cout << "spawning biomass " << est_spawn_biomass << std::endl;
+        std::cout << std::endl;
         std::cout << "N at age" << std::endl;
         std::cout << (N/one_meeellion) << std::endl;
 
