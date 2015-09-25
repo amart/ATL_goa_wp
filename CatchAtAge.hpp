@@ -851,7 +851,7 @@ public:
 
         for ( int k = 0; k < nsrvs; k++ )
         {
-            max_sel = atl::Max<T>(atl::Row(srv_sel, k));
+            max_sel = atl::Max<atl::Variable<T> >(atl::Row(srv_sel, k));
 
             if ( max_sel > T(0) )
             {
