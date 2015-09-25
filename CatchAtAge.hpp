@@ -659,7 +659,7 @@ public:
         est_total_biomass.Resize(nyrs);
         est_spawn_biomass.Resize(nyrs);
 
-        nll_parts.Resize(12);
+        nll_parts.Resize(13);
 
 
         this->Register(log_fsh_sel_asc_alpha,4,"log_fsh_sel_asc_alpha");
@@ -1191,17 +1191,20 @@ public:
         // penalty on rec devs
         nll_parts(7) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs);
 
+        // penalty on fsh mort dev
+        nll_parts(8) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(fsh_mort_devs);
+
         // penalty to ensure that N(1964,0) and N(1965,0) are close
-        nll_parts(8) = 100.0 * atl::pow<T>((atl::log(N(0,0)) - atl::log(N(1,0))),2);
+        nll_parts(9) = 100.0 * atl::pow<T>((atl::log(N(0,0)) - atl::log(N(1,0))),2);
 
         // check for the init pop devs summing to 0
-        nll_parts(9) = atl::Sum(init_pop_devs);
+        nll_parts(10) = atl::Sum(init_pop_devs);
 
         // check for the rec devs summing to 0
-        nll_parts(10) = atl::Sum(recruit_devs);
+        nll_parts(11) = atl::Sum(recruit_devs);
 
         // check for the fsh mort devs summing to 0
-        nll_parts(11) = atl::Sum(fsh_mort_devs);
+        nll_parts(12) = atl::Sum(fsh_mort_devs);
 
         f = atl::Sum(nll_parts);
     }
