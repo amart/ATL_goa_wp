@@ -1017,7 +1017,7 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
-            if ( est_srv_num > 0 )
+            if ( est_srv_num > T(0) )
             {
                 // can this operation be vectorized?
                 for ( int j = 0; j < nages; j++ )
@@ -1057,7 +1057,7 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_age, i));
-            if ( est_srv_num > 0 )
+            if ( est_srv_num > T(0) )
             {
                 // can this operation be vectorized?
                 for ( int j = 0; j < nages; j++ )
@@ -1087,7 +1087,7 @@ public:
             est_catch(i) /= 1000.0;
 
             est_catch_num = atl::Sum(atl::Row(C,i));
-            if ( est_catch_num > 0 )
+            if ( est_catch_num > T(0) )
             {
                 // can this operation be vectorized?
                 for ( int j = 0; j < nages; j++ )
