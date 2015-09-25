@@ -13,6 +13,8 @@
 
 #include "../../ATL/ATL.hpp"
 
+#define SQUARE(x) ((x)*(x))
+
 template<class T>
 class CatchAtAge : public atl::FunctionMinimizer<T>
 {
@@ -1136,7 +1138,7 @@ public:
         nll_parts(0) = 0;
         for (int i = 0; i < nyrs; i++)
         {
-            nll_parts(0) += ((0.5 / (0.05 * 0.05)) * atl::pow<T>((atl::log(obs_catch(i) + o) - atl::log(est_catch(i) + o)),2));
+            nll_parts(0) += ((0.5 / (0.05 * 0.05)) * SQUARE(atl::log(obs_catch(i) + o) - atl::log(est_catch(i) + o)));
         }
 
         // NLL for fsh proportions at age
@@ -1153,7 +1155,7 @@ public:
         nll_parts(2) = 0;
         for ( int i = 0; i < nyrs_srv2; i++ )
         {
-            nll_parts(2) += (0.5 * atl::pow<T>(((atl::log(obs_srv_2_biomass(i) + o) - atl::log(est_srv_2_biomass(i) + o) + atl::pow<T>((((obs_srv_2_CV(i)) / 2.0) + o),2)) / obs_srv_2_CV(i)),2));
+            nll_parts(2) += (0.5 * SQUARE(((atl::log(obs_srv_2_biomass(i) + o) - atl::log(est_srv_2_biomass(i) + o) + SQUARE((((obs_srv_2_CV(i)) / 2.0) + o))) / obs_srv_2_CV(i))));
         }
 
         // NLL for srv 2 proportions at age
@@ -1170,7 +1172,7 @@ public:
         nll_parts(4) = 0;
         for ( int i = 0; i < nyrs_srv3; i++ )
         {
-            nll_parts(4) += (0.5 * atl::pow<T>(((atl::log(obs_srv_3_biomass(i) + o) - atl::log(est_srv_3_biomass(i) + o) + atl::pow<T>((((obs_srv_3_CV(i)) / 2.0) + o),2)) / obs_srv_3_CV(i)),2));
+            nll_parts(4) += (0.5 * SQUARE(((atl::log(obs_srv_3_biomass(i) + o) - atl::log(est_srv_3_biomass(i) + o) + atl::pow<T>((((obs_srv_3_CV(i)) / 2.0) + o),2)) / obs_srv_3_CV(i))));
         }
 
         // NLL for srv 3 proportions at age
