@@ -1145,7 +1145,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(1) -= (T(obs_fsh_N(i)) * (obs_fsh_prop_at_age(i, j) + o) * (log(est_fsh_prop_at_age(i, j) + o) - log(obs_fsh_prop_at_age(i, j) + o)));
+                nll_parts(1) -= (T(obs_fsh_N(i)) * (obs_fsh_prop_at_age(i, j) + o) * (atl::log(est_fsh_prop_at_age(i, j) + o) - atl::log(obs_fsh_prop_at_age(i, j) + o)));
             }
         }
 
