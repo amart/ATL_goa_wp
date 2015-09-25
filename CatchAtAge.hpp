@@ -1186,10 +1186,10 @@ public:
         }
 
         // penalty on initial population devs
-        nll_parts(6) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs);
+        nll_parts(6) = 1.0 * atl::Norm2(init_pop_devs);
 
         // penalty on rec devs
-        nll_parts(7) = 10.0 * atl::Norm2(recruit_devs);
+        nll_parts(7) = 50.0 * atl::Norm2(recruit_devs);
 
         // penalty on fsh mort dev
         nll_parts(8) = 50.0 * atl::Norm2(fsh_mort_devs);
