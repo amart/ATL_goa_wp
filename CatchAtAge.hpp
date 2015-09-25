@@ -795,7 +795,7 @@ public:
 
         for ( int j = 0; j < nages; j++ )
         {
-            fsh_sel(0, j) = (1.0 / (1.0 + atl::exp(-fsh_sel_asc_beta * (T(j) - fsh_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-fsh_sel_desc_beta * (T(j) - fsh_sel_desc_alpha)))));
+            fsh_sel(0, j) = (1.0 / (1.0 + atl::exp(-fsh_sel_asc_beta * (T(ages(j)) - fsh_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-fsh_sel_desc_beta * (T(ages(j)) - fsh_sel_desc_alpha)))));
         }
 
         max_sel = atl::Max<T>(atl::Row(fsh_sel, 0));
@@ -840,13 +840,13 @@ public:
         {
             // srv 1
             srv_sel(0, j) = 0;
-            // srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(j) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(j) - srv1_sel_desc_alpha)))));
+            // srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(ages(j)) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
 
             // srv 2
-            srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-srv2_sel_asc_beta * (T(j) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv2_sel_desc_beta * (T(j) - srv2_sel_desc_alpha)))));
+            srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-srv2_sel_asc_beta * (T(ages(j)) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv2_sel_desc_beta * (T(ages(j)) - srv2_sel_desc_alpha)))));
 
             // srv 3
-            srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-srv3_sel_asc_beta * (T(j) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv3_sel_desc_beta * (T(j) - srv3_sel_desc_alpha)))));
+            srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-srv3_sel_asc_beta * (T(ages(j)) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv3_sel_desc_beta * (T(ages(j)) - srv3_sel_desc_alpha)))));
         }
 
         for ( int k = 0; k < nsrvs; k++ )
@@ -868,7 +868,7 @@ public:
     {
         for ( int j = 0; j < nages ; j++ )
         {
-            wtAA(0, j) = gr_Winf * (1.0 - atl::exp(-gr_k * (T(j) - gr_a0)));
+            wtAA(0, j) = gr_Winf * (1.0 - atl::exp(-gr_k * (T(ages(j)) - gr_a0)));
         }
 
         for ( int i = 1; i < nyrs; i++ )
@@ -1145,7 +1145,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(1) -= (obs_fsh_N(i) * (obs_fsh_prop_at_age(i, j) + o) * (log(est_fsh_prop_at_age(i, j) + o) - log(obs_fsh_prop_at_age(i, j) + o)));
+                nll_parts(1) -= (T(obs_fsh_N(i)) * (obs_fsh_prop_at_age(i, j) + o) * (log(est_fsh_prop_at_age(i, j) + o) - log(obs_fsh_prop_at_age(i, j) + o)));
             }
         }
 
@@ -1162,7 +1162,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(3) -= (obs_srv_2_prop_at_age_N(i) * (obs_srv_2_prop_at_age(i, j) + o) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
+                nll_parts(3) -= (T(obs_srv_2_prop_at_age_N(i)) * (obs_srv_2_prop_at_age(i, j) + o) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
             }
         }
 
@@ -1179,7 +1179,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(5) -= (obs_srv_3_prop_at_age_N(i) * (obs_srv_3_prop_at_age(i, j) + o) * (atl::log(est_srv_3_prop_at_age(i, j) + o) - atl::log(obs_srv_3_prop_at_age(i, j) + o)));
+                nll_parts(5) -= (T(obs_srv_3_prop_at_age_N(i)) * (obs_srv_3_prop_at_age(i, j) + o) * (atl::log(est_srv_3_prop_at_age(i, j) + o) - atl::log(obs_srv_3_prop_at_age(i, j) + o)));
             }
         }
 
