@@ -1195,7 +1195,7 @@ public:
         nll_parts(8) = 50.0 * atl::Norm2(fsh_mort_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
-        nll_parts(9) = 100.0 * SQUARE(atl::log(N(0,0)) - atl::log(N(1,0)));
+        nll_parts(9) = 1000.0 * SQUARE(atl::log(N(0,0)) - atl::log(N(1,0)));
 
         // check for the init pop devs summing to 0
         nll_parts(10) = atl::Sum(init_pop_devs);
