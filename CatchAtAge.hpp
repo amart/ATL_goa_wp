@@ -1253,6 +1253,7 @@ public:
         std::cout << "srv_1_q " << srv_1_q << std::endl;
         std::cout << "srv_2_q " << srv_2_q << std::endl;
         std::cout << "srv_3_q " << srv_3_q << std::endl;
+        std::cout << std::endl;
 
         std::cout << "log_srv1_sel_asc_alpha " << log_srv1_sel_asc_alpha << std::endl;
         std::cout << "log_srv1_sel_asc_beta " << log_srv1_sel_asc_beta << std::endl;
@@ -1280,6 +1281,7 @@ public:
         std::cout << "srv3_sel_asc_beta " << srv3_sel_asc_beta << std::endl;
         std::cout << "srv3_sel_desc_alpha " << srv3_sel_desc_alpha << std::endl;
         std::cout << "srv3_sel_desc_beta " << srv3_sel_desc_beta << std::endl;
+        std::cout << std::endl;
 
         for ( int k = 0; k < nsrvs; k++ )
         {
@@ -1293,9 +1295,11 @@ public:
         std::cout << "estimated srv 1b " << est_srv_1b_biomass << std::endl;
         std::cout << "observed srv 1 " << obs_srv_1_biomass << std::endl;
         std::cout << "estimated srv 1 " << est_srv_1_biomass << std::endl;
+        std::cout << std::endl;
 
         std::cout << "observed srv 2 " << obs_srv_2_biomass << std::endl;
         std::cout << "estimated srv 2 " << est_srv_2_biomass << std::endl;
+        std::cout << std::endl;
 
         std::cout << "observed srv 3 " << obs_srv_3_biomass << std::endl;
         std::cout << "estimated srv 3 " << est_srv_3_biomass << std::endl;
@@ -1304,8 +1308,28 @@ public:
         std::cout << "total biomass " << est_total_biomass << std::endl;
         std::cout << "spawning biomass " << est_spawn_biomass << std::endl;
         std::cout << std::endl;
+
         std::cout << "N at age" << std::endl;
         std::cout << (N/one_meeellion) << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "Observed fishery proportions-at-age" << std::endl;
+        std::cout << obs_fsh_prop_at_age << std::endl;
+        std::cout << "Estimated fishery proportions-at-age" << std::endl;
+        std::cout << est_fsh_prop_at_age << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "Observed survey 2 proportions-at-age" << std::endl;
+        std::cout << obs_srv_2_prop_at_age << std::endl;
+        std::cout << "Estimated survey 2 proportions-at-age" << std::endl;
+        std::cout << est_srv_2_prop_at_age << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "Observed survey 3 proportions-at-age" << std::endl;
+        std::cout << obs_srv_3_prop_at_age << std::endl;
+        std::cout << "Estimated survey 3 proportions-at-age" << std::endl;
+        std::cout << est_srv_3_prop_at_age << std::endl;
+        std::cout << std::endl;
 
         std::cout << std::endl;
     }
