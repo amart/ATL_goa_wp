@@ -746,7 +746,7 @@ public:
         this->Register(log_mean_recruits,1,"log_mean_rec");
 
         log_mean_recruits.SetBounds(5.0, 35.0);
-        log_mean_recruits = atl::Variable<T>(23.723265836946411156161923092159);
+        log_mean_recruits = atl::Variable<T>(22.723265836946411156161923092159);
 
 
         this->Register(log_mean_fsh_mort,1,"log_mean_fsh_mort");
@@ -1186,13 +1186,13 @@ public:
         }
 
         // penalty on initial population devs
-        nll_parts(6) = 1.0 * atl::Norm2(init_pop_devs);
+        nll_parts(6) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(init_pop_devs);
 
         // penalty on rec devs
-        nll_parts(7) = 50.0 * atl::Norm2(recruit_devs);
+        nll_parts(7) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs);
 
         // penalty on fsh mort dev
-        nll_parts(8) = 50.0 * atl::Norm2(fsh_mort_devs);
+        nll_parts(8) = atl::Norm2(fsh_mort_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
         nll_parts(9) = 1000.0 * SQUARE(atl::log(N(0,0)) - atl::log(N(1,0)));
