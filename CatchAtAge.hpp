@@ -800,7 +800,7 @@ public:
 
         max_sel = atl::Max<T>(atl::Row(fsh_sel, 0));
 
-        if ( max_sel > 0 )
+        if ( max_sel > T(0) )
         {
             // can this operation be vectorized?
             for ( int j = 0; j < nages; j++ )
@@ -853,7 +853,7 @@ public:
         {
             max_sel = atl::Max<T>(atl::Row(srv_sel, k));
 
-            if ( max_sel > 0 )
+            if ( max_sel > T(0) )
             {
                 // can this operation be vectorized?
                 for ( int j = 0; j < nages ; j++ )
