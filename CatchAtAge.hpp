@@ -1172,7 +1172,7 @@ public:
         nll_parts(4) = 0;
         for ( int i = 0; i < nyrs_srv3; i++ )
         {
-            nll_parts(4) += (0.5 * SQUARE(((atl::log(obs_srv_3_biomass(i) + o) - atl::log(est_srv_3_biomass(i) + o) + atl::pow<T>((((obs_srv_3_CV(i)) / 2.0) + o),2)) / obs_srv_3_CV(i))));
+            nll_parts(4) += (0.5 * SQUARE(((atl::log(obs_srv_3_biomass(i) + o) - atl::log(est_srv_3_biomass(i) + o) + SQUARE((((obs_srv_3_CV(i)) / 2.0) + o))) / obs_srv_3_CV(i))));
         }
 
         // NLL for srv 3 proportions at age
@@ -1192,10 +1192,10 @@ public:
         nll_parts(7) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(recruit_devs);
 
         // penalty on fsh mort dev
-        nll_parts(8) = (1.0 / (2.0 * 1.0 * 1.0)) * atl::Norm2(fsh_mort_devs);
+        nll_parts(8) = (1.0 / (2.0 * 2.0 * 2.0)) * atl::Norm2(fsh_mort_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
-        nll_parts(9) = 100.0 * atl::pow<T>((atl::log(N(0,0)) - atl::log(N(1,0))),2);
+        nll_parts(9) = 100.0 * SQUARE(atl::log(N(0,0)) - atl::log(N(1,0)));
 
         // check for the init pop devs summing to 0
         nll_parts(10) = atl::Sum(init_pop_devs);
