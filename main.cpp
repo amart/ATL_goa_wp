@@ -25,10 +25,10 @@ main( int argc, char** argv )
 {
     CatchAtAge<double> caa;
     
+    caa.InitArgs( argc, argv );
     caa.Initialize();
     caa.Run();
     caa.Report();
     
     return 0;
 }
-
