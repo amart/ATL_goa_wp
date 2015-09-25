@@ -798,7 +798,7 @@ public:
             fsh_sel(0, j) = (1.0 / (1.0 + atl::exp(-fsh_sel_asc_beta * (T(ages(j)) - fsh_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-fsh_sel_desc_beta * (T(ages(j)) - fsh_sel_desc_alpha)))));
         }
 
-        max_sel = atl::Max<T>(atl::Row(fsh_sel, 0));
+        max_sel = atl::Max<atl::Variable<T> >(atl::Row(fsh_sel, 0));
 
         if ( max_sel > T(0) )
         {
@@ -1100,19 +1100,19 @@ public:
 
    void PrepareDeviations()
    {
-        if (this->Phase() >= 1)
+        if (this->Phase() >= this->GetActivePhase(init_pop_devs(0)))
         {
             init_pop_devs -= (atl::Sum(init_pop_devs) / (double) init_pop_devs.Size(0));
+        }
 
-            if (this->Phase() >= 2)
-            {
-                recruit_devs -= (atl::Sum(recruit_devs) / (double) recruit_devs.Size(0));
+        if (this->Phase() >= this->GetActivePhase(recruit_devs(0)))
+        {
+            recruit_devs -= (atl::Sum(recruit_devs) / (double) recruit_devs.Size(0));
+        }
 
-                if (this->Phase() >= 3)
-                {
-                    fsh_mort_devs -= (atl::Sum(fsh_mort_devs) / (double) fsh_mort_devs.Size(0));
-                }
-            }
+        if (this->Phase() >= this->GetActivePhase(fsh_mort_devs(0)))
+        {
+            fsh_mort_devs -= (atl::Sum(fsh_mort_devs) / (double) fsh_mort_devs.Size(0));
         }
     }
 
