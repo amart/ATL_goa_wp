@@ -1145,7 +1145,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(1) -= (T(obs_fsh_N(i)) * (obs_fsh_prop_at_age(i, j) + o) * (atl::log(est_fsh_prop_at_age(i, j) + o) - atl::log(obs_fsh_prop_at_age(i, j) + o)));
+                nll_parts(1) -= (T(obs_fsh_N(i)) * obs_fsh_prop_at_age(i, j) * (atl::log(est_fsh_prop_at_age(i, j) + o) - atl::log(obs_fsh_prop_at_age(i, j) + o)));
             }
         }
 
@@ -1162,7 +1162,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(3) -= (T(obs_srv_2_prop_at_age_N(i)) * (obs_srv_2_prop_at_age(i, j) + o) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
+                nll_parts(3) -= (T(obs_srv_2_prop_at_age_N(i)) * obs_srv_2_prop_at_age(i, j) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
             }
         }
 
@@ -1179,7 +1179,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(5) -= (T(obs_srv_3_prop_at_age_N(i)) * (obs_srv_3_prop_at_age(i, j) + o) * (atl::log(est_srv_3_prop_at_age(i, j) + o) - atl::log(obs_srv_3_prop_at_age(i, j) + o)));
+                nll_parts(5) -= (T(obs_srv_3_prop_at_age_N(i)) * obs_srv_3_prop_at_age(i, j) * (atl::log(est_srv_3_prop_at_age(i, j) + o) - atl::log(obs_srv_3_prop_at_age(i, j) + o)));
             }
         }
 
