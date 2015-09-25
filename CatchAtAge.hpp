@@ -364,7 +364,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
 
     int nyrs_srv3_prop_at_age = 15;
     atl::Vector<int> yrs_srv3_prop_at_age = { 25, 26, 28, 29, 30, 32, 33, 34, 36, 38, 40, 42, 44, 46, 48 };
-    atl::Vector<int> obs_srv_3_prop_at_age_N = { 0, 0, 0, 0, 0, 0, 0, 0, 30, 30, 30, 30, 30, 30, 30 };    
+    atl::Vector<int> obs_srv_3_prop_at_age_N = { 0, 0, 0, 0, 0, 0, 0, 0, 30, 30, 30, 30, 30, 30, 30 };
     atl::Matrix<T> obs_srv_3_prop_at_age = {
         // 1989
         { 0.00000, 0.01587, 0.01975, 0.18064, 0.31108, 0.18503, 0.11148, 0.06147, 0.035448833, 0.07924 },
@@ -966,7 +966,7 @@ public:
             est_total_biomass(i) = atl::Sum(n_at_age_row * atl::Row(wt_pop, i)) / 1000.0;
             est_spawn_biomass(i) = atl::Sum(n_at_age_row * atl::Row(expZ_sp,i) * atl::Row(wt_spawn, i) * 0.5 * maturity) / 1000.0;
         }
-        
+
         // convert from kg to mt
         // est_total_biomass /= 1000.0;
         // est_spawn_biomass /= 1000.0;
@@ -1028,7 +1028,7 @@ public:
         }
 
         // srv 3
-        
+
         for ( int i = 0; i < nyrs_srv3; i++ )
         {
             y = yrs_srv3(i);
@@ -1098,9 +1098,29 @@ public:
         }
     }
 
+   void PrepareDeviations()
+   {
+        if (this->Phase() >= 1)
+        {
+            init_pop_devs -= (atl::Sum(init_pop_devs) / (double) init_pop_devs.Size(0));
+
+            if (this->Phase() >= 2)
+            {
+                recruit_devs -= (atl::Sum(recruit_devs) / (double) recruit_devs.Size(0));
+
+                if (this->Phase() >= 3)
+                {
+                    fsh_mort_devs -= (atl::Sum(fsh_mort_devs) / (double) fsh_mort_devs.Size(0));
+                }
+            }
+        }
+    }
+
     void ObjectiveFunction(atl::Variable<T>& f)
     {
         atl::Variable<T> o = 0.00001;  // small value for proportions calculations
+
+        this->PrepareDeviations();
 
         this->Selectivity();
         this->Growth();
@@ -1172,18 +1192,18 @@ public:
         // penalty to ensure that N(1964,0) and N(1965,0) are close
         nll_parts(8) = 100.0 * atl::pow<T>((atl::log(N(0,0)) - atl::log(N(1,0))),2);
 
-        // put a HUGE penalty on the init pop devs summing to 0
-        nll_parts(9) = 100000.0 * atl::pow<T>(atl::Sum(init_pop_devs),2);
+        // check for the init pop devs summing to 0
+        nll_parts(9) = atl::Sum(init_pop_devs);
 
-        // put a HUGE penalty on the rec devs summing to 0
-        nll_parts(10) = 100000.0 * atl::pow<T>(atl::Sum(recruit_devs),2);
+        // check for the rec devs summing to 0
+        nll_parts(10) = atl::Sum(recruit_devs);
 
-        // put a HUGE penalty on the fsh mort devs summing to 0
-        nll_parts(11) = 100000.0 * atl::pow<T>(atl::Sum(fsh_mort_devs),2);
+        // check for the fsh mort devs summing to 0
+        nll_parts(11) = atl::Sum(fsh_mort_devs);
 
         f = atl::Sum(nll_parts);
     }
-    
+
     void CalculateHarvestStrategy()
     {
     }
