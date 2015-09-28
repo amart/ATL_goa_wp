@@ -241,7 +241,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     // EIT survey
     int nyrs_srv1a = 9;
     atl::Vector<int> yrs_srv1a = { 17, 19, 20, 21, 22, 24, 25, 26, 27 };
-    atl::Vector<T> obs_srv_1a_biomass = { 2.786, 2.278, 1.757, 1.176, 0.586, 0.302, 0.290, 0.375, 0.380 };
+    atl::Vector<T> obs_srv_1a_biomass = { 2786000, 2278000, 1757000, 1176000, 586000, 302000, 290000, 375000, 380000 };
     atl::Vector<T> obs_srv_1a_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
     atl::Matrix<T> obs_srv_1a_wt_at_age = {
         { 0.01, 0.09, 0.23, 0.33, 0.38, 0.47, 0.63, 0.72, 0.86, 0.78 },
@@ -257,7 +257,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
 
     int nyrs_srv1b = 15;
     atl::Vector<int> yrs_srv1b = { 28, 29, 30, 31, 32, 33, 34, 36, 37, 38, 39, 40, 41, 42, 43 };
-    atl::Vector<T> obs_srv_1b_biomass = { 0.713429012, 0.435753, 0.492593, 0.763612, 0.777172, 0.583017, 0.504774, 0.448638, 0.432749, 0.256743, 0.31726898, 0.330753027, 0.356116501, 0.293608718, 0.180880876 };
+    atl::Vector<T> obs_srv_1b_biomass = { 713429.012, 435753, 492593, 763612, 777172, 583017, 504774, 448638, 432749, 256743, 317268.98, 330753.027, 356116.501, 293608.718, 180880.876 };
     atl::Vector<T> obs_srv_1b_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
     atl::Matrix<T> obs_srv_1b_wt_at_age = {
         { 0.01, 0.086, 0.209, 0.316, 0.384, 0.782, 1.052, 1.122, 1.052, 1.23 },
@@ -279,7 +279,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
 
     int nyrs_srv1 = 5;
     atl::Vector<int> yrs_srv1 = { 44, 45, 46, 48, 49 };
-    atl::Vector<T> obs_srv_1_biomass = { 0.208031868, 0.2659709, 0.42973, 0.33584, 0.89126 };
+    atl::Vector<T> obs_srv_1_biomass = { 208031.868, 265970.9, 429730, 335840, 891260 };
     atl::Vector<T> obs_srv_1_CV = { 0.2, 0.2, 0.2, 0.2, 0.2 };
     atl::Matrix<T> obs_srv_1_wt_at_age = {
         { 0.01, 0.099, 0.267, 0.484, 0.795, 1.373, 1.89, 1.869, 1.882, 2.014 },
@@ -1075,9 +1075,9 @@ public:
             // std::cout << "N-at-age in year " << i << " " << atl::Row(N, i) << std::endl;
 
             // calculate total and spawning biomass - vector operations
-            n_at_age_row = atl::Row(N,i);
+            n_at_age_row = atl::Row(N, i);
             est_total_biomass(i) = atl::Sum(n_at_age_row * atl::Row(wt_pop, i)) / 1000.0;
-            est_spawn_biomass(i) = atl::Sum(n_at_age_row * atl::Row(expZ_sp,i) * atl::Row(wt_spawn, i) * 0.5 * maturity) / 1000.0;
+            est_spawn_biomass(i) = atl::Sum(n_at_age_row * atl::Row(expZ_sp, i) * atl::Row(wt_spawn, i) * 0.5 * maturity) / 1000.0;
         }
 
         // convert from kg to mt
@@ -1104,21 +1104,21 @@ public:
         {
             y = yrs_srv1a(i);
 
-            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1a_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000000000.0;
+            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1a_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b(i);
 
-            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1b_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000000000.0;
+            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1b_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             y = yrs_srv1(i);
 
-            est_srv_1_biomass(i) = atl::Sum(srv_1_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000000000.0;
+            est_srv_1_biomass(i) = atl::Sum(srv_1_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         // calculate proportions
