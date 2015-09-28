@@ -1128,13 +1128,13 @@ public:
 
             est_srv_1_prop_at_age(i) = atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y);
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
+            est_srv_num = atl::Sum(atl::Row(est_srv_1_prop_at_age, i));
             if ( est_srv_num > T(0) )
             {
                 // can this operation be vectorized?
                 for ( int j = 0; j < nages; j++ )
                 {
-                    est_srv_2_prop_at_age(i, j) /= est_srv_num;
+                    est_srv_1_prop_at_age(i, j) /= est_srv_num;
                 }
             }
         }
