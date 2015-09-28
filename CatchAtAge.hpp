@@ -1121,6 +1121,24 @@ public:
             est_srv_1_biomass(i) = atl::Sum(srv_1_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 10000000000.0;
         }
 
+        // calculate proportions
+        for ( int i = 0; i < nyrs_srv1_prop_at_age; i++ )
+        {
+            y = yrs_srv1_prop_at_age(i);
+
+            est_srv_1_prop_at_age(i) = atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y);
+
+            est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
+            if ( est_srv_num > T(0) )
+            {
+                // can this operation be vectorized?
+                for ( int j = 0; j < nages; j++ )
+                {
+                    est_srv_2_prop_at_age(i, j) /= est_srv_num;
+                }
+            }
+        }
+
 
         // srv 2
 
@@ -1146,10 +1164,7 @@ public:
         {
             y = yrs_srv2_prop_at_age(i);
 
-            for ( int j = 0; j < nages; j++ )
-            {
-                est_srv_2_prop_at_age(i, j) = srv_sel(1, j) * N(y, j) * expZ_yrfrac_srv2(y, j);
-            }
+            est_srv_2_prop_at_age(i) = atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -1161,6 +1176,7 @@ public:
                 }
             }
         }
+
 
         // srv 3
 
@@ -1186,10 +1202,7 @@ public:
         {
             y = yrs_srv3_prop_at_age(i);
 
-            for ( int j = 0; j < nages; j++ )
-            {
-                est_srv_3_prop_at_age(i, j) = srv_sel(2, j) * N(y, j) * expZ_yrfrac_srv3(y, j);
-            }
+            est_srv_3_prop_at_age(i) = atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_age, i));
             if ( est_srv_num > T(0) )
