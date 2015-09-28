@@ -835,16 +835,16 @@ public:
         log_srv3_sel_desc_beta  = atl::Variable<T>(-20.0);
 
 
-        // this->Register(log_srv_1a_q,5,"log_srv_1a_q");
-        // this->Register(log_srv_1b_q,5,"log_srv_1b_q");
-        // this->Register(log_srv_1_q,5,"log_srv_1_q");
+        this->Register(log_srv_1a_q,5,"log_srv_1a_q");
+        this->Register(log_srv_1b_q,5,"log_srv_1b_q");
+        this->Register(log_srv_1_q,5,"log_srv_1_q");
 
-        // log_srv_1a_q.SetBounds(-10.0,10.0);
-        // log_srv_1a_q = atl::Variable<T>(0.0);
-        // log_srv_1b_q.SetBounds(-10.0,10.0);
-        // log_srv_1b_q = atl::Variable<T>(0.0);
-        // log_srv_1_q.SetBounds(-10.0,10.0);
-        // log_srv_1_q = atl::Variable<T>(0.0);
+        log_srv_1a_q.SetBounds(-10.0,10.0);
+        log_srv_1a_q = atl::Variable<T>(0.0);
+        log_srv_1b_q.SetBounds(-10.0,10.0);
+        log_srv_1b_q = atl::Variable<T>(0.0);
+        log_srv_1_q.SetBounds(-10.0,10.0);
+        log_srv_1_q = atl::Variable<T>(0.0);
 
         // this->Register(log_srv_2_q,5,"log_srv_2_q");
         // log_srv_2_q.SetBounds(-10.0,10.0);
