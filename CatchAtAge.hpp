@@ -801,8 +801,8 @@ public:
         this->Register(log_srv1_sel_desc_beta,7,"log_srv1_sel_desc_beta");
         log_srv1_sel_desc_alpha.SetBounds(1.0,5.0);
         log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
-        log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
-        log_srv1_sel_desc_beta  = atl::Variable<T>(0.5);
+        log_srv1_sel_desc_alpha = atl::Variable<T>(4.0);
+        log_srv1_sel_desc_beta  = atl::Variable<T>(2.0);
 
 
         this->Register(log_srv2_sel_asc_alpha,8,"log_srv2_sel_asc_alpha");
@@ -1104,21 +1104,21 @@ public:
         {
             y = yrs_srv1a(i);
 
-            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1a_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 10000000000.0;
+            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1a_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000000000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b(i);
 
-            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1b_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 10000000000.0;
+            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1b_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000000000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             y = yrs_srv1(i);
 
-            est_srv_1_biomass(i) = atl::Sum(srv_1_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 10000000000.0;
+            est_srv_1_biomass(i) = atl::Sum(srv_1_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000000000.0;
         }
 
         // calculate proportions
