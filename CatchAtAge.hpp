@@ -802,7 +802,7 @@ public:
         log_srv1_sel_desc_alpha.SetBounds(1.0,5.0);
         log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
         log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
-        log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
+        log_srv1_sel_desc_beta  = atl::Variable<T>(0.5);
 
 
         this->Register(log_srv2_sel_asc_alpha,8,"log_srv2_sel_asc_alpha");
