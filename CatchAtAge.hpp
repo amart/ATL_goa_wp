@@ -283,43 +283,73 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
         { 0.01, 0.078, 0.262, 0.522, 0.734, 1.07, 1.658, 2.014, 2.103, 2.067 },
         { 0.01, 0.079, 0.24, 0.673, 1.093, 1.287, 1.828, 2.09, 2.291, 2.227 },
         { 0.01, 0.079, 0.272, 0.653, 0.928, 1.335, 1.485, 1.554, 1.93, 1.939 },
-        { 0.009, 0.127, 0.347, 0.626, 1.157, 1.371, 1.6, 1.772, 1.849, 2.262 },
+        { 0.009, 0.127, 0.347, 0.626, 1.157, 1.371, 1.6, 1.772, 1.849, 2.262 }
     };
 
     int nyrs_srv1_prop_at_age = 30;
     atl::Vector<int> yrs_srv1_prop_at_age = { 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 49 };
     atl::Vector<int> obs_srv_1_prop_at_age_N = { 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 0, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60 };
     atl::Matrix<T> obs_srv_1_prop_at_age = {
+        // 1981
         { 0.00767, 0.34394, 0.14927, 0.07599, 0.27525, 0.10393, 0.02074, 0.0127, 0.00785, 0.00266 },
+        // 1983
         { 0.00023, 0.17305, 0.07296, 0.24886, 0.22468, 0.13397, 0.11491, 0.02524, 0.00278, 0.00331 },
+        // 1984
         { 0.02106, 0.01989, 0.11082, 0.04838, 0.21688, 0.33749, 0.15356, 0.07662, 0.01401, 0.00129 },
+        // 1985
         { 0.49117, 0.12784, 0.02881, 0.07391, 0.04239, 0.08152, 0.10316, 0.03914, 0.01003, 0.00202 },
+        // 1986
         { 0.17166, 0.63096, 0.05478, 0.01361, 0.02248, 0.01472, 0.0257, 0.04456, 0.01797, 0.00355 },
+        // 1987
         { 0.0753, 0.2549, 0.5584, 0.029, 0.0166, 0.012, 0.0161, 0.012, 0.021, 0.0047 },
+        // 1988
         { 0.01377, 0.0868, 0.54826, 0.25435, 0.06125, 0.01342, 0.0045, 0.00442, 0.00314, 0.01008 },
+        // 1989
         { 0.35691, 0.07998, 0.08042, 0.19839, 0.22219, 0.03521, 0.0105, 0.00342, 0.00168, 0.01129 },
+        // 1990
         { 0.02757, 0.67908, 0.04023, 0.03556, 0.06505, 0.10104, 0.026, 0.01259, 0.0046, 0.00828 },
+        // 1991
         { 0.01981, 0.15654, 0.49571, 0.04337, 0.05848, 0.06274, 0.10485, 0.02132, 0.02653, 0.01065 },
+        // 1992
         { 0.17032, 0.02516, 0.05492, 0.14049, 0.27486, 0.06282, 0.06348, 0.12786, 0.02443, 0.05566 },
+        // 1993
         { 0.08557, 0.10287, 0.0501, 0.09788, 0.31475, 0.17061, 0.0362, 0.04818, 0.05236, 0.04149 },
+        // 1994
         { 0.25494, 0.04903, 0.06758, 0.04352, 0.21252, 0.11457, 0.05824, 0.03732, 0.06093, 0.10134 },
+        // 1995
         { 0.89594, 0.04278, 0.00665, 0.00651, 0.00866, 0.02055, 0.0102, 0.00449, 0.00139, 0.00282 },
+        // 1996
         { 0.01395, 0.8218, 0.02955, 0.00624, 0.01341, 0.01765, 0.04996, 0.02945, 0.00989, 0.00809 },
+        // 1997
         { 0.03772, 0.09816, 0.66813, 0.04291, 0.00987, 0.0236, 0.02773, 0.05228, 0.02826, 0.01132 },
+        // 1998
         { 0.27751, 0.06213, 0.08812, 0.33287, 0.09552, 0.00998, 0.0224, 0.02547, 0.05199, 0.03402 },
+        // 2000
         { 0.78106, 0.1315, 0.03771, 0.00276, 0.0117, 0.02293, 0.00293, 0.0022, 0.00172, 0.00549 },
+        // 2001
         { 0.05859, 0.83223, 0.07133, 0.01237, 0.00843, 0.00466, 0.00702, 0.00265, 0.00126, 0.00146 },
+        // 2002
         { 0.0057, 0.11416, 0.77726, 0.0678, 0.01141, 0.01133, 0.00541, 0.00477, 0.00103, 0.00115 },
+        // 2003
         { 0.04184, 0.07321, 0.16973, 0.65582, 0.04624, 0.00629, 0.00338, 0.00129, 0.00119, 0.00101 },
+        // 2004
         { 0.06743, 0.12046, 0.07384, 0.20468, 0.45693, 0.06256, 0.00342, 0.00438, 0.00426, 0.00204 },
+        // 2005
         { 0.72218, 0.06994, 0.02466, 0.01538, 0.07672, 0.07212, 0.016, 0.0016, 0.00106, 0.00034 },
+        // 2006
         { 0.13044, 0.6744, 0.03287, 0.00931, 0.01405, 0.04516, 0.06048, 0.02601, 0.00557, 0.00171 },
+        // 2007
         { 0.09299, 0.40249, 0.30374, 0.05152, 0.01761, 0.03, 0.05974, 0.03622, 0.00267, 0.00302 },
+        // 2008
         { 0.65141, 0.18628, 0.11883, 0.02532, 0.00572, 0.00103, 0.00194, 0.00507, 0.00318, 0.00121 },
+        // 2009
         { 0.18119, 0.65747, 0.06016, 0.05387, 0.03286, 0.00541, 0.00158, 0.00047, 0.00277, 0.00422 },
+        // 2010
         { 0.07727, 0.26223, 0.45624, 0.07248, 0.06773, 0.02447, 0.01011, 0.00469, 0.00451, 0.02028 },
+        // 2012
         { 0.07628, 0.68419, 0.03495, 0.06178, 0.07696, 0.03715, 0.02347, 0.00361, 0.00091, 0.00071 },
-        { 0.82476, 0.01949, 0.10477, 0.00794, 0.00898, 0.01489, 0.0085, 0.00641, 0.00155, 0.00272 },
+        // 2013
+        { 0.82476, 0.01949, 0.10477, 0.00794, 0.00898, 0.01489, 0.0085, 0.00641, 0.00155, 0.00272 }
     };
 
 
@@ -477,6 +507,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
         // 2012
         { 0.00178, 0.04626, 0.14591, 0.27580, 0.27046, 0.08719, 0.05872, 0.01957, 0.03915, 0.055160142 }
     };
+
 
     atl::Vector<T> M = { 1.4, 0.7, 0.5, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
     atl::Vector<T> maturity = { 0.0, 0.001, 0.017, 0.260, 0.574394321, 0.825178371, 0.917716303, 0.963328425, 0.985901463, 0.992188606 };
@@ -756,19 +787,19 @@ public:
         log_fsh_sel_desc_beta  = atl::Variable<T>(0.156959058);
 
 
-        // this->Register(log_srv1_sel_asc_alpha,7,"log_srv1_sel_asc_alpha");
-        // this->Register(log_srv1_sel_asc_beta,7,"log_srv1_sel_asc_beta");
-        // log_srv1_sel_asc_alpha.SetBounds(0.0,5.0);
-        // log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
-        // log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
-        // log_srv1_sel_asc_beta  = atl::Variable<T>(2.0);
+        this->Register(log_srv1_sel_asc_alpha,7,"log_srv1_sel_asc_alpha");
+        this->Register(log_srv1_sel_asc_beta,7,"log_srv1_sel_asc_beta");
+        log_srv1_sel_asc_alpha.SetBounds(0.0,5.0);
+        log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
+        log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
+        log_srv1_sel_asc_beta  = atl::Variable<T>(2.0);
 
-        // this->Register(log_srv1_sel_desc_alpha,7,"log_srv1_sel_desc_alpha");
-        // this->Register(log_srv1_sel_desc_beta,7,"log_srv1_sel_desc_beta");
-        // log_srv1_sel_desc_alpha.SetBounds(1.0,5.0);
-        // log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
-        // log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
-        // log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
+        this->Register(log_srv1_sel_desc_alpha,7,"log_srv1_sel_desc_alpha");
+        this->Register(log_srv1_sel_desc_beta,7,"log_srv1_sel_desc_beta");
+        log_srv1_sel_desc_alpha.SetBounds(1.0,5.0);
+        log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
+        log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
+        log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
 
 
         this->Register(log_srv2_sel_asc_alpha,8,"log_srv2_sel_asc_alpha");
@@ -1229,60 +1260,71 @@ public:
             }
         }
 
-        // NLL for srv 2 biomass
+        // NLL for srv 1 biomass
         nll_parts(2) = 0;
-        for ( int i = 0; i < nyrs_srv2; i++ )
+        for ( int i = 0; i < nyrs_srv1; i++ )
         {
             nll_parts(2) += (0.5 * SQUARE(((atl::log(obs_srv_2_biomass(i) + o) - atl::log(est_srv_2_biomass(i) + o) + SQUARE((((obs_srv_2_CV(i)) / 2.0) + o))) / obs_srv_2_CV(i))));
         }
 
-        // NLL for srv 2 proportions at age
+        // NLL for srv 1 proportions at age
         nll_parts(3) = 0;
+        for ( int i = 0; i < nyrs_srv1_prop_at_age; i++ )
+        {
+            for ( int j = 0; j < nages; j++ )
+            {
+                nll_parts(3) -= (T(obs_srv_1_prop_at_age_N(i)) * obs_srv_1_prop_at_age(i, j) * (atl::log(est_srv_1_prop_at_age(i, j) + o) - atl::log(obs_srv_1_prop_at_age(i, j) + o)));
+            }
+        }
+
+        // NLL for srv 2 biomass
+        nll_parts(4) = 0;
+        for ( int i = 0; i < nyrs_srv2; i++ )
+        {
+            nll_parts(4) += (0.5 * SQUARE(((atl::log(obs_srv_2_biomass(i) + o) - atl::log(est_srv_2_biomass(i) + o) + SQUARE((((obs_srv_2_CV(i)) / 2.0) + o))) / obs_srv_2_CV(i))));
+        }
+
+        // NLL for srv 2 proportions at age
+        nll_parts(5) = 0;
         for ( int i = 0; i < nyrs_srv2_prop_at_age; i++ )
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(3) -= (T(obs_srv_2_prop_at_age_N(i)) * obs_srv_2_prop_at_age(i, j) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
+                nll_parts(5) -= (T(obs_srv_2_prop_at_age_N(i)) * obs_srv_2_prop_at_age(i, j) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
             }
         }
 
         // NLL for srv 3 biomass
-        nll_parts(4) = 0;
+        nll_parts(6) = 0;
         for ( int i = 0; i < nyrs_srv3; i++ )
         {
-            nll_parts(4) += (0.5 * SQUARE(((atl::log(obs_srv_3_biomass(i) + o) - atl::log(est_srv_3_biomass(i) + o) + SQUARE((((obs_srv_3_CV(i)) / 2.0) + o))) / obs_srv_3_CV(i))));
+            nll_parts(6) += (0.5 * SQUARE(((atl::log(obs_srv_3_biomass(i) + o) - atl::log(est_srv_3_biomass(i) + o) + SQUARE((((obs_srv_3_CV(i)) / 2.0) + o))) / obs_srv_3_CV(i))));
         }
 
         // NLL for srv 3 proportions at age
-        nll_parts(5) = 0;
+        nll_parts(7) = 0;
         for ( int i = 0; i < nyrs_srv3_prop_at_age; i++ )
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(5) -= (T(obs_srv_3_prop_at_age_N(i)) * obs_srv_3_prop_at_age(i, j) * (atl::log(est_srv_3_prop_at_age(i, j) + o) - atl::log(obs_srv_3_prop_at_age(i, j) + o)));
+                nll_parts(7) -= (T(obs_srv_3_prop_at_age_N(i)) * obs_srv_3_prop_at_age(i, j) * (atl::log(est_srv_3_prop_at_age(i, j) + o) - atl::log(obs_srv_3_prop_at_age(i, j) + o)));
             }
         }
 
         // penalty on initial population devs
-        nll_parts(6) = (0.5 / SQUARE(sigmaR)) * atl::Norm2(init_pop_devs);
+        nll_parts(8) = (0.5 / SQUARE(sigmaR)) * atl::Norm2(init_pop_devs);
 
         // penalty on rec devs
-        nll_parts(7) = (0.5 / SQUARE(sigmaR)) * atl::Norm2(recruit_devs);
+        nll_parts(9) = (0.5 / SQUARE(sigmaR)) * atl::Norm2(recruit_devs);
 
         // penalty on fsh mort dev
-        nll_parts(8) = atl::Norm2(fsh_mort_devs);
+        nll_parts(10) = atl::Norm2(fsh_mort_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
-        nll_parts(9) = 1000.0 * SQUARE(atl::log(N(0,0)) - atl::log(N(1,0)));
+        nll_parts(11) = 1000.0 * SQUARE(atl::log(N(0,0)) - atl::log(N(1,0)));
 
-        // check for the init pop devs summing to 0
-        nll_parts(10) = atl::Sum(init_pop_devs);
-
-        // check for the rec devs summing to 0
-        nll_parts(11) = atl::Sum(recruit_devs);
-
-        // check for the fsh mort devs summing to 0
-        nll_parts(12) = atl::Sum(fsh_mort_devs);
+        // likelihood component for scaling srv1 Dyson q to Miller Freeman EK500 q (see pk10_1.tpl, line1243)
+        nll_parts(12) = (1.0 / (2.0 * (SQUARE(0.0244) + SQUARE(0.000001)))) * SQUARE(log_srv_1_q - log_srv_1b_q - 0.124);
 
         f = atl::Sum(nll_parts);
     }
