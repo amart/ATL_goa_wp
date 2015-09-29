@@ -790,10 +790,10 @@ public:
         log_fsh_sel_desc_beta  = atl::Variable<T>(0.156959058);
 
 
-        this->Register(log_srv1_sel_asc_alpha,7,"log_srv1_sel_asc_alpha");
-        this->Register(log_srv1_sel_asc_beta,7,"log_srv1_sel_asc_beta");
-        log_srv1_sel_asc_alpha.SetBounds(-1.0,5.0);
-        log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
+        // this->Register(log_srv1_sel_asc_alpha,7,"log_srv1_sel_asc_alpha");
+        // this->Register(log_srv1_sel_asc_beta,7,"log_srv1_sel_asc_beta");
+        // log_srv1_sel_asc_alpha.SetBounds(-1.0,5.0);
+        // log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
         log_srv1_sel_asc_alpha = atl::Variable<T>(-0.5);
         log_srv1_sel_asc_beta  = atl::Variable<T>(1.0);
 
@@ -801,7 +801,7 @@ public:
         this->Register(log_srv1_sel_desc_beta,7,"log_srv1_sel_desc_beta");
         log_srv1_sel_desc_alpha.SetBounds(0.0,5.0);
         log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
-        log_srv1_sel_desc_alpha = atl::Variable<T>(1.0);
+        log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
         log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
 
 
@@ -953,7 +953,8 @@ public:
         for ( int j = 0; j < nages ; j++ )
         {
             // srv 1
-            srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(ages(j)) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
+            // srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(ages(j)) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
+            srv_sel(0, j) = (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
 
             // srv 2
             srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-srv2_sel_asc_beta * (T(ages(j)) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv2_sel_desc_beta * (T(ages(j)) - srv2_sel_desc_alpha)))));
