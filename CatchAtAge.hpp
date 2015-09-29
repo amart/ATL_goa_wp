@@ -1299,6 +1299,16 @@ public:
 
         // NLL for srv 1 biomass
         nll_parts(2) = 0;
+        for ( int i = 0; i < nyrs_srv1a; i++ )
+        {
+            nll_parts(2) += (0.5 * SQUARE(((atl::log(obs_srv_1a_biomass(i) + o) - atl::log(est_srv_1a_biomass(i) + o) + SQUARE((((obs_srv_1a_CV(i)) / 2.0) + o))) / obs_srv_1a_CV(i))));
+        }
+
+        for ( int i = 0; i < nyrs_srv1b; i++ )
+        {
+            nll_parts(2) += (0.5 * SQUARE(((atl::log(obs_srv_1b_biomass(i) + o) - atl::log(est_srv_1b_biomass(i) + o) + SQUARE((((obs_srv_1b_CV(i)) / 2.0) + o))) / obs_srv_1b_CV(i))));
+        }
+
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             nll_parts(2) += (0.5 * SQUARE(((atl::log(obs_srv_1_biomass(i) + o) - atl::log(est_srv_1_biomass(i) + o) + SQUARE((((obs_srv_1_CV(i)) / 2.0) + o))) / obs_srv_1_CV(i))));
