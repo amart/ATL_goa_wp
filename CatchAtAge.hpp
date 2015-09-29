@@ -1386,6 +1386,7 @@ public:
         atl::Variable<T> one_meeellion = 1000000.0;     // conversion factor
 
         std::cout << std::endl;
+        std::cout << "objective function " << atl::Sum(nll_parts) << std::endl;
         std::cout << "objective function components " << nll_parts << std::endl;
         std::cout << std::endl;
 
@@ -1395,12 +1396,12 @@ public:
         std::cout << "ratios " << (initial_population / initial_population(0)) << std::endl;
         std::cout << std::endl;
 
-        std::cout << "log mean_recruits " << log_mean_recruits << std::endl;
+        std::cout << "log mean_recruits " << log_mean_recruits << "\t" << atl::exp(log_mean_recruits) << std::endl;
         std::cout << "recruit_devs " << recruit_devs << std::endl;
         std::cout << "recruits " << recruits << std::endl;
         std::cout << std::endl;
 
-        std::cout << "log mean_fsh_mort " << log_mean_fsh_mort << std::endl;
+        std::cout << "log mean_fsh_mort " << log_mean_fsh_mort << "\t" << atl::exp(log_mean_fsh_mort) << std::endl;
         std::cout << "fsh_mort_devs " << fsh_mort_devs << std::endl;
         std::cout << "fsh_mort " << fsh_mort << std::endl;
         std::cout << std::endl;
