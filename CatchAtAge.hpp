@@ -626,6 +626,9 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Vector<T> wt_fsh_proj   = { 0.125, 0.328, 0.635, 0.920, 1.253, 1.531, 1.716, 1.917, 2.084, 2.151 };
     atl::Vector<T> wt_srv_proj   = { 0.010, 0.092, 0.277, 0.591, 0.942, 1.287, 1.692, 1.860, 2.011, 2.102 };
 
+    // Transition standard deviations for random walk (endyr - styr) year for change
+    // 1965	1966	1967	1968	1969	1970	1971	1972	1973	1974	1975	1976	1977	1978	1979	1980	1981	1982	1983	1984	1985	1986	1987	1988	1989	1990	1991	1992	1993	1994	1995	1996	1997	1998	1999	2000	2001	2002	2003	2004	2005	2006	2007	2008	2009	2010	2011	2012	2013
+    atl::Vector<T> fsh_sel_sd = { 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001 };
 
     //Estimated(read only)
     atl::Variable<T> log_initial_R_dev;
@@ -652,6 +655,10 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
 
     atl::Matrix<atl::Variable<T> > fsh_sel;
 
+    atl::Vector<atl::Variable<T> > fsh_sel_asc_alpha_devs;
+    atl::Vector<atl::Variable<T> > fsh_sel_asc_beta_devs;
+    atl::Vector<atl::Variable<T> > fsh_sel_desc_alpha_devs;
+    atl::Vector<atl::Variable<T> > fsh_sel_desc_beta_devs;
 
     atl::Variable<T> log_srv1_sel_asc_alpha;
     atl::Variable<T> log_srv1_sel_asc_beta;
@@ -771,7 +778,7 @@ public:
         est_total_biomass.Resize(nyrs);
         est_spawn_biomass.Resize(nyrs);
 
-        nll_parts.Resize(13);
+        nll_parts.Resize(14);
 
 
         this->Register(log_fsh_sel_asc_alpha,4,"log_fsh_sel_asc_alpha");
@@ -789,13 +796,12 @@ public:
         log_fsh_sel_desc_alpha = atl::Variable<T>(2.202837078);
         log_fsh_sel_desc_beta  = atl::Variable<T>(0.156959058);
 
-
         // this->Register(log_srv1_sel_asc_alpha,7,"log_srv1_sel_asc_alpha");
         // this->Register(log_srv1_sel_asc_beta,7,"log_srv1_sel_asc_beta");
         // log_srv1_sel_asc_alpha.SetBounds(-1.0,5.0);
         // log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
-        log_srv1_sel_asc_alpha = atl::Variable<T>(-0.5);
-        log_srv1_sel_asc_beta  = atl::Variable<T>(1.0);
+        log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
+        log_srv1_sel_asc_beta  = atl::Variable<T>(-20.0);
 
         this->Register(log_srv1_sel_desc_alpha,7,"log_srv1_sel_desc_alpha");
         this->Register(log_srv1_sel_desc_beta,7,"log_srv1_sel_desc_beta");
@@ -881,9 +887,19 @@ public:
         fsh_mort_devs.Resize(nyrs);
         fsh_mort.Resize(nyrs);
 
+        fsh_sel_asc_alpha_devs.Resize(nyrs);
+        fsh_sel_asc_beta_devs.Resize(nyrs);
+        fsh_sel_desc_alpha_devs.Resize(nyrs);
+        fsh_sel_desc_beta_devs.Resize(nyrs);
+
         this->Register(init_pop_devs, 4, "init_pop_devs");
         this->Register(recruit_devs, 3, "recruit_devs");
         this->Register(fsh_mort_devs, 2,"fsh_mort_devs");
+
+        this->Register(fsh_sel_asc_alpha_devs, 4, "fsh_sel_asc_alpha_devs");
+        this->Register(fsh_sel_asc_beta_devs, 4, "fsh_sel_asc_beta_devs");
+        this->Register(fsh_sel_desc_alpha_devs, 4, "fsh_sel_desc_alpha_devs");
+        this->Register(fsh_sel_desc_beta_devs, 4, "fsh_sel_desc_beta_devs");
 
         init_pop_devs.SetBounds(-15.0,15.0);
         init_pop_devs = atl::Variable<T>(0.0);
@@ -893,6 +909,15 @@ public:
 
         fsh_mort_devs.SetBounds(-10.0, 10.0);
         fsh_mort_devs = atl::Variable<T>(0.0);
+
+        fsh_sel_asc_alpha_devs.setBounds(-5.0, 5.0);
+        fsh_sel_asc_alpha_devs = atl::Variable<T>(0.0);
+        fsh_sel_asc_beta_devs.setBounds(-5.0, 5.0);
+        fsh_sel_asc_beta_devs = atl::Variable<T>(0.0);
+        fsh_sel_desc_alpha_devs.setBounds(-5.0, 5.0);
+        fsh_sel_desc_alpha_devs = atl::Variable<T>(0.0);
+        fsh_sel_desc_beta_devs.setBounds(-5.0, 5.0);
+        fsh_sel_desc_beta_devs = atl::Variable<T>(0.0);
     }
 
     void Selectivity()
@@ -907,30 +932,22 @@ public:
         fsh_sel_desc_alpha = atl::exp(log_fsh_sel_desc_alpha);
         fsh_sel_desc_beta  = atl::exp(log_fsh_sel_desc_beta);
 
-        for ( int j = 0; j < nages; j++ )
+        for ( int i = 0; i < nyrs; i++ )
         {
-            fsh_sel(0, j) = (1.0 / (1.0 + atl::exp(-fsh_sel_asc_beta * (T(ages(j)) - fsh_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-fsh_sel_desc_beta * (T(ages(j)) - fsh_sel_desc_alpha)))));
-        }
-
-        max_sel = atl::Max<atl::Variable<T> >(atl::Row(fsh_sel, 0));
-
-        if ( max_sel > T(0) )
-        {
-            // can this operation be vectorized?
             for ( int j = 0; j < nages; j++ )
             {
-                fsh_sel(0, j) /= max_sel;
+                fsh_sel(i, j) = (1.0 / (1.0 + atl::exp(-(fsh_sel_asc_beta * atl::exp(fsh_sel_asc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_asc_alpha + fsh_sel_asc_alpha_devs(i)))))) * (1.0 - (1.0 / (1.0 + atl::exp(-(fsh_sel_desc_beta * atl::exp(fsh_sel_desc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_desc_alpha + fsh_sel_desc_alpha_devs(i)))))));
             }
-        }
 
-        sel_row = atl::Row(fsh_sel, 0);
+            max_sel = atl::Max<atl::Variable<T> >(atl::Row(fsh_sel, i));
 
-        for ( int i = 1; i < nyrs; i++ )
-        {
-            // can this operation be vectorized?
-            for ( int j = 0; j < nages; j++ )
+            if ( max_sel > T(0) )
             {
-                fsh_sel(i, j) = sel_row(j);
+                // can this operation be vectorized?
+                for ( int j = 0; j < nages; j++ )
+                {
+                    fsh_sel(i, j) /= max_sel;
+                }
             }
         }
 
@@ -953,8 +970,7 @@ public:
         for ( int j = 0; j < nages ; j++ )
         {
             // srv 1
-            // srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(ages(j)) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
-            srv_sel(0, j) = (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
+            srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(ages(j)) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
 
             // srv 2
             srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-srv2_sel_asc_beta * (T(ages(j)) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv2_sel_desc_beta * (T(ages(j)) - srv2_sel_desc_alpha)))));
@@ -1374,6 +1390,11 @@ public:
         // likelihood component for scaling srv1 Dyson q to Miller Freeman EK500 q (see pk10_1.tpl, line1243)
         nll_parts(12) = (1.0 / (2.0 * (SQUARE(0.0244) + SQUARE(0.000001)))) * SQUARE(log_srv_1_q - log_srv_1b_q - 0.124);
 
+        nll_parts(13)  = (0.5 * atl::Norm2(atl::FirstDifference(fsh_sel_asc_alpha_devs) / (4.0 * fsh_sel_sd)));
+        nll_parts(13) += (0.5 * atl::Norm2(atl::FirstDifference(fsh_sel_asc_beta_devs) / (1.0 * fsh_sel_sd)));
+        nll_parts(13) += (0.5 * atl::Norm2(atl::FirstDifference(fsh_sel_desc_alpha_devs) / (4.0 * fsh_sel_sd)));
+        nll_parts(13) += (0.5 * atl::Norm2(atl::FirstDifference(fsh_sel_desc_beta_devs) / (1.0 * fsh_sel_sd)));
+
         f = atl::Sum(nll_parts);
     }
 
@@ -1414,6 +1435,11 @@ public:
         std::cout << "fsh_sel_asc_beta " << fsh_sel_asc_beta << std::endl;
         std::cout << "fsh_sel_desc_alpha " << fsh_sel_desc_alpha << std::endl;
         std::cout << "fsh_sel_desc_beta " << fsh_sel_desc_beta << std::endl;
+        std::cout << "fsh_sel_asc_alpha_devs " << fsh_sel_asc_alpha_devs << std::endl;
+        std::cout << "fsh_sel_asc_beta_devs " << fsh_sel_asc_beta_devs << std::endl;
+        std::cout << "fsh_sel_desc_alpha_devs " << fsh_sel_desc_alpha_devs << std::endl;
+        std::cout << "fsh_sel_desc_beta_devs " << fsh_sel_desc_beta_devs << std::endl;
+        std::cout << std::endl;
         std::cout << "fsh sel" << std::endl;
         std::cout << fsh_sel << std::endl;
         std::cout << std::endl;
