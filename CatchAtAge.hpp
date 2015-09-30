@@ -1279,6 +1279,26 @@ public:
         {
             fsh_mort_devs -= (atl::Sum(fsh_mort_devs) / (double) fsh_mort_devs.Size(0));
         }
+
+        if (this->Phase() >= this->GetActivePhase(fsh_sel_asc_alpha_devs(0)))
+        {
+            fsh_sel_asc_alpha_devs -= (atl::Sum(fsh_sel_asc_alpha_devs) / (double) fsh_sel_asc_alpha_devs.Size(0));
+        }
+
+        if (this->Phase() >= this->GetActivePhase(fsh_sel_asc_beta_devs(0)))
+        {
+            fsh_sel_asc_beta_devs -= (atl::Sum(fsh_sel_asc_beta_devs) / (double) fsh_sel_asc_beta_devs.Size(0));
+        }
+
+        if (this->Phase() >= this->GetActivePhase(fsh_sel_desc_alpha_devs(0)))
+        {
+            fsh_sel_desc_alpha_devs -= (atl::Sum(fsh_sel_desc_alpha_devs) / (double) fsh_sel_desc_alpha_devs.Size(0));
+        }
+
+        if (this->Phase() >= this->GetActivePhase(fsh_sel_desc_beta_devs(0)))
+        {
+            fsh_sel_desc_beta_devs -= (atl::Sum(fsh_sel_desc_beta_devs) / (double) fsh_sel_desc_beta_devs.Size(0));
+        }
     }
 
     void ObjectiveFunction(atl::Variable<T>& f)
