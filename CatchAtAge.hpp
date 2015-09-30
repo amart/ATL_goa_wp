@@ -936,7 +936,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                fsh_sel(i, j) = (1.0 / (1.0 + atl::exp(-(fsh_sel_asc_beta * atl::exp(fsh_sel_asc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_asc_alpha + fsh_sel_asc_alpha_devs(i)))))) * (1.0 - (1.0 / (1.0 + atl::exp(-(fsh_sel_desc_beta * atl::exp(fsh_sel_desc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_desc_alpha + fsh_sel_desc_alpha_devs(i)))))));
+                fsh_sel(i, j) = (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_asc_beta * atl::exp(fsh_sel_asc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_asc_alpha + fsh_sel_asc_alpha_devs(i)))))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_desc_beta * atl::exp(fsh_sel_desc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_desc_alpha + fsh_sel_desc_alpha_devs(i)))))));
             }
 
             max_sel = atl::Max<atl::Variable<T> >(atl::Row(fsh_sel, i));
@@ -970,13 +970,13 @@ public:
         for ( int j = 0; j < nages ; j++ )
         {
             // srv 1
-            srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-srv1_sel_asc_beta * (T(ages(j)) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
+            srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv1_sel_asc_beta * (T(ages(j)) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
 
             // srv 2
-            srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-srv2_sel_asc_beta * (T(ages(j)) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv2_sel_desc_beta * (T(ages(j)) - srv2_sel_desc_alpha)))));
+            srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv2_sel_asc_beta * (T(ages(j)) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv2_sel_desc_beta * (T(ages(j)) - srv2_sel_desc_alpha)))));
 
             // srv 3
-            srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-srv3_sel_asc_beta * (T(ages(j)) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-srv3_sel_desc_beta * (T(ages(j)) - srv3_sel_desc_alpha)))));
+            srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv3_sel_asc_beta * (T(ages(j)) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv3_sel_desc_beta * (T(ages(j)) - srv3_sel_desc_alpha)))));
         }
 
         for ( int k = 0; k < nsrvs; k++ )
@@ -1037,11 +1037,11 @@ public:
             {
                 expZ(i, j)    = atl::exp(-1.0 * Z(i, j));
 
-                expZ_sp(i, j) = atl::exp(-yrfrac_sp * Z(i, j));
+                expZ_sp(i, j) = atl::exp(-1.0 * yrfrac_sp * Z(i, j));
 
-                expZ_yrfrac_srv1(i, j) = atl::exp(-yrfrac_srv(0) * Z(i, j));
-                expZ_yrfrac_srv2(i, j) = atl::exp(-yrfrac_srv(1) * Z(i, j));
-                expZ_yrfrac_srv3(i, j) = atl::exp(-yrfrac_srv(2) * Z(i, j));
+                expZ_yrfrac_srv1(i, j) = atl::exp(-1.0 * yrfrac_srv(0) * Z(i, j));
+                expZ_yrfrac_srv2(i, j) = atl::exp(-1.0 * yrfrac_srv(1) * Z(i, j));
+                expZ_yrfrac_srv3(i, j) = atl::exp(-1.0 * yrfrac_srv(2) * Z(i, j));
             }
         }
     }
@@ -1054,9 +1054,9 @@ public:
 
         for ( int j = 1; j < nages; j++ )
         {
-            initial_population(j) = initial_population(j-1) * atl::exp(atl::Variable<T>(-M(j-1)));
+            initial_population(j) = initial_population(j-1) * atl::exp(atl::Variable<T>(-1.0 * M(j-1)));
         }
-        initial_population(nages-1) /= (1.0 - atl::exp(atl::Variable<T>(-M(nages-1))));
+        initial_population(nages-1) /= (1.0 - atl::exp(atl::Variable<T>(-1.0 * M(nages-1))));
 
         for ( int j = 1; j < nages; j++ )
         {
