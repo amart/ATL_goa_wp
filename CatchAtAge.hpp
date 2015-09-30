@@ -910,13 +910,13 @@ public:
         fsh_mort_devs.SetBounds(-10.0, 10.0);
         fsh_mort_devs = atl::Variable<T>(0.0);
 
-        fsh_sel_asc_alpha_devs.setBounds(-5.0, 5.0);
+        fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_alpha_devs = atl::Variable<T>(0.0);
-        fsh_sel_asc_beta_devs.setBounds(-5.0, 5.0);
+        fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_beta_devs = atl::Variable<T>(0.0);
-        fsh_sel_desc_alpha_devs.setBounds(-5.0, 5.0);
+        fsh_sel_desc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_alpha_devs = atl::Variable<T>(0.0);
-        fsh_sel_desc_beta_devs.setBounds(-5.0, 5.0);
+        fsh_sel_desc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_beta_devs = atl::Variable<T>(0.0);
     }
 
