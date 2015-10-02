@@ -512,7 +512,8 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     };
 
 
-    atl::Vector<T> M = { 1.4, 0.7, 0.5, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+    // atl::Vector<T> M = { 1.4, 0.7, 0.5, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+    atl::Vector<T> M = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
     atl::Vector<T> maturity = { 0.0, 0.001, 0.017, 0.260, 0.574394321, 0.825178371, 0.917716303, 0.963328425, 0.985901463, 0.992188606 };
 
     atl::Matrix<T> wt_pop = {
@@ -670,6 +671,9 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Variable<T> srv1_sel_desc_alpha;
     atl::Variable<T> srv1_sel_desc_beta;
 
+    atl::Variable<T> log_srv1_sel_age1;
+    atl::Variable<T> srv1_sel_age1;
+
 
     atl::Variable<T> log_srv2_sel_asc_alpha;
     atl::Variable<T> log_srv2_sel_asc_beta;
@@ -680,6 +684,9 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     atl::Variable<T> log_srv2_sel_desc_beta;
     atl::Variable<T> srv2_sel_desc_alpha;
     atl::Variable<T> srv2_sel_desc_beta;
+
+    atl::Variable<T> log_srv2_sel_age1;
+    atl::Variable<T> srv2_sel_age1;
 
 
     atl::Variable<T> log_srv3_sel_asc_alpha;
@@ -810,6 +817,10 @@ public:
         log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
         log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
 
+        this->Register(log_srv1_sel_age1,7,"log_srv1_sel_age1");
+        log_srv1_sel_age1.SetBounds(-15.0,1.0);
+        log_srv1_sel_age1 = atl::Variable<T>(-0.8);
+
 
         this->Register(log_srv2_sel_asc_alpha,8,"log_srv2_sel_asc_alpha");
         this->Register(log_srv2_sel_asc_beta,8,"log_srv2_sel_asc_beta");
@@ -824,6 +835,10 @@ public:
         log_srv2_sel_desc_beta.SetBounds(-5.0,5.0);
         log_srv2_sel_desc_alpha = atl::Variable<T>(2.0);
         log_srv2_sel_desc_beta  = atl::Variable<T>(0.0);
+
+        this->Register(log_srv2_sel_age1,8,"log_srv2_sel_age1");
+        log_srv2_sel_age1.SetBounds(-15.0,1.0);
+        log_srv2_sel_age1 = atl::Variable<T>(-1.3);
 
 
         this->Register(log_srv3_sel_asc_alpha,9,"log_srv3_sel_asc_alpha");
@@ -956,11 +971,13 @@ public:
         srv1_sel_asc_beta   = atl::exp(log_srv1_sel_asc_beta);
         srv1_sel_desc_alpha = atl::exp(log_srv1_sel_desc_alpha);
         srv1_sel_desc_beta  = atl::exp(log_srv1_sel_desc_beta);
+        srv1_sel_age1       = atl::exp(log_srv1_sel_age1);
 
         srv2_sel_asc_alpha  = atl::exp(log_srv2_sel_asc_alpha);
         srv2_sel_asc_beta   = atl::exp(log_srv2_sel_asc_beta);
         srv2_sel_desc_alpha = atl::exp(log_srv2_sel_desc_alpha);
         srv2_sel_desc_beta  = atl::exp(log_srv2_sel_desc_beta);
+        srv2_sel_age1       = atl::exp(log_srv2_sel_age1);
 
         srv3_sel_asc_alpha  = atl::exp(log_srv3_sel_asc_alpha);
         srv3_sel_asc_beta   = atl::exp(log_srv3_sel_asc_beta);
@@ -978,6 +995,10 @@ public:
             // srv 3
             srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv3_sel_asc_beta * (T(ages(j)) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv3_sel_desc_beta * (T(ages(j)) - srv3_sel_desc_alpha)))));
         }
+        
+        // overwrite sel for age-1 for srv 1 and srv 2
+        srv_sel(0, 0) = srv1_sel_age1;
+        srv_sel(1, 0) = srv2_sel_age1;
 
         for ( int k = 0; k < nsrvs; k++ )
         {
@@ -1479,19 +1500,23 @@ public:
         std::cout << "log_srv1_sel_asc_beta " << log_srv1_sel_asc_beta << std::endl;
         std::cout << "log_srv1_sel_desc_alpha " << log_srv1_sel_desc_alpha << std::endl;
         std::cout << "log_srv1_sel_desc_beta " << log_srv1_sel_desc_beta << std::endl;
+        std::cout << "log_srv1_sel_age1 " << log_srv1_sel_age1 << std::endl;
         std::cout << "srv1_sel_asc_alpha " << srv1_sel_asc_alpha << std::endl;
         std::cout << "srv1_sel_asc_beta " << srv1_sel_asc_beta << std::endl;
         std::cout << "srv1_sel_desc_alpha " << srv1_sel_desc_alpha << std::endl;
         std::cout << "srv1_sel_desc_beta " << srv1_sel_desc_beta << std::endl;
+        std::cout << "srv1_sel_age1 " << srv1_sel_age1 << std::endl;
 
         std::cout << "log_srv2_sel_asc_alpha " << log_srv2_sel_asc_alpha << std::endl;
         std::cout << "log_srv2_sel_asc_beta " << log_srv2_sel_asc_beta << std::endl;
         std::cout << "log_srv2_sel_desc_alpha " << log_srv2_sel_desc_alpha << std::endl;
         std::cout << "log_srv2_sel_desc_beta " << log_srv2_sel_desc_beta << std::endl;
+        std::cout << "log_srv2_sel_age1 " << log_srv2_sel_age1 << std::endl;
         std::cout << "srv2_sel_asc_alpha " << srv2_sel_asc_alpha << std::endl;
         std::cout << "srv2_sel_asc_beta " << srv2_sel_asc_beta << std::endl;
         std::cout << "srv2_sel_desc_alpha " << srv2_sel_desc_alpha << std::endl;
         std::cout << "srv2_sel_desc_beta " << srv2_sel_desc_beta << std::endl;
+        std::cout << "srv2_sel_age1 " << srv2_sel_age1 << std::endl;
 
         std::cout << "log_srv3_sel_asc_alpha " << log_srv3_sel_asc_alpha << std::endl;
         std::cout << "log_srv3_sel_asc_beta " << log_srv3_sel_asc_beta << std::endl;
