@@ -1,6 +1,5 @@
 /*
  * File:   CatchAtAge.hpp
- * Author: z
  *
  * Created on September 10, 2015, 3:26 PM
  *
@@ -911,10 +910,10 @@ public:
         this->Register(recruit_devs, 3, "recruit_devs");
         this->Register(fsh_mort_devs, 2,"fsh_mort_devs");
 
-        this->Register(fsh_sel_asc_alpha_devs, 4, "fsh_sel_asc_alpha_devs");
-        this->Register(fsh_sel_asc_beta_devs, 4, "fsh_sel_asc_beta_devs");
-        this->Register(fsh_sel_desc_alpha_devs, 4, "fsh_sel_desc_alpha_devs");
-        this->Register(fsh_sel_desc_beta_devs, 4, "fsh_sel_desc_beta_devs");
+        this->Register(fsh_sel_asc_alpha_devs, 5, "fsh_sel_asc_alpha_devs");
+        this->Register(fsh_sel_asc_beta_devs, 5, "fsh_sel_asc_beta_devs");
+        this->Register(fsh_sel_desc_alpha_devs, 5, "fsh_sel_desc_alpha_devs");
+        this->Register(fsh_sel_desc_beta_devs, 5, "fsh_sel_desc_beta_devs");
 
         init_pop_devs.SetBounds(-15.0,15.0);
         init_pop_devs = atl::Variable<T>(0.0);
