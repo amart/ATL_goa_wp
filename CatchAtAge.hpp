@@ -1586,8 +1586,8 @@ public:
 
     void GetVarCovar()
     {
-        atl::Matrix<double> hess = this->GetHessian();
-        atl::Matrix<double> inverse_hess = atl::Matrix<double>::Identity(hess.Size(0));
+        atl::Matrix<T> hess = this->GetHessian();
+        atl::Matrix<T> inverse_hess = atl::Matrix<T>::Identity(hess.Size(0));
 
         std::cout << "\nHessian matrix\n" << hess << std::endl;
 
@@ -1595,7 +1595,7 @@ public:
 
         std::cout << "\nInverse of Hessian matrix\n" << inverse_hess << std::endl;
 
-        atl::Vector<double> se(hess.Size(0));
+        atl::Vector<T> se(hess.Size(0));
 
         for (int i = 0; i < hess.Size(0); i++)
         {
@@ -1604,7 +1604,7 @@ public:
 
         std::cout << "\nSE vector\n" << se << std::endl;
 
-        atl::Matrix<double> var_covar = inverse_hess / (atl::OuterProduct(se,se));
+        atl::Matrix<T> var_covar = inverse_hess / (atl::OuterProduct(se,se));
 
         std::cout << "\nVariance-covariance matrix\n" << var_covar << std::endl;
     }
