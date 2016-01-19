@@ -29,6 +29,7 @@ main( int argc, char** argv )
     caa.Initialize();
     caa.Run();
     caa.Report();
+    caa.GetVarCovar();
     
     return 0;
 }
