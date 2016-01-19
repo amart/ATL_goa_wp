@@ -1586,7 +1586,7 @@ public:
 
     void GetVarCovar()
     {
-        atl::Matrix<double> hess = this.GetHessian();
+        atl::Matrix<double> hess = this->GetHessian();
         atl::Matrix<double> inverse_hess = atl::Matrix<double>::Identity(hess.Size(0));
 
         std::cout << "\nHessian matrix\n" << hess << std::endl;
