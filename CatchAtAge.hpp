@@ -10,7 +10,7 @@
 #ifndef CATCHATAGE_HPP
 #    define CATCHATAGE_HPP
 
-#include "../../ATL/ATL.hpp"
+#include "../ATL/ATL.hpp"
 
 #define SQUARE(x) ((x)*(x))
 
