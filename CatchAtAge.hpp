@@ -23,6 +23,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     // 1970 through 2015
     int nyrs = 46;
     atl::Vector<T> obs_catch = { 9379, 9460, 38131, 44993, 61905, 59504, 86731, 118092, 95408, 106161, 115158, 147818, 169045, 215625, 307541, 286900, 86910, 68070, 63391, 75585, 88269, 100488, 90858, 108909, 107335, 72618, 51263, 90130, 125460, 95638, 73080, 72077, 51933.52, 50684, 63844, 80978, 71976, 52714, 52584, 44247, 76745, 81357, 103982, 96363, 142633, 175025 };
+    atl::Vector<T> obs_catch_CV = { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05 };
 
     int nyrs_fsh_prop_at_age = 40;
     atl::Vector<int> yrs_fsh_prop_at_age = { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 };
@@ -354,7 +355,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
         { 0, 0.55127, 0.29407, 0.09259, 0.02593, 0.00914, 0.027 }
     };
 
-    atl::Vector<T> yrfrac_srv1 = { 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209 };
+    atl::Vector<T> yrfrac_srv_1 = { 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209 };
     atl::Matrix<T> obs_srv_1_wt_at_age = {
         // 1970
         { 0.01, 0.08, 0.235, 0.402, 0.58, 0.755, 0.901, 1.002, 1.066, 1.227 },
@@ -1186,7 +1187,7 @@ class CatchAtAge : public atl::FunctionMinimizer<T>
     };
 
     // Transition standard deviations for random walk (endyr - styr) year for change
-    // 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013
+    // 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015
     atl::Vector<T> fsh_sel_sd = { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.0001 };
 
     //Estimated(read only)
@@ -1618,9 +1619,9 @@ public:
 
                 expZ_sp(i, j) = atl::exp(-1.0 * yrfrac_sp * Z(i, j));
 
-                expZ_yrfrac_srv1(i, j) = atl::exp(-1.0 * yrfrac_srv(0) * Z(i, j));
-                expZ_yrfrac_srv2(i, j) = atl::exp(-1.0 * yrfrac_srv(1) * Z(i, j));
-                expZ_yrfrac_srv3(i, j) = atl::exp(-1.0 * yrfrac_srv(2) * Z(i, j));
+                expZ_yrfrac_srv1(i, j) = atl::exp(-1.0 * yrfrac_srv_1(i) * Z(i, j));
+                expZ_yrfrac_srv2(i, j) = atl::exp(-1.0 * yrfrac_srv_2(i) * Z(i, j));
+                expZ_yrfrac_srv3(i, j) = atl::exp(-1.0 * yrfrac_srv_3(i) * Z(i, j));
             }
         }
     }
@@ -1700,14 +1701,14 @@ public:
         {
             y = yrs_srv1a(i);
 
-            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1a_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b(i);
 
-            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1b_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
@@ -1909,7 +1910,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                nll_parts(1) -= (T(obs_fsh_N(i)) * obs_fsh_prop_at_age(i, j) * (atl::log(est_fsh_prop_at_age(i, j) + o) - atl::log(obs_fsh_prop_at_age(i, j) + o)));
+                nll_parts(1) -= (T(obs_fsh_prop_at_age_N(i)) * obs_fsh_prop_at_age(i, j) * (atl::log(est_fsh_prop_at_age(i, j) + o) - atl::log(obs_fsh_prop_at_age(i, j) + o)));
             }
         }
 
@@ -2150,7 +2151,8 @@ public:
 
         std::cout << "\nHessian matrix\n" << hess << std::endl;
 
-        InverseHessian(hess,inverse_hess);
+        hess.Invert();
+        inverse_hess = hess;
 
         std::cout << "\nInverse of Hessian matrix\n" << inverse_hess << std::endl;
 
