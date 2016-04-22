@@ -15,7 +15,7 @@
 
 #include "CatchAtAge.hpp"
 
-using namespace std;
+// using namespace std;
 
 /*
  * 
@@ -23,13 +23,17 @@ using namespace std;
 int
 main( int argc, char** argv )
 {
-    CatchAtAge<double> caa;
+    CatchAtAge<double> caa_obj_func;
     
-    caa.InitArgs( argc, argv );
-    caa.Initialize();
-    caa.Run();
-    caa.Report();
-    caa.GetVarCovar();
+    caa_obj_func.Initialize();
+
+    atl::LBFGS<double> func_min;
+
+    func_min.SetObjectiveFunction(&caa_obj_func);
+    func_min.Run();
+
+    caa_obj_func.Report();
+    caa_obj_func.GetVarCovar();
     
     return 0;
 }
