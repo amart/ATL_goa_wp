@@ -1407,13 +1407,13 @@ public:
         est_srv_5_biomass.Resize(nyrs_srv5);
         est_srv_6_biomass.Resize(nyrs_srv6);
         est_srv_1_prop_at_age.Resize(nyrs_srv1_prop_at_age,nages);
-        est_srv_1_prop_at_age.Resize(nyrs_srv1_prop_at_len,n_srv_len_bins);
+        est_srv_1_prop_at_len.Resize(nyrs_srv1_prop_at_len,n_srv_len_bins);
         est_srv_2_prop_at_age.Resize(nyrs_srv2_prop_at_age,nages);
-        est_srv_2_prop_at_age.Resize(nyrs_srv2_prop_at_len,n_srv_len_bins);
+        est_srv_2_prop_at_len.Resize(nyrs_srv2_prop_at_len,n_srv_len_bins);
         est_srv_3_prop_at_age.Resize(nyrs_srv3_prop_at_age,nages);
-        est_srv_3_prop_at_age.Resize(nyrs_srv3_prop_at_len,n_srv_len_bins);
+        est_srv_3_prop_at_len.Resize(nyrs_srv3_prop_at_len,n_srv_len_bins);
         est_srv_6_prop_at_age.Resize(nyrs_srv6_prop_at_age,nages);
-        est_srv_6_prop_at_age.Resize(nyrs_srv6_prop_at_len,n_srv_len_bins);
+        est_srv_6_prop_at_len.Resize(nyrs_srv6_prop_at_len,n_srv_len_bins);
         est_total_biomass.Resize(nyrs);
         est_spawn_biomass.Resize(nyrs);
 
@@ -1836,11 +1836,12 @@ public:
         }
 
         // calculate proportions at age
-        for ( int i = 0; i < nyrs_srv1_prop_at_age; i++ )
+         for ( int i = 0; i < nyrs_srv1_prop_at_age; i++ )
         {
             y = yrs_srv1_prop_at_age(i);
 
-            est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)) * age_age_err);
+            // est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >(age_age_err * (srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)));
+            est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) * age_age_err);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_1_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -1849,12 +1850,13 @@ public:
             }
         }
 
+        atl::Matrix<T> temp_mat = age_age_err * age_len_trans_3;
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv1_prop_at_len; i++ )
         {
             y = yrs_srv1_prop_at_len(i);
 
-            est_srv_1_prop_at_len(i) = atl::Vector<atl::Variable<T> >(((srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)) * age_age_err) * age_len_trans_3);
+            est_srv_1_prop_at_len(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) * temp_mat);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_1_prop_at_len, i));
             if ( est_srv_num > T(0) )
@@ -1862,6 +1864,7 @@ public:
                 est_srv_1_prop_at_len(i) /= est_srv_num;
             }
         }
+        std::cout<<" got here 1 "<<std::endl;
 
 
         // srv 2
@@ -1883,7 +1886,8 @@ public:
         {
             y = yrs_srv2_prop_at_age(i);
 
-            est_srv_2_prop_at_age(i) = atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
+            // est_srv_2_prop_at_age(i) = atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
+            est_srv_2_prop_at_age(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) * age_age_err);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -1892,12 +1896,14 @@ public:
             }
         }
 
+        temp_mat = age_age_err * age_len_trans_2;
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv2_prop_at_len; i++ )
         {
             y = yrs_srv2_prop_at_len(i);
 
-            est_srv_2_prop_at_len(i) = atl::Vector<atl::Variable<T> >(((srv_sel(1) * N(y) * expZ_yrfrac_srv2(y)) * age_age_err) * age_len_trans_2);
+            // est_srv_2_prop_at_len(i) = atl::Vector<atl::Variable<T> >(((srv_sel(1) * N(y) * expZ_yrfrac_srv2(y)) * age_age_err) * age_len_trans_2);
+            est_srv_2_prop_at_len(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) * temp_mat);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_len, i));
             if ( est_srv_num > T(0) )
@@ -1926,7 +1932,8 @@ public:
         {
             y = yrs_srv3_prop_at_age(i);
 
-            est_srv_3_prop_at_age(i) = atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
+            // est_srv_3_prop_at_age(i) = atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
+            est_srv_3_prop_at_age(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) * age_age_err);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -1940,7 +1947,8 @@ public:
         {
             y = yrs_srv3_prop_at_len(i);
 
-            est_srv_3_prop_at_len(i) = atl::Vector<atl::Variable<T> >(((srv_sel(2) * N(y) * expZ_yrfrac_srv3(y)) * age_age_err) * age_len_trans_2);
+            // est_srv_3_prop_at_len(i) = atl::Vector<atl::Variable<T> >(((srv_sel(2) * N(y) * expZ_yrfrac_srv3(y)) * age_age_err) * age_len_trans_2);
+            est_srv_3_prop_at_len(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) * temp_mat);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_len, i));
             if ( est_srv_num > T(0) )
@@ -1984,7 +1992,8 @@ public:
         {
             y = yrs_srv6_prop_at_age(i);
 
-            est_srv_6_prop_at_age(i) = atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
+            // est_srv_6_prop_at_age(i) = atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
+            est_srv_6_prop_at_age(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) * age_age_err);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_6_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -1998,7 +2007,8 @@ public:
         {
             y = yrs_srv6_prop_at_len(i);
 
-            est_srv_6_prop_at_len(i) = atl::Vector<atl::Variable<T> >(((srv_sel(5) * N(y) * expZ_yrfrac_srv6(y)) * age_age_err) * age_len_trans_2);
+            // est_srv_6_prop_at_len(i) = atl::Vector<atl::Variable<T> >(((srv_sel(5) * N(y) * expZ_yrfrac_srv6(y)) * age_age_err) * age_len_trans_2);
+            est_srv_6_prop_at_len(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) * temp_mat);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_6_prop_at_len, i));
             if ( est_srv_num > T(0) )
