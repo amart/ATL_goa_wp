@@ -1634,12 +1634,15 @@ public:
                 fsh_sel(i, j) = (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_asc_beta * atl::exp(fsh_sel_asc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_asc_alpha + fsh_sel_asc_alpha_devs(i)))))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_desc_beta * atl::exp(fsh_sel_desc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_desc_alpha + fsh_sel_desc_alpha_devs(i)))))));
             }
 
-            max_sel = atl::Max<atl::Variable<T> >(atl::Row(fsh_sel, i));
+            // max_sel = atl::Max<atl::Variable<T> >(atl::Row(fsh_sel, i));
 
-            if ( max_sel > T(0) )
-            {
-                fsh_sel(i) /= max_sel;
-            }
+            // if ( max_sel > T(0) )
+            // {
+            //     fsh_sel(i) /= max_sel;
+            // }
+            
+            // replace max - matches assessment model
+            fsh_sel(i) /= fsh_sel(i,6);
         }
 
         srv_sel = 0.0;
@@ -1689,15 +1692,21 @@ public:
         // set sel to 1 for age 1 in srv 4 and age 2 in srv 5
         srv_sel(4,1) = srv_sel(3,0) = 1.0;
 
-        for ( int k = 0; k < nsrvs; k++ )
-        {
-            max_sel = atl::Max<atl::Variable<T> >(atl::Row(srv_sel, k));
+        // for ( int k = 0; k < nsrvs; k++ )
+        // {
+        //     max_sel = atl::Max<atl::Variable<T> >(atl::Row(srv_sel, k));
 
-            if ( max_sel > T(0) )
-            {
-                srv_sel(k) /= max_sel;
-            }
-        }
+        //     if ( max_sel > T(0) )
+        //     {
+        //         srv_sel(k) /= max_sel;
+        //     }
+        // }
+        
+        // replace max - matches assessment model
+        srv_sel(0) /= srv_sel(0,2);
+        srv_sel(1) /= srv_sel(1,9);
+        srv_sel(2) /= srv_sel(2,9);
+        srv_sel(5) /= srv_sel(5,0);
     }
 
     void Growth()
