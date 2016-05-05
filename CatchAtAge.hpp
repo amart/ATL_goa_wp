@@ -1528,8 +1528,8 @@ public:
         this->RegisterHyperParameter(log_srv_4_q,7);
         log_srv_4_q.SetBounds(-10.0,10.0);
         log_srv_4_q = atl::Variable<T>(0.0);
-        this->RegisterHyperParameter(srv_4_q_pow,7);
-        srv_4_q_pow.SetBounds(-10.0,10.0);
+        // this->RegisterHyperParameter(srv_4_q_pow,7);
+        // srv_4_q_pow.SetBounds(-10.0,10.0);
         srv_4_q_pow = atl::Variable<T>(0.0);
 
         this->RegisterHyperParameter(log_srv_5_q,7);
@@ -1971,7 +1971,7 @@ public:
             y = yrs_srv4(i);
 
             // est_srv_4_biomass(i) = srv_4_q * atl::Pow(N(y,0), srv_4_q_pow + 1);
-            est_srv_4_biomass(i) = srv_4_q * N(y,0) * (srv_4_q_pow + T(1)) / 1000.0;
+            est_srv_4_biomass(i) = srv_4_q * N(y,0) * (srv_4_q_pow + T(1.0)) / 1000.0;
         }
 
 
@@ -1982,7 +1982,7 @@ public:
             y = yrs_srv5(i);
 
             // est_srv_5_biomass(i) = srv_5_q * atl::Pow(N(y,1), srv_5_q_pow + 1);
-            est_srv_5_biomass(i) = srv_5_q * N(y,1) * (srv_5_q_pow + T(1)) / 1000.0;
+            est_srv_5_biomass(i) = srv_5_q * N(y,1) * (srv_5_q_pow + T(1.0)) / 1000.0;
         }
 
 
@@ -2500,7 +2500,7 @@ public:
     void GetVarCovar()
     {
         // atl::Matrix<T> hess = this->Hessian();
-        atl::Matrix<T> hess = atl::Matrix<T>::Identity(200);    // for testing
+        atl::Matrix<T> hess = atl::Matrix<T>::Identity(100);    // for testing
         atl::Matrix<T> inverse_hess = atl::Matrix<T>::Identity(hess.Size(0));
 
         std::cout << "\nHessian matrix\n" << hess << std::endl;
@@ -2528,4 +2528,3 @@ public:
 
 
 #endif /* CATCHATAGE_HPP */
-
