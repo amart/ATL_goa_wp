@@ -1254,9 +1254,6 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Variable<T> srv2_sel_desc_alpha;
     atl::Variable<T> srv2_sel_desc_beta;
 
-    atl::Variable<T> log_srv2_sel_age1;
-    atl::Variable<T> srv2_sel_age1;
-
 
     atl::Variable<T> log_srv3_sel_asc_alpha;
     atl::Variable<T> log_srv3_sel_asc_beta;
@@ -1357,6 +1354,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Matrix<atl::Variable<T> > est_srv_6_prop_at_age;
     atl::Matrix<atl::Variable<T> > est_srv_6_prop_at_len;
     atl::Vector<atl::Variable<T> > est_total_biomass;
+    atl::Vector<atl::Variable<T> > est_summary_biomass;
     atl::Vector<atl::Variable<T> > est_spawn_biomass;
 
     atl::Matrix<atl::Variable<T> > N_proj;
@@ -1417,6 +1415,7 @@ public:
         est_srv_6_prop_at_age.Resize(nyrs_srv6_prop_at_age,nages);
         est_srv_6_prop_at_len.Resize(nyrs_srv6_prop_at_len,n_srv_len_bins);
         est_total_biomass.Resize(nyrs);
+        est_summary_biomass.Resize(nyrs);
         est_spawn_biomass.Resize(nyrs);
 
         N_proj.Resize(nyrs_proj,nages);
@@ -1437,10 +1436,10 @@ public:
         log_fsh_sel_desc_alpha.SetBounds(1.0,3.0);
         log_fsh_sel_desc_beta.SetBounds(-5.0,5.0);
 
-        log_fsh_sel_asc_alpha  = atl::Variable<T>(1.304078496);
-        log_fsh_sel_asc_beta   = atl::Variable<T>(0.909366079);
-        log_fsh_sel_desc_alpha = atl::Variable<T>(2.202837078);
-        log_fsh_sel_desc_beta  = atl::Variable<T>(0.156959058);
+        log_fsh_sel_asc_alpha  = atl::Variable<T>(1.3863);
+        log_fsh_sel_asc_beta   = atl::Variable<T>(1.0);
+        log_fsh_sel_desc_alpha = atl::Variable<T>(2.0794);
+        log_fsh_sel_desc_beta  = atl::Variable<T>(1.0);
 
 
         // this->Register(log_srv1_sel_asc_alpha,7,"log_srv1_sel_asc_alpha");
@@ -1452,36 +1451,32 @@ public:
 
         this->RegisterHyperParameter(log_srv1_sel_desc_alpha,7);
         this->RegisterHyperParameter(log_srv1_sel_desc_beta,7);
-        log_srv1_sel_desc_alpha.SetBounds(0.0,5.0);
+        log_srv1_sel_desc_alpha.SetBounds(1.0,3.0);
         log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
-        log_srv1_sel_desc_alpha = atl::Variable<T>(2.0);
-        log_srv1_sel_desc_beta  = atl::Variable<T>(0.0);
+        log_srv1_sel_desc_alpha = atl::Variable<T>(1.6094);
+        log_srv1_sel_desc_beta  = atl::Variable<T>(1.0);
 
 
         this->RegisterHyperParameter(log_srv2_sel_asc_alpha,8);
         this->RegisterHyperParameter(log_srv2_sel_asc_beta,8);
-        log_srv2_sel_asc_alpha.SetBounds(0.0,5.0);
+        log_srv2_sel_asc_alpha.SetBounds(0.0,4.0);
         log_srv2_sel_asc_beta.SetBounds(-5.0,5.0);
-        log_srv2_sel_asc_alpha = atl::Variable<T>(2.0);
-        log_srv2_sel_asc_beta  = atl::Variable<T>(0.0);
+        log_srv2_sel_asc_alpha = atl::Variable<T>(1.3863);
+        log_srv2_sel_asc_beta  = atl::Variable<T>(-0.8);
 
-        this->RegisterHyperParameter(log_srv2_sel_desc_alpha,8);
-        this->RegisterHyperParameter(log_srv2_sel_desc_beta,8);
-        log_srv2_sel_desc_alpha.SetBounds(1.0,5.0);
-        log_srv2_sel_desc_beta.SetBounds(-5.0,5.0);
-        log_srv2_sel_desc_alpha = atl::Variable<T>(2.0);
-        log_srv2_sel_desc_beta  = atl::Variable<T>(0.0);
-
-        this->RegisterHyperParameter(log_srv2_sel_age1,8);
-        log_srv2_sel_age1.SetBounds(-15.0,1.0);
-        log_srv2_sel_age1 = atl::Variable<T>(-1.3);
+        // this->RegisterHyperParameter(log_srv2_sel_desc_alpha,8);
+        // this->RegisterHyperParameter(log_srv2_sel_desc_beta,8);
+        // log_srv2_sel_desc_alpha.SetBounds(1.5,3.5);
+        // log_srv2_sel_desc_beta.SetBounds(-5.0,5.0);
+        log_srv2_sel_desc_alpha = atl::Variable<T>(2.9957);
+        log_srv2_sel_desc_beta  = atl::Variable<T>(1.0);
 
 
         this->RegisterHyperParameter(log_srv3_sel_asc_alpha,9);
         this->RegisterHyperParameter(log_srv3_sel_asc_beta,9);
-        log_srv3_sel_asc_alpha.SetBounds(0.0,5.0);
+        log_srv3_sel_asc_alpha.SetBounds(0.0,3.0);
         log_srv3_sel_asc_beta.SetBounds(-5.0,5.0);
-        log_srv3_sel_asc_alpha = atl::Variable<T>(1.0);
+        log_srv3_sel_asc_alpha = atl::Variable<T>(1.6094);
         log_srv3_sel_asc_beta  = atl::Variable<T>(0.0);
 
         // this->Register(log_srv3_sel_desc_alpha,9,"log_srv3_sel_desc_alpha");
@@ -1492,19 +1487,19 @@ public:
         log_srv3_sel_desc_beta  = atl::Variable<T>(-20.0);
 
 
-        this->RegisterHyperParameter(log_srv6_sel_asc_alpha,8);
-        this->RegisterHyperParameter(log_srv6_sel_asc_beta,8);
-        log_srv6_sel_asc_alpha.SetBounds(0.0,5.0);
-        log_srv6_sel_asc_beta.SetBounds(-5.0,5.0);
-        log_srv6_sel_asc_alpha = atl::Variable<T>(2.0);
-        log_srv6_sel_asc_beta  = atl::Variable<T>(0.0);
+        // this->RegisterHyperParameter(log_srv6_sel_asc_alpha,8);
+        // this->RegisterHyperParameter(log_srv6_sel_asc_beta,8);
+        // log_srv6_sel_asc_alpha.SetBounds(0.0,5.0);
+        // log_srv6_sel_asc_beta.SetBounds(-5.0,5.0);
+        log_srv6_sel_asc_alpha = atl::Variable<T>(4.9);
+        log_srv6_sel_asc_beta  = atl::Variable<T>(-0.6931);
 
-        this->RegisterHyperParameter(log_srv6_sel_desc_alpha,8);
-        this->RegisterHyperParameter(log_srv6_sel_desc_beta,8);
-        log_srv6_sel_desc_alpha.SetBounds(1.0,5.0);
-        log_srv6_sel_desc_beta.SetBounds(-5.0,5.0);
-        log_srv6_sel_desc_alpha = atl::Variable<T>(2.0);
-        log_srv6_sel_desc_beta  = atl::Variable<T>(0.0);
+        // this->RegisterHyperParameter(log_srv6_sel_desc_alpha,8);
+        // this->RegisterHyperParameter(log_srv6_sel_desc_beta,8);
+        // log_srv6_sel_desc_alpha.SetBounds(1.0,5.0);
+        // log_srv6_sel_desc_beta.SetBounds(-5.0,5.0);
+        log_srv6_sel_desc_alpha = atl::Variable<T>(2.9957);
+        log_srv6_sel_desc_beta  = atl::Variable<T>(1.0);
 
 
         // this->RegisterHyperParameter(log_srv_1a_q,5);
@@ -1546,8 +1541,8 @@ public:
 
         this->RegisterHyperParameter(log_mean_recruits,1);
 
-        log_mean_recruits.SetBounds(5.0, 35.0);
-        log_mean_recruits = atl::Variable<T>(22.723265836946411156161923092159);
+        log_mean_recruits.SetBounds(5.0,35.0);
+        log_mean_recruits = atl::Variable<T>(22.1);
 
 
         this->RegisterHyperParameter(log_mean_fsh_mort,1);
@@ -1579,39 +1574,38 @@ public:
 
         // this->RegisterHyperParameter(init_pop_devs,4);
         this->RegisterHyperParameterVector(init_pop_devs,4);
-        // this->RegisterHyperParameter(recruit_devs,3);
-        this->RegisterHyperParameterVector(recruit_devs,3);
-        this->RegisterHyperParameterVector(recruit_proj_devs,9);
-        // this->RegisterHyperParameter(fsh_mort_devs,2);
-         this->RegisterHyperParameterVector(fsh_mort_devs,2);
-
-        // this->RegisterHyperParameter(fsh_sel_asc_alpha_devs,5);
-        this->RegisterHyperParameterVector(fsh_sel_asc_alpha_devs,5);
-        // this->RegisterHyperParameter(fsh_sel_asc_beta_devs,5);
-        this->RegisterHyperParameterVector(fsh_sel_asc_beta_devs,5);
-        // this->RegisterHyperParameter(fsh_sel_desc_alpha_devs,5);
-        this->RegisterHyperParameterVector(fsh_sel_desc_alpha_devs,5);
-        // this->RegisterHyperParameter(fsh_sel_desc_beta_devs,5);
-        this->RegisterHyperParameterVector(fsh_sel_desc_beta_devs,5);
-
         init_pop_devs.SetBounds(-15.0,15.0);
         init_pop_devs = atl::Variable<T>(0.0);
 
+        // this->RegisterHyperParameter(recruit_devs,3);
+        this->RegisterHyperParameterVector(recruit_devs,3);
         recruit_devs.SetBounds(-15.0, 15.0);
         recruit_devs = atl::Variable<T>(0.0);
-        recruit_proj_devs.SetBounds(-5.0, 5.0);
+
+        // this->RegisterHyperParameterVector(recruit_proj_devs,9);
+        // recruit_proj_devs.SetBounds(-5.0, 5.0);
         recruit_proj_devs = atl::Variable<T>(0.0);
 
+        // this->RegisterHyperParameter(fsh_mort_devs,2);
+         this->RegisterHyperParameterVector(fsh_mort_devs,2);
         fsh_mort_devs.SetBounds(-10.0, 10.0);
         fsh_mort_devs = atl::Variable<T>(0.0);
 
+        // this->RegisterHyperParameter(fsh_sel_asc_alpha_devs,5);
+        this->RegisterHyperParameterVector(fsh_sel_asc_alpha_devs,5);
         fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_alpha_devs = atl::Variable<T>(0.0);
+        // this->RegisterHyperParameter(fsh_sel_asc_beta_devs,5);
+        this->RegisterHyperParameterVector(fsh_sel_asc_beta_devs,5);
         fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_beta_devs = atl::Variable<T>(0.0);
-        fsh_sel_desc_alpha_devs.SetBounds(-5.0, 5.0);
+        // this->RegisterHyperParameter(fsh_sel_desc_alpha_devs,5);
+        // this->RegisterHyperParameterVector(fsh_sel_desc_alpha_devs,5);
+        // fsh_sel_desc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_alpha_devs = atl::Variable<T>(0.0);
-        fsh_sel_desc_beta_devs.SetBounds(-5.0, 5.0);
+        // this->RegisterHyperParameter(fsh_sel_desc_beta_devs,5);
+        // this->RegisterHyperParameterVector(fsh_sel_desc_beta_devs,5);
+        // fsh_sel_desc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_beta_devs = atl::Variable<T>(0.0);
     }
 
@@ -1640,7 +1634,7 @@ public:
             // {
             //     fsh_sel(i) /= max_sel;
             // }
-            
+
             // replace max - matches assessment model
             fsh_sel(i) /= fsh_sel(i,6);
         }
@@ -1656,7 +1650,6 @@ public:
         srv2_sel_asc_beta   = atl::exp(log_srv2_sel_asc_beta);
         srv2_sel_desc_alpha = atl::exp(log_srv2_sel_desc_alpha);
         srv2_sel_desc_beta  = atl::exp(log_srv2_sel_desc_beta);
-        srv2_sel_age1       = atl::exp(log_srv2_sel_age1);
 
         srv3_sel_asc_alpha  = atl::exp(log_srv3_sel_asc_alpha);
         srv3_sel_asc_beta   = atl::exp(log_srv3_sel_asc_beta);
@@ -1687,7 +1680,7 @@ public:
         srv_sel(0,1) = srv_sel(0,0) = 0.0;
 
         // separate sel for age 1 for srv 2
-        srv_sel(1,0) = srv2_sel_age1;
+        // srv_sel(1,0) = srv2_sel_age1;
 
         // set sel to 1 for age 1 in srv 4 and age 2 in srv 5
         srv_sel(4,1) = srv_sel(3,0) = 1.0;
@@ -1701,7 +1694,7 @@ public:
         //         srv_sel(k) /= max_sel;
         //     }
         // }
-        
+
         // replace max - matches assessment model
         srv_sel(0) /= srv_sel(0,2);
         srv_sel(1) /= srv_sel(1,9);
@@ -1765,6 +1758,7 @@ public:
     void NumbersAtAge()
     {
         atl::Vector<atl::Variable<T> > n_at_age_row;
+        atl::Variable<T> age_specific_biomass;
 
         initial_population(0) = atl::exp(log_mean_recruits + log_initial_R_dev + recruit_devs(0));
 
@@ -1804,9 +1798,25 @@ public:
             // std::cout << "N-at-age in year " << i << " " << atl::Row(N, i) << std::endl;
 
             // calculate total and spawning biomass - vector operations
+            est_total_biomass(i)   = T(0.0);
+            est_summary_biomass(i) = T(0.0);
+            est_spawn_biomass(i)   = T(0.0);
             n_at_age_row = atl::Row(N, i);
-            est_total_biomass(i) = atl::Sum(n_at_age_row * atl::Row(wt_pop, i)) / 1000.0;
-            est_spawn_biomass(i) = atl::Sum(n_at_age_row * atl::Row(expZ_sp, i) * atl::Row(wt_spawn, i) * 0.5 * maturity) / 1000.0;
+
+             for ( int j = 0; j < nages; j++ )
+            {
+                age_specific_biomass = n_at_age_row(j) * wt_pop(i,j);
+
+                est_total_biomass(i) += age_specific_biomass;
+
+                // summary biomass is age 3+
+                if ( j >= 2 ) est_summary_biomass(i) += age_specific_biomass;
+
+                est_spawn_biomass(i) += (n_at_age_row(j) * expZ_sp(i,j) * wt_spawn(i,j) * 0.5 * maturity(j));
+            }
+            est_total_biomass(i)   /= 1000.0;
+            est_summary_biomass(i) /= 1000.0;
+            est_spawn_biomass(i)   /= 1000.0;
         }
 
         // convert from kg to mt
@@ -2306,7 +2316,15 @@ public:
 
         // penalty on rec devs
         // nll_parts(18) = (0.5 / SQUARE(sigmaR)) * atl::Norm2(recruit_devs);
-        nll_parts(18) = (0.5 / SQUARE(sigmaR)) * atl::Norm2(recruit_devs);
+        nll_parts(18) = 0.0;
+        for ( int i = 0; i <= 7; i++ )
+        {
+            nll_parts(18) += (0.5 * SQUARE(recruit_devs(i) / sigmaR));
+        }
+        for ( int i = (nyrs - 2); i < nyrs; i++ )
+        {
+            nll_parts(18) += (0.5 * SQUARE(recruit_devs(i) / sigmaR));
+        }
 
         // penalty on fsh mort dev
         // nll_parts(19) = atl::Norm2(fsh_mort_devs);
@@ -2396,17 +2414,17 @@ public:
         std::cout << "srv1_sel_asc_beta " << srv1_sel_asc_beta << std::endl;
         std::cout << "srv1_sel_desc_alpha " << srv1_sel_desc_alpha << std::endl;
         std::cout << "srv1_sel_desc_beta " << srv1_sel_desc_beta << std::endl;
+        std::cout << std::endl;
 
         std::cout << "log_srv2_sel_asc_alpha " << log_srv2_sel_asc_alpha << std::endl;
         std::cout << "log_srv2_sel_asc_beta " << log_srv2_sel_asc_beta << std::endl;
         std::cout << "log_srv2_sel_desc_alpha " << log_srv2_sel_desc_alpha << std::endl;
         std::cout << "log_srv2_sel_desc_beta " << log_srv2_sel_desc_beta << std::endl;
-        std::cout << "log_srv2_sel_age1 " << log_srv2_sel_age1 << std::endl;
         std::cout << "srv2_sel_asc_alpha " << srv2_sel_asc_alpha << std::endl;
         std::cout << "srv2_sel_asc_beta " << srv2_sel_asc_beta << std::endl;
         std::cout << "srv2_sel_desc_alpha " << srv2_sel_desc_alpha << std::endl;
         std::cout << "srv2_sel_desc_beta " << srv2_sel_desc_beta << std::endl;
-        std::cout << "srv2_sel_age1 " << srv2_sel_age1 << std::endl;
+        std::cout << std::endl;
 
         std::cout << "log_srv3_sel_asc_alpha " << log_srv3_sel_asc_alpha << std::endl;
         std::cout << "log_srv3_sel_asc_beta " << log_srv3_sel_asc_beta << std::endl;
@@ -2416,6 +2434,7 @@ public:
         std::cout << "srv3_sel_asc_beta " << srv3_sel_asc_beta << std::endl;
         std::cout << "srv3_sel_desc_alpha " << srv3_sel_desc_alpha << std::endl;
         std::cout << "srv3_sel_desc_beta " << srv3_sel_desc_beta << std::endl;
+        std::cout << std::endl;
 
         std::cout << "log_srv6_sel_asc_alpha " << log_srv6_sel_asc_alpha << std::endl;
         std::cout << "log_srv6_sel_asc_beta " << log_srv6_sel_asc_beta << std::endl;
@@ -2462,6 +2481,7 @@ public:
         std::cout << std::endl;
 
         std::cout << "total biomass " << est_total_biomass << std::endl;
+        std::cout << "summary (age 3+) biomass " << est_summary_biomass << std::endl;
         std::cout << "spawning biomass " << est_spawn_biomass << std::endl;
         std::cout << std::endl;
 
@@ -2509,7 +2529,7 @@ public:
     void GetVarCovar()
     {
         // atl::Matrix<T> hess = this->Hessian();
-        atl::Matrix<T> hess = atl::Matrix<T>::Identity(100);    // for testing
+        atl::Matrix<T> hess = atl::Matrix<T>::Identity(10);    // for testing
         atl::Matrix<T> inverse_hess = atl::Matrix<T>::Identity(hess.Size(0));
 
         std::cout << "\nHessian matrix\n" << hess << std::endl;
