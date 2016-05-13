@@ -806,14 +806,14 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     // age-1 acoustic survey
     int nyrs_srv4 = 15;
     atl::Vector<int> yrs_srv4 = { 24, 25, 31, 32, 33, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
-    atl::Vector<T> obs_srv_4_biomass = { 186000, 10698000, 394000, 8000, 51000, 1626000, 1909000, 170000, 2867000, 2498000, 97170.701, 94952.138, 12935274.25, 707935.349, 21684.248 };
+    atl::Vector<T> obs_srv_4_biomass = { 0.186, 10.698, 0.394, 0.008, 0.051, 1.626, 1.909, 0.170, 2.867, 2.498, 0.097170701, 0.094952138, 12.93527425, 0.707935349, 0.021684248 };
     atl::Vector<T> obs_srv_4_CV = { 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885 };
 
 
     // age-2 acoustic survey
     int nyrs_srv5 = 15;
     atl::Vector<int> yrs_srv5 = { 24, 25, 31, 32, 33, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
-    atl::Vector<T> obs_srv_5_biomass = { 36000, 510000, 4267000, 216000, 95000, 158000, 857000, 485000, 406000, 1335000, 334000, 852000, 150000, 4142770.361, 173710.023 };
+    atl::Vector<T> obs_srv_5_biomass = { 0.036, 0.510, 4.267, 0.216, 0.095, 0.158, 0.857, 0.485, 0.406, 1.335, 0.334, 0.852, 0.150, 4.142770361, 0.173710023 };
     atl::Vector<T> obs_srv_5_CV = { 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551 };
 
 
@@ -1449,16 +1449,16 @@ public:
         log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
         log_srv1_sel_asc_beta  = atl::Variable<T>(-20.0);
 
-        this->RegisterHyperParameter(log_srv1_sel_desc_alpha,7);
-        this->RegisterHyperParameter(log_srv1_sel_desc_beta,7);
+        this->RegisterHyperParameter(log_srv1_sel_desc_alpha,6);
+        this->RegisterHyperParameter(log_srv1_sel_desc_beta,6);
         log_srv1_sel_desc_alpha.SetBounds(1.0,3.0);
         log_srv1_sel_desc_beta.SetBounds(-5.0,5.0);
         log_srv1_sel_desc_alpha = atl::Variable<T>(1.6094);
         log_srv1_sel_desc_beta  = atl::Variable<T>(1.0);
 
 
-        this->RegisterHyperParameter(log_srv2_sel_asc_alpha,8);
-        this->RegisterHyperParameter(log_srv2_sel_asc_beta,8);
+        this->RegisterHyperParameter(log_srv2_sel_asc_alpha,6);
+        this->RegisterHyperParameter(log_srv2_sel_asc_beta,6);
         log_srv2_sel_asc_alpha.SetBounds(0.0,4.0);
         log_srv2_sel_asc_beta.SetBounds(-5.0,5.0);
         log_srv2_sel_asc_alpha = atl::Variable<T>(1.3863);
@@ -1472,8 +1472,8 @@ public:
         log_srv2_sel_desc_beta  = atl::Variable<T>(1.0);
 
 
-        this->RegisterHyperParameter(log_srv3_sel_asc_alpha,9);
-        this->RegisterHyperParameter(log_srv3_sel_asc_beta,9);
+        this->RegisterHyperParameter(log_srv3_sel_asc_alpha,8);
+        this->RegisterHyperParameter(log_srv3_sel_asc_beta,8);
         log_srv3_sel_asc_alpha.SetBounds(0.0,3.0);
         log_srv3_sel_asc_beta.SetBounds(-5.0,5.0);
         log_srv3_sel_asc_alpha = atl::Variable<T>(1.6094);
@@ -1491,8 +1491,8 @@ public:
         // this->RegisterHyperParameter(log_srv6_sel_asc_beta,8);
         // log_srv6_sel_asc_alpha.SetBounds(0.0,5.0);
         // log_srv6_sel_asc_beta.SetBounds(-5.0,5.0);
-        log_srv6_sel_asc_alpha = atl::Variable<T>(4.9);
-        log_srv6_sel_asc_beta  = atl::Variable<T>(-0.6931);
+        log_srv6_sel_asc_alpha = atl::Variable<T>(-0.6931);
+        log_srv6_sel_asc_beta  = atl::Variable<T>(4.9);
 
         // this->RegisterHyperParameter(log_srv6_sel_desc_alpha,8);
         // this->RegisterHyperParameter(log_srv6_sel_desc_beta,8);
@@ -1520,39 +1520,36 @@ public:
         log_srv_3_q.SetBounds(-10.0,10.0);
         log_srv_3_q = atl::Variable<T>(-1.6);
 
-        this->RegisterHyperParameter(log_srv_4_q,7);
+        this->RegisterHyperParameter(log_srv_4_q,6);
         log_srv_4_q.SetBounds(-10.0,10.0);
         log_srv_4_q = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(srv_4_q_pow,7);
         // srv_4_q_pow.SetBounds(-10.0,10.0);
         srv_4_q_pow = atl::Variable<T>(0.0);
 
-        this->RegisterHyperParameter(log_srv_5_q,7);
+        this->RegisterHyperParameter(log_srv_5_q,6);
         log_srv_5_q.SetBounds(-10.0,10.0);
         log_srv_5_q = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(srv_5_q_pow,7);
         // srv_5_q_pow.SetBounds(-10.0,10.0);
         srv_5_q_pow = atl::Variable<T>(0.0);
 
-        this->RegisterHyperParameter(log_srv_6_q,6);
+        this->RegisterHyperParameter(log_srv_6_q,5);
         log_srv_6_q.SetBounds(-10.0,10.0);
         log_srv_6_q = atl::Variable<T>(0.0);
 
 
         this->RegisterHyperParameter(log_mean_recruits,1);
-
         log_mean_recruits.SetBounds(5.0,35.0);
         log_mean_recruits = atl::Variable<T>(22.1);
 
 
         this->RegisterHyperParameter(log_mean_fsh_mort,1);
-
         log_mean_fsh_mort.SetBounds(-10.0,10.0);
         log_mean_fsh_mort = atl::Variable<T>(-1.6);
 
-        this->RegisterHyperParameter(log_initial_R_dev,1);
-
-        log_initial_R_dev.SetBounds(-10.0, 10.0);
+        // this->RegisterHyperParameter(log_initial_R_dev,1);
+        // log_initial_R_dev.SetBounds(-10.0, 10.0);
         log_initial_R_dev = atl::Variable<T>(0.0);
 
 
@@ -1573,8 +1570,8 @@ public:
         fsh_sel_desc_beta_devs.Resize(nyrs);
 
         // this->RegisterHyperParameter(init_pop_devs,4);
-        this->RegisterHyperParameterVector(init_pop_devs,4);
-        init_pop_devs.SetBounds(-15.0,15.0);
+        // this->RegisterHyperParameterVector(init_pop_devs,4);
+        // init_pop_devs.SetBounds(-15.0,15.0);
         init_pop_devs = atl::Variable<T>(0.0);
 
         // this->RegisterHyperParameter(recruit_devs,3);
@@ -1592,19 +1589,19 @@ public:
         fsh_mort_devs = atl::Variable<T>(0.0);
 
         // this->RegisterHyperParameter(fsh_sel_asc_alpha_devs,5);
-        this->RegisterHyperParameterVector(fsh_sel_asc_alpha_devs,5);
+        this->RegisterHyperParameterVector(fsh_sel_asc_alpha_devs,7);
         fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_alpha_devs = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(fsh_sel_asc_beta_devs,5);
-        this->RegisterHyperParameterVector(fsh_sel_asc_beta_devs,5);
+        this->RegisterHyperParameterVector(fsh_sel_asc_beta_devs,7);
         fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_beta_devs = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(fsh_sel_desc_alpha_devs,5);
-        // this->RegisterHyperParameterVector(fsh_sel_desc_alpha_devs,5);
+        // this->RegisterHyperParameterVector(fsh_sel_desc_alpha_devs,7);
         // fsh_sel_desc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_alpha_devs = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(fsh_sel_desc_beta_devs,5);
-        // this->RegisterHyperParameterVector(fsh_sel_desc_beta_devs,5);
+        // this->RegisterHyperParameterVector(fsh_sel_desc_beta_devs,7);
         // fsh_sel_desc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_beta_devs = atl::Variable<T>(0.0);
     }
@@ -1829,6 +1826,8 @@ public:
     void FleetIndices()
     {
         atl::Variable<T> est_srv_num;
+        atl::Vector<atl::Variable<T> > srv_sel_row;
+        atl::Vector<atl::Variable<T> > n_at_age_row;
         int y;
 
         srv_1a_q = atl::exp(log_srv_1a_q);
@@ -1841,26 +1840,27 @@ public:
         srv_6_q  = atl::exp(log_srv_6_q);
 
         // srv 1
+        srv_sel_row = atl::Row(srv_sel, 0);
 
         for ( int i = 0; i < nyrs_srv1a; i++ )
         {
             y = yrs_srv1a(i);
 
-            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b(i);
 
-            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             y = yrs_srv1(i);
 
-            est_srv_1_biomass(i) = atl::Sum(srv_1_q * atl::Row(obs_srv_1_wt_at_age, i) * atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1_biomass(i) = atl::Sum(srv_1_q * atl::Row(obs_srv_1_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         // calculate proportions at age
@@ -1869,7 +1869,7 @@ public:
             y = yrs_srv1_prop_at_age(i);
 
             // est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >(age_age_err * (srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)));
-            est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) * age_age_err);
+            est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) * age_age_err);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_1_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -1884,7 +1884,12 @@ public:
         {
             y = yrs_srv1_prop_at_len(i);
 
-            // est_srv_1_prop_at_len(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 0) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) * temp_mat_3);
+            // est_srv_1_prop_at_len(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) * temp_mat_3);
+            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y);
+            for ( int j = 0; j < n_srv_len_bins; j++ )
+            {
+                est_srv_1_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(temp_mat_3,j));
+            }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_1_prop_at_len, i));
             if ( est_srv_num > T(0) )
@@ -1895,6 +1900,7 @@ public:
 
 
         // srv 2
+        srv_sel_row = atl::Row(srv_sel, 1);
 
         for ( int i = 0; i < nyrs_srv2; i++ )
         {
@@ -1902,7 +1908,7 @@ public:
 
             // est_srv_2_biomass(i) = 0;
 
-            est_srv_2_biomass(i) = atl::Sum(srv_2_q * atl::Row(obs_srv_2_wt_at_age, i) * atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) / 1000.0;
+            est_srv_2_biomass(i) = atl::Sum(srv_2_q * atl::Row(obs_srv_2_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) / 1000.0;
 
             // convert from kg to mt
             // est_srv_2_biomass(i) /= T(1000.0);
@@ -1914,7 +1920,7 @@ public:
             y = yrs_srv2_prop_at_age(i);
 
             // est_srv_2_prop_at_age(i) = atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
-            est_srv_2_prop_at_age(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) * age_age_err);
+            est_srv_2_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) * age_age_err);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -1929,7 +1935,12 @@ public:
         {
             y = yrs_srv2_prop_at_len(i);
 
-            // est_srv_2_prop_at_len(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) * temp_mat_2);
+            // est_srv_2_prop_at_len(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) * temp_mat_2);
+            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
+            for ( int j = 0; j < n_srv_len_bins; j++ )
+            {
+                est_srv_2_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(temp_mat_2,j));
+            }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_len, i));
             if ( est_srv_num > T(0) )
@@ -1940,6 +1951,7 @@ public:
 
 
         // srv 3
+        srv_sel_row = atl::Row(srv_sel, 2);
 
         for ( int i = 0; i < nyrs_srv3; i++ )
         {
@@ -1947,7 +1959,7 @@ public:
 
             // est_srv_3_biomass(i) = 0;
 
-            est_srv_3_biomass(i) = atl::Sum(srv_3_q * atl::Row(obs_srv_3_wt_at_age, i) * atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) / 1000.0;
+            est_srv_3_biomass(i) = atl::Sum(srv_3_q * atl::Row(obs_srv_3_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) / 1000.0;
 
             // convert from kg to mt
             // est_srv_3_biomass(i) /= T(1000.0);
@@ -1959,7 +1971,7 @@ public:
             y = yrs_srv3_prop_at_age(i);
 
             // est_srv_3_prop_at_age(i) = atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
-            est_srv_3_prop_at_age(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) * age_age_err);
+            est_srv_3_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) * age_age_err);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -1973,7 +1985,12 @@ public:
         {
             y = yrs_srv3_prop_at_len(i);
 
-            // est_srv_3_prop_at_len(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) * temp_mat_2);
+            // est_srv_3_prop_at_len(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) * temp_mat_2);
+            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
+            for ( int j = 0; j < n_srv_len_bins; j++ )
+            {
+                est_srv_3_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(temp_mat_2,j));
+            }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_len, i));
             if ( est_srv_num > T(0) )
@@ -1990,7 +2007,8 @@ public:
             y = yrs_srv4(i);
 
             // est_srv_4_biomass(i) = srv_4_q * atl::Pow(N(y,0), srv_4_q_pow + 1);
-            est_srv_4_biomass(i) = srv_4_q * N(y,0) * (srv_4_q_pow + T(1.0)) / 1000.0;
+            // est_srv_4_biomass(i) = srv_4_q * N(y,0) * (srv_4_q_pow + T(1.0)) / 1000.0;
+            est_srv_4_biomass(i) = srv_4_q * SQUARE(N(y,0) / 1000000000.0);
         }
 
 
@@ -2001,17 +2019,18 @@ public:
             y = yrs_srv5(i);
 
             // est_srv_5_biomass(i) = srv_5_q * atl::Pow(N(y,1), srv_5_q_pow + 1);
-            est_srv_5_biomass(i) = srv_5_q * N(y,1) * (srv_5_q_pow + T(1.0)) / 1000.0;
+            est_srv_5_biomass(i) = srv_5_q * N(y,1) / 1000000000.0;
         }
 
 
         // srv 6
+        srv_sel_row = atl::Row(srv_sel, 5);
 
         for ( int i = 0; i < nyrs_srv6; i++ )
         {
             y = yrs_srv6(i);
 
-            est_srv_6_biomass(i) = atl::Sum(srv_6_q * atl::Row(obs_srv_6_wt_at_age, i) * atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) / 1000.0;
+            est_srv_6_biomass(i) = atl::Sum(srv_6_q * atl::Row(obs_srv_6_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) / 1000.0;
         }
 
         // calculate proportions at age
@@ -2020,7 +2039,7 @@ public:
             y = yrs_srv6_prop_at_age(i);
 
             // est_srv_6_prop_at_age(i) = atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
-            est_srv_6_prop_at_age(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) * age_age_err);
+            est_srv_6_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) * age_age_err);
 
             est_srv_num = atl::Sum(atl::Row(est_srv_6_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -2034,7 +2053,12 @@ public:
         {
             y = yrs_srv6_prop_at_len(i);
 
-            // est_srv_6_prop_at_len(i) = atl::Vector<atl::Variable<T> >((atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) * temp_mat_2);
+            // est_srv_6_prop_at_len(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) * temp_mat_2);
+            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
+            for ( int j = 0; j < n_srv_len_bins; j++ )
+            {
+                est_srv_6_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(temp_mat_2,j));
+            }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_6_prop_at_len, i));
             if ( est_srv_num > T(0) )
