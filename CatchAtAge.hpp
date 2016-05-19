@@ -29,6 +29,8 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Vector<T> obs_catch_CV = { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05 };
 
     int nyrs_fsh_prop_at_age = 40;
+    int age_young_fsh = 2 - 1;
+    int age_old_fsh = 10 - 1;
     atl::Vector<int> yrs_fsh_prop_at_age = { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 };
     atl::Vector<T> obs_fsh_prop_at_age_N = { 0.576968965, 12.6933387, 110.7781701, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 50.19626774, 16.15510954, 19.04000805, 42.69574635, 63.46647878, 95.19982553, 80.19867539, 83.66044623, 89.43024325, 57.11991679, 36.92594934, 79.62169569, 80.77565509, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793 };
     atl::Matrix<T> obs_fsh_prop_at_age = {
@@ -253,6 +255,8 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Vector<T> obs_srv_1_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
 
     int nyrs_srv1_prop_at_age = 22;
+    int age_young_srv1 = 3 - 1;
+    int age_old_srv1 = 10 - 1;
     atl::Vector<int> yrs_srv1_prop_at_age = { 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
     atl::Vector<T> obs_srv_1_prop_at_age_N = { 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788 };
     atl::Matrix<T> obs_srv_1_prop_at_age = {
@@ -462,6 +466,8 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Vector<T> obs_srv_2_CV = { 0.117026651, 0.159023699, 0.145984725, 0.383779365, 0.297659341, 0.12011675, 0.153660591, 0.138519958, 0.152453286, 0.145764033, 0.21086392, 0.160163319 };
 
     int nyrs_srv2_prop_at_age = 11;
+    int age_young_srv2 = 1 - 1;
+    int age_old_srv2 = 10 - 1;
     atl::Vector<int> yrs_srv2_prop_at_age = { 20, 23, 26, 29, 31, 33, 35, 37, 39, 41, 43 };
     atl::Vector<T> obs_srv_2_prop_at_age_N = { 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401 };
     atl::Matrix<T> obs_srv_2_prop_at_age = {
@@ -824,6 +830,8 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Vector<T> obs_srv_6_CV = { 0.25, 0.25 };
 
     int nyrs_srv6_prop_at_age = 1;
+    int age_young_srv6 = 1 - 1;
+    int age_old_srv6 = 10 - 1;
     atl::Vector<int> yrs_srv6_prop_at_age = { 43 };
     atl::Vector<T> obs_srv_6_prop_at_age_N = { 10 };
     atl::Matrix<T> obs_srv_6_prop_at_age = {
@@ -1380,6 +1388,103 @@ public:
 
     }
 
+    void AdjustInputData()
+    {
+        // match the 2015 assessment with adjusting the age comp data
+        // this function should run only once
+
+        // accumulate younger fish comp data
+        // accumulate older fish comp data
+
+        // adjustment to fsh age comps data
+        for ( int i = 0; i < nyrs_fsh_prop_at_age; i++ )
+        {
+            if ( age_young_fsh > 0 )
+            {
+                for ( int j = 0; j < age_young_fsh; j++ )
+                {
+                    obs_fsh_prop_at_age(i,age_young_fsh) += obs_fsh_prop_at_age(i,j);
+                    obs_fsh_prop_at_age(i,j) = T(0);
+                }
+            }
+
+            if ( (nages-1) > age_old_fsh )
+            {
+                for ( int j = (age_old_fsh+1); j < nages; j++ )
+                {
+                    obs_fsh_prop_at_age(i,age_old_fsh) += obs_fsh_prop_at_age(i,j);
+                    obs_fsh_prop_at_age(i,j) = T(0);
+                }
+            }
+        }
+
+        // adjustment to srv1 age comps data
+        for ( int i = 0; i < nyrs_srv1_prop_at_age; i++ )
+        {
+            if ( age_young_srv1 > 0 )
+            {
+                for ( int j = 0; j < age_young_srv1; j++ )
+                {
+                    obs_srv_1_prop_at_age(i,age_young_srv1) += obs_srv_1_prop_at_age(i,j);
+                    obs_srv_1_prop_at_age(i,j) = T(0);
+                }
+            }
+
+            if ( (nages-1) > age_old_srv1 )
+            {
+                for ( int j = (age_old_srv1+1); j < nages; j++ )
+                {
+                    obs_srv_1_prop_at_age(i,age_old_srv1) += obs_srv_1_prop_at_age(i,j);
+                    obs_srv_1_prop_at_age(i,j) = T(0);
+                }
+            }
+        }
+
+        // adjustment to srv2 age comps data
+       for ( int i = 0; i < nyrs_srv2_prop_at_age; i++ )
+        {
+            if ( age_young_srv2 > 0 )
+            {
+                for ( int j = 0; j < age_young_srv2; j++ )
+                {
+                    obs_srv_2_prop_at_age(i,age_young_srv2) += obs_srv_2_prop_at_age(i,j);
+                    obs_srv_2_prop_at_age(i,j) = T(0);
+                }
+            }
+
+            if ( (nages-1) > age_old_srv2 )
+            {
+                for ( int j = (age_old_srv2+1); j < nages; j++ )
+                {
+                    obs_srv_2_prop_at_age(i,age_old_srv2) += obs_srv_2_prop_at_age(i,j);
+                    obs_srv_2_prop_at_age(i,j) = T(0);
+                }
+            }
+        }
+
+        // adjustment to srv6 age comps data
+       for ( int i = 0; i < nyrs_srv6_prop_at_age; i++ )
+        {
+            if ( age_young_srv6 > 0 )
+            {
+                for ( int j = 0; j < age_young_srv6; j++ )
+                {
+                    obs_srv_6_prop_at_age(i,age_young_srv6) += obs_srv_6_prop_at_age(i,j);
+                    obs_srv_6_prop_at_age(i,j) = T(0);
+                }
+            }
+
+            if ( (nages-1) > age_old_srv6 )
+            {
+                for ( int j = (age_old_srv6+1); j < nages; j++ )
+                {
+                    obs_srv_6_prop_at_age(i,age_old_srv6) += obs_srv_6_prop_at_age(i,j);
+                    obs_srv_6_prop_at_age(i,j) = T(0);
+                }
+            }
+       }
+    }
+
     void Initialize()
     {
         srv_sel.Resize(nyrs, nages);
@@ -1541,8 +1646,8 @@ public:
 
 
         this->RegisterHyperParameter(log_mean_recruits,1);
-        log_mean_recruits.SetBounds(5.0,35.0);
-        log_mean_recruits = atl::Variable<T>(22.1);
+        log_mean_recruits.SetBounds(5.0,36.0);
+        log_mean_recruits = atl::Variable<T>(20.7232658369);
 
 
         this->RegisterHyperParameter(log_mean_fsh_mort,1);
@@ -1577,7 +1682,7 @@ public:
 
         // this->RegisterHyperParameter(recruit_devs,3);
         this->RegisterHyperParameterVector(recruit_devs,3);
-        recruit_devs.SetBounds(-15.0, 15.0);
+        recruit_devs.SetBounds(-15.0,15.0);
         recruit_devs = atl::Variable<T>(0.0);
 
         // this->RegisterHyperParameterVector(recruit_proj_devs,9);
@@ -1586,16 +1691,16 @@ public:
 
         // this->RegisterHyperParameter(fsh_mort_devs,2);
          this->RegisterHyperParameterVector(fsh_mort_devs,2);
-        fsh_mort_devs.SetBounds(-10.0, 10.0);
+        fsh_mort_devs.SetBounds(-10.0,10.0);
         fsh_mort_devs = atl::Variable<T>(0.0);
 
         // this->RegisterHyperParameter(fsh_sel_asc_alpha_devs,5);
         this->RegisterHyperParameterVector(fsh_sel_asc_alpha_devs,7);
-        fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
+        fsh_sel_asc_alpha_devs.SetBounds(-5.0,5.0);
         fsh_sel_asc_alpha_devs = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(fsh_sel_asc_beta_devs,5);
         this->RegisterHyperParameterVector(fsh_sel_asc_beta_devs,7);
-        fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
+        fsh_sel_asc_beta_devs.SetBounds(-5.0,5.0);
         fsh_sel_asc_beta_devs = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(fsh_sel_desc_alpha_devs,5);
         // this->RegisterHyperParameterVector(fsh_sel_desc_alpha_devs,7);
@@ -1605,6 +1710,8 @@ public:
         // this->RegisterHyperParameterVector(fsh_sel_desc_beta_devs,7);
         // fsh_sel_desc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_beta_devs = atl::Variable<T>(0.0);
+
+        AdjustInputData();
     }
 
     void Selectivity()
@@ -1877,6 +1984,25 @@ public:
             {
                 est_srv_1_prop_at_age(i) /= est_srv_num;
             }
+
+            // accumulations
+            if ( age_young_srv1 > 0 )
+            {
+                for ( int j = 0; j < age_young_srv1; j++ )
+                {
+                    est_srv_1_prop_at_age(i,age_young_srv1) += est_srv_1_prop_at_age(i,j);
+                    est_srv_1_prop_at_age(i,j) = T(0);
+                }
+            }
+
+            if ( (nages-1) > age_old_srv1 )
+            {
+                for ( int j = (age_old_srv1+1); j < nages; j++ )
+                {
+                    est_srv_1_prop_at_age(i,age_old_srv1) += est_srv_1_prop_at_age(i,j);
+                    est_srv_1_prop_at_age(i,j) = T(0);
+                }
+            }
         }
 
         atl::Matrix<T> temp_mat_3 = age_age_err * age_len_trans_3;
@@ -1927,6 +2053,25 @@ public:
             if ( est_srv_num > T(0) )
             {
                 est_srv_2_prop_at_age(i) /= est_srv_num;
+            }
+
+            // accumulations
+            if ( age_young_srv2 > 0 )
+            {
+                for ( int j = 0; j < age_young_srv2; j++ )
+                {
+                    est_srv_2_prop_at_age(i,age_young_srv2) += est_srv_2_prop_at_age(i,j);
+                    est_srv_2_prop_at_age(i,j) = T(0);
+                }
+            }
+
+            if ( (nages-1) > age_old_srv2 )
+            {
+                for ( int j = (age_old_srv2+1); j < nages; j++ )
+                {
+                    est_srv_2_prop_at_age(i,age_old_srv2) += est_srv_2_prop_at_age(i,j);
+                    est_srv_2_prop_at_age(i,j) = T(0);
+                }
             }
         }
 
@@ -2006,7 +2151,7 @@ public:
         {
             y = yrs_srv4(i);
 
-            est_srv_4_biomass(i) = srv_4_q * atl::pow(N(y,0) / 1000000000.0, srv_4_q_pow + T(1.0));
+            est_srv_4_biomass(i) = srv_4_q * atl::pow(N(y,0) / 1000000000.0, srv_4_q_pow + T(1));
             // est_srv_4_biomass(i) = srv_4_q * N(y,0) * (srv_4_q_pow + T(1.0)) / 1000.0;
             // est_srv_4_biomass(i) = srv_4_q * SQUARE(N(y,0) / 1000000000.0);
         }
@@ -2017,7 +2162,7 @@ public:
         {
             y = yrs_srv5(i);
 
-            est_srv_5_biomass(i) = srv_5_q * atl::pow(N(y,1) / 1000000000.0, srv_5_q_pow + T(1.0));
+            est_srv_5_biomass(i) = srv_5_q * atl::pow(N(y,1) / 1000000000.0, srv_5_q_pow + T(1));
             // est_srv_5_biomass(i) = srv_5_q * N(y,1) / 1000000000.0;
         }
 
@@ -2044,6 +2189,25 @@ public:
             if ( est_srv_num > T(0) )
             {
                 est_srv_6_prop_at_age(i) /= est_srv_num;
+            }
+
+            // accumulations
+            if ( age_young_srv6 > 0 )
+            {
+                for ( int j = 0; j < age_young_srv6; j++ )
+                {
+                    est_srv_6_prop_at_age(i,age_young_srv6) += est_srv_6_prop_at_age(i,j);
+                    est_srv_6_prop_at_age(i,j) = T(0);
+                }
+            }
+
+            if ( (nages-1) > age_old_srv6 )
+            {
+                for ( int j = (age_old_srv6+1); j < nages; j++ )
+                {
+                    est_srv_6_prop_at_age(i,age_old_srv6) += est_srv_6_prop_at_age(i,j);
+                    est_srv_6_prop_at_age(i,j) = T(0);
+                }
             }
         }
 
@@ -2082,6 +2246,25 @@ public:
             {
                 est_fsh_prop_at_age(i) = C(i) / est_catch_num;
                 // est_fsh_prop_at_len(i) = atl::Vector<atl::Variable<T> >(est_fsh_prop_at_age(i) * age_len_trans_1);
+            }
+
+            // accumulation
+            if ( age_young_fsh > 0 )
+            {
+                for ( int j = 0; j < age_young_fsh; j++ )
+                {
+                    est_fsh_prop_at_age(i,age_young_fsh) += est_fsh_prop_at_age(i,j);
+                    est_fsh_prop_at_age(i,j) = T(0);
+                }
+            }
+
+            if ( (nages-1) > age_old_fsh )
+            {
+                for ( int j = (age_old_fsh+1); j < nages; j++ )
+                {
+                    est_fsh_prop_at_age(i,age_old_fsh) += est_fsh_prop_at_age(i,j);
+                    est_fsh_prop_at_age(i,j) = T(0);
+                }
             }
         }
     }
@@ -2126,7 +2309,7 @@ public:
 
     virtual const atl::Variable<T> Evaluate()
     {
-        atl::Variable<T> o = 0.00001;  // small value for proportions calculations
+       atl::Variable<T> o = 0.00001;  // small value for proportions calculations
 
         atl::Variable<T> f = 0;
 
@@ -2155,7 +2338,7 @@ public:
             {
                 int y = yrs_fsh_prop_at_age(i);
 
-                for ( int j = 0; j < nages; j++ )
+                for ( int j = age_young_fsh; j <= age_old_fsh; j++ )
                 {
                     nll_parts(1) -= (T(obs_fsh_prop_at_age_N(i)) * obs_fsh_prop_at_age(i, j) * (atl::log(est_fsh_prop_at_age(y, j) + o) - atl::log(obs_fsh_prop_at_age(i, j) + o)));
                 }
@@ -2200,7 +2383,7 @@ public:
         {
             if ( obs_srv_1_prop_at_age_N(i) > 0 )
             {
-                for ( int j = 0; j < nages; j++ )
+                for ( int j = age_young_srv1; j <= age_old_srv1; j++ )
                 {
                     nll_parts(4) -= (T(obs_srv_1_prop_at_age_N(i)) * obs_srv_1_prop_at_age(i, j) * (atl::log(est_srv_1_prop_at_age(i, j) + o) - atl::log(obs_srv_1_prop_at_age(i, j) + o)));
                 }
@@ -2233,7 +2416,7 @@ public:
         {
             if ( obs_srv_2_prop_at_age_N(i) > 0 )
             {
-                for ( int j = 0; j < nages; j++ )
+                for ( int j = age_young_srv2; j <= age_old_srv2; j++ )
                 {
                     nll_parts(7) -= (T(obs_srv_2_prop_at_age_N(i)) * obs_srv_2_prop_at_age(i, j) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
                 }
@@ -2313,7 +2496,7 @@ public:
         {
             if ( obs_srv_6_prop_at_age_N(i) > 0 )
             {
-                for ( int j = 0; j < nages; j++ )
+                for ( int j = age_young_srv6; j <= age_old_srv6; j++ )
                 {
                     nll_parts(15) -= (T(obs_srv_6_prop_at_age_N(i)) * obs_srv_6_prop_at_age(i, j) * (atl::log(est_srv_6_prop_at_age(i, j) + o) - atl::log(obs_srv_6_prop_at_age(i, j) + o)));
                 }
