@@ -1208,6 +1208,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Variable<T> log_mean_recruits;
     atl::Vector<atl::Variable<T> > recruit_devs;
     atl::Vector<atl::Variable<T> > recruits;
+
     int nyrs_proj = 5;
     atl::Vector<atl::Variable<T> > recruit_proj_devs;
     atl::Vector<atl::Variable<T> > recruit_proj;
@@ -1523,8 +1524,8 @@ public:
         this->RegisterHyperParameter(log_srv_4_q,6);
         log_srv_4_q.SetBounds(-10.0,10.0);
         log_srv_4_q = atl::Variable<T>(0.0);
-        // this->RegisterHyperParameter(srv_4_q_pow,7);
-        // srv_4_q_pow.SetBounds(-10.0,10.0);
+        this->RegisterHyperParameter(srv_4_q_pow,6);
+        srv_4_q_pow.SetBounds(-10.0,10.0);
         srv_4_q_pow = atl::Variable<T>(0.0);
 
         this->RegisterHyperParameter(log_srv_5_q,6);
@@ -2001,25 +2002,23 @@ public:
 
 
         // srv 4 - age 1 index
-
         for ( int i = 0; i < nyrs_srv4; i++ )
         {
             y = yrs_srv4(i);
 
-            // est_srv_4_biomass(i) = srv_4_q * atl::Pow(N(y,0), srv_4_q_pow + 1);
+            est_srv_4_biomass(i) = srv_4_q * atl::pow(N(y,0) / 1000000000.0, srv_4_q_pow + T(1.0));
             // est_srv_4_biomass(i) = srv_4_q * N(y,0) * (srv_4_q_pow + T(1.0)) / 1000.0;
-            est_srv_4_biomass(i) = srv_4_q * SQUARE(N(y,0) / 1000000000.0);
+            // est_srv_4_biomass(i) = srv_4_q * SQUARE(N(y,0) / 1000000000.0);
         }
 
 
         // srv 5 - age 2 index
-
         for ( int i = 0; i < nyrs_srv5; i++ )
         {
             y = yrs_srv5(i);
 
-            // est_srv_5_biomass(i) = srv_5_q * atl::Pow(N(y,1), srv_5_q_pow + 1);
-            est_srv_5_biomass(i) = srv_5_q * N(y,1) / 1000000000.0;
+            est_srv_5_biomass(i) = srv_5_q * atl::pow(N(y,1) / 1000000000.0, srv_5_q_pow + T(1.0));
+            // est_srv_5_biomass(i) = srv_5_q * N(y,1) / 1000000000.0;
         }
 
 
