@@ -1209,7 +1209,6 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Vector<T> fsh_sel_sd = { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.0001 };
 
     //Estimated(read only)
-    atl::Variable<T> log_initial_R_dev;
     atl::Vector<atl::Variable<T> > init_pop_devs;
     atl::Vector<atl::Variable<T> > initial_population;
 
@@ -1654,10 +1653,6 @@ public:
         log_mean_fsh_mort.SetBounds(-10.0,10.0);
         log_mean_fsh_mort = atl::Variable<T>(-1.6);
 
-        // this->RegisterHyperParameter(log_initial_R_dev,1);
-        // log_initial_R_dev.SetBounds(-10.0, 10.0);
-        log_initial_R_dev = atl::Variable<T>(0.0);
-
 
         init_pop_devs.Resize(nages-1);
         initial_population.Resize(nages);
@@ -1865,9 +1860,9 @@ public:
         atl::Vector<atl::Variable<T> > n_at_age_row;
         atl::Variable<T> age_specific_biomass;
 
-        initial_population(0) = atl::exp(log_mean_recruits + log_initial_R_dev + recruit_devs(0));
-
-        for ( int j = 1; j < nages; j++ )
+        initial_population(0) = atl::exp(log_mean_recruits);
+        initial_population(1) = initial_population(0) * atl::exp(recruit_devs(0) - M(0));
+        for ( int j = 2; j < nages; j++ )
         {
             initial_population(j) = initial_population(j-1) * atl::exp(atl::Variable<T>(-1.0 * M(j-1)));
         }
@@ -1883,7 +1878,7 @@ public:
         N(0) = initial_population;
 
         // could put a S-R relationship here
-        N(0, 0) = atl::exp(log_mean_recruits + log_initial_R_dev);
+        // N(0, 0) = something;
 
         // std::cout << "first year N-at-age " << atl::Row(N, 0) << std::endl;
 
@@ -1896,16 +1891,16 @@ public:
             {
                 N(i+1, j) = N(i, j-1) * expZ(i, j-1);
             }
-            N(i+1, (nages-1)) = (N(i, (nages-1)) * expZ(i, (nages-1))) + (N(i, (nages-1)-1) * expZ(i, (nages-1)-1));
+            N(i+1, (nages-1)) += (N(i, (nages-1)) * expZ(i, (nages-1)));
 
             N(i+1, 0) = atl::exp(log_mean_recruits);
 
             // std::cout << "N-at-age in year " << i << " " << atl::Row(N, i) << std::endl;
 
             // calculate total and spawning biomass - vector operations
-            est_total_biomass(i)   = T(0.0);
-            est_summary_biomass(i) = T(0.0);
-            est_spawn_biomass(i)   = T(0.0);
+            est_total_biomass(i)   = T(0);
+            est_summary_biomass(i) = T(0);
+            est_spawn_biomass(i)   = T(0);
             n_at_age_row = atl::Row(N, i);
 
              for ( int j = 0; j < nages; j++ )
@@ -1954,21 +1949,21 @@ public:
         {
             y = yrs_srv1a(i);
 
-            est_srv_1a_biomass(i) = atl::Sum(srv_1a_q * atl::Row(obs_srv_1_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(atl::Row(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b(i);
 
-            est_srv_1b_biomass(i) = atl::Sum(srv_1b_q * atl::Row(obs_srv_1_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1b_biomass(i) = srv_1b_q * atl::Sum(atl::Row(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             y = yrs_srv1(i);
 
-            est_srv_1_biomass(i) = atl::Sum(srv_1_q * atl::Row(obs_srv_1_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1_biomass(i) = srv_1_q * atl::Sum(atl::Row(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         // calculate proportions at age
@@ -1977,7 +1972,11 @@ public:
             y = yrs_srv1_prop_at_age(i);
 
             // est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >(age_age_err * (srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)));
-            est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) * age_age_err);
+            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y);
+            for ( int j = 0; j < nages; j++ )
+            {
+                est_srv_1_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(age_age_err,j));
+            }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_1_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -2035,7 +2034,7 @@ public:
 
             // est_srv_2_biomass(i) = 0;
 
-            est_srv_2_biomass(i) = atl::Sum(srv_2_q * atl::Row(obs_srv_2_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) / 1000.0;
+            est_srv_2_biomass(i) = srv_2_q * atl::Sum(atl::Row(obs_srv_2_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) / 1000.0;
 
             // convert from kg to mt
             // est_srv_2_biomass(i) /= T(1000.0);
@@ -2047,7 +2046,11 @@ public:
             y = yrs_srv2_prop_at_age(i);
 
             // est_srv_2_prop_at_age(i) = atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
-            est_srv_2_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) * age_age_err);
+            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
+            for ( int j = 0; j < nages; j++ )
+            {
+                est_srv_2_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(age_age_err,j));
+            }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -2105,7 +2108,7 @@ public:
 
             // est_srv_3_biomass(i) = 0;
 
-            est_srv_3_biomass(i) = atl::Sum(srv_3_q * atl::Row(obs_srv_3_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) / 1000.0;
+            est_srv_3_biomass(i) = srv_3_q * atl::Sum(atl::Row(obs_srv_3_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) / 1000.0;
 
             // convert from kg to mt
             // est_srv_3_biomass(i) /= T(1000.0);
@@ -2117,7 +2120,11 @@ public:
             y = yrs_srv3_prop_at_age(i);
 
             // est_srv_3_prop_at_age(i) = atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
-            est_srv_3_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) * age_age_err);
+            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
+            for ( int j = 0; j < nages; j++ )
+            {
+                est_srv_3_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(age_age_err,j));
+            }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -2174,7 +2181,7 @@ public:
         {
             y = yrs_srv6(i);
 
-            est_srv_6_biomass(i) = atl::Sum(srv_6_q * atl::Row(obs_srv_6_wt_at_age, i) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) / 1000.0;
+            est_srv_6_biomass(i) = srv_6_q * atl::Sum(atl::Row(obs_srv_6_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) / 1000.0;
         }
 
         // calculate proportions at age
@@ -2183,7 +2190,11 @@ public:
             y = yrs_srv6_prop_at_age(i);
 
             // est_srv_6_prop_at_age(i) = atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
-            est_srv_6_prop_at_age(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) * age_age_err);
+            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
+            for ( int j = 0; j < nages; j++ )
+            {
+                est_srv_6_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(age_age_err,j));
+            }
 
             est_srv_num = atl::Sum(atl::Row(est_srv_6_prop_at_age, i));
             if ( est_srv_num > T(0) )
@@ -2233,20 +2244,37 @@ public:
 
     void CalculateCatchAtAge()
     {
+        atl::Vector<atl::Variable<T> > prop_at_age_row;
         atl::Variable<T> est_catch_num;
 
         for ( int i = 0; i < nyrs; i++ )
         {
-            C(i) = atl::Vector<atl::Variable<T> >((F(i) / Z(i)) * ((1.0 - expZ(i)) * N(i)) * age_age_err);
-            est_catch(i) = atl::Sum(obs_fsh_wt_at_age(i) * C(i)) / 1000.0;
+            est_catch(i)           = T(0);
+            est_fsh_prop_at_age(i) = T(0);
+            est_fsh_prop_at_len(i) = T(0);
+
+            for ( int j = 0; j < nages; j++ )
+            {
+                C(i,j) = atl::Sum(((atl::Row(F,i) / atl::Row(Z,i)) * (1.0 - atl::Row(expZ,i)) * atl::Row(N,i)) * atl::Column(age_age_err,j));
+                est_catch(i) += (obs_fsh_wt_at_age(i,j) * C(i,j));
+            }
+            est_catch(i) /= 1000.0;
 
             // calculate proportions at age
             est_catch_num = atl::Sum(atl::Row(C,i));
             if ( est_catch_num > T(0) )
             {
                 est_fsh_prop_at_age(i) = C(i) / est_catch_num;
-                // est_fsh_prop_at_len(i) = atl::Vector<atl::Variable<T> >(est_fsh_prop_at_age(i) * age_len_trans_1);
             }
+
+            // calculate proportions at length
+            // est_fsh_prop_at_len(i) = atl::Vector<atl::Variable<T> >(est_fsh_prop_at_age(i) * age_len_trans_1);
+            prop_at_age_row = atl::Row(est_fsh_prop_at_age,i);
+            for ( int j = 0; j < n_fsh_len_bins; j++ )
+            {
+                est_fsh_prop_at_len(i,j) = atl::Sum(prop_at_age_row * atl::Column(age_len_trans_1,j));
+            }
+
 
             // accumulation
             if ( age_young_fsh > 0 )
@@ -2536,7 +2564,7 @@ public:
         // nll_parts(19) = atl::Norm2(fsh_mort_devs);
 
         // penalty to ensure that N(1964,0) and N(1965,0) are close
-        nll_parts(20) = 1000.0 * SQUARE(atl::log(N(0,0)) - atl::log(N(1,0)));
+        // nll_parts(20) = 1000.0 * SQUARE(atl::log(N(0,0)) - atl::log(N(1,0)));
 
         // likelihood component for scaling srv1 Dyson q to Miller Freeman EK500 q (see pk10_1.tpl, line1243)
         nll_parts(21) = (1.0 / (2.0 * (SQUARE(0.0244) + SQUARE(0.000001)))) * SQUARE(log_srv_1_q - log_srv_1b_q - 0.124);
@@ -2558,12 +2586,11 @@ public:
     {
         atl::Variable<T> one_meeellion = 1000000.0;     // conversion factor
 
-        std::cout << std::endl;
+        std::cout << std::endl << std::endl;
         std::cout << "objective function " << atl::Sum(nll_parts) << std::endl;
         std::cout << "objective function components " << nll_parts << std::endl;
         std::cout << std::endl;
 
-        std::cout << "log initial_R " << (log_mean_recruits + log_initial_R_dev) << std::endl;
         std::cout << "init devs " << init_pop_devs << std::endl;
         std::cout << "init N-at-age " << initial_population << std::endl;
         std::cout << "ratios " << (initial_population / initial_population(0)) << std::endl;
