@@ -1552,7 +1552,7 @@ public:
         // log_srv1_sel_asc_alpha.SetBounds(-1.0,5.0);
         // log_srv1_sel_asc_beta.SetBounds(-5.0,5.0);
         log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
-        log_srv1_sel_asc_beta  = atl::Variable<T>(-20.0);
+        log_srv1_sel_asc_beta  = atl::Variable<T>(4.0);
 
         this->RegisterHyperParameter(log_srv1_sel_desc_alpha,6);
         this->RegisterHyperParameter(log_srv1_sel_desc_beta,6);
@@ -1612,10 +1612,10 @@ public:
         log_srv_1a_q = atl::Variable<T>(0.0);
         this->RegisterHyperParameter(log_srv_1b_q,5);
         log_srv_1b_q.SetBounds(-10.0,10.0);
-        log_srv_1b_q = atl::Variable<T>(0.0);
+        log_srv_1b_q = atl::Variable<T>(-0.1);
         this->RegisterHyperParameter(log_srv_1_q,5);
         log_srv_1_q.SetBounds(-10.0,10.0);
-        log_srv_1_q = atl::Variable<T>(0.3);
+        log_srv_1_q = atl::Variable<T>(-0.1);
 
         this->RegisterHyperParameter(log_srv_2_q,5);
         log_srv_2_q.SetBounds(-10.0,10.0);
@@ -1630,7 +1630,7 @@ public:
         log_srv_4_q = atl::Variable<T>(0.0);
         this->RegisterHyperParameter(srv_4_q_pow,6);
         srv_4_q_pow.SetBounds(-10.0,10.0);
-        srv_4_q_pow = atl::Variable<T>(0.0);
+        srv_4_q_pow = atl::Variable<T>(1.0);
 
         this->RegisterHyperParameter(log_srv_5_q,6);
         log_srv_5_q.SetBounds(-10.0,10.0);
