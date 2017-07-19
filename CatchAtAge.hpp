@@ -8,10 +8,11 @@
 #ifndef CATCHATAGE_HPP
 #    define CATCHATAGE_HPP
 
-#include "../ATL/ATL.hpp"
+#include "../ATL2/ATL.hpp"
 
-#include "../ATL/Optimization/Optimization2/Optimization.hpp"
-#include "../ATL/Utilities/IO/StreamedDataFile.hpp"
+#include "../ATL2/Optimization.hpp"
+#include "../ATL2/MatrixUtilities.hpp"
+#include "../ATL2/Utilities/IO/StreamedDataFile.hpp"
 
 #define SQUARE(x) ((x)*(x))
 
@@ -19,21 +20,21 @@ template<typename T>
 class CatchAtAge : public atl::ObjectiveFunction<T>
 {
     int nages = 10;
-    atl::Vector<T> ages = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    std::vector<T> ages = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
     atl::Variable<T> sigmaR = 1.0;
 
     // 1970 through 2015
     int nyrs = 46;
-    atl::Vector<T> obs_catch = { 9379, 9460, 38131, 44993, 61905, 59504, 86731, 118092, 95408, 106161, 115158, 147818, 169045, 215625, 307541, 286900, 86910, 68070, 63391, 75585, 88269, 100488, 90858, 108909, 107335, 72618, 51263, 90130, 125460, 95638, 73080, 72077, 51933.52, 50684, 63844, 80978, 71976, 52714, 52584, 44247, 76745, 81357, 103982, 96363, 142633, 175025 };
-    atl::Vector<T> obs_catch_CV = { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05 };
+    std::vector<T> obs_catch = { 9379, 9460, 38131, 44993, 61905, 59504, 86731, 118092, 95408, 106161, 115158, 147818, 169045, 215625, 307541, 286900, 86910, 68070, 63391, 75585, 88269, 100488, 90858, 108909, 107335, 72618, 51263, 90130, 125460, 95638, 73080, 72077, 51933.52, 50684, 63844, 80978, 71976, 52714, 52584, 44247, 76745, 81357, 103982, 96363, 142633, 175025 };
+    std::vector<T> obs_catch_CV = { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05 };
 
     int nyrs_fsh_prop_at_age = 40;
     int age_young_fsh = 2 - 1;
     int age_old_fsh = 10 - 1;
-    atl::Vector<int> yrs_fsh_prop_at_age = { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 };
-    atl::Vector<T> obs_fsh_prop_at_age_N = { 0.576968965, 12.6933387, 110.7781701, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 50.19626774, 16.15510954, 19.04000805, 42.69574635, 63.46647878, 95.19982553, 80.19867539, 83.66044623, 89.43024325, 57.11991679, 36.92594934, 79.62169569, 80.77565509, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793 };
-    atl::Matrix<T> obs_fsh_prop_at_age = {
+    std::vector<int> yrs_fsh_prop_at_age = { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 };
+    std::vector<T> obs_fsh_prop_at_age_N = { 0.576968965, 12.6933387, 110.7781701, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 50.19626774, 16.15510954, 19.04000805, 42.69574635, 63.46647878, 95.19982553, 80.19867539, 83.66044623, 89.43024325, 57.11991679, 36.92594934, 79.62169569, 80.77565509, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793, 115.393793 };
+    atl::RealMatrix<T> obs_fsh_prop_at_age = {
         // 1    2    3    4    5    6    7   8   9   10
         // 1975
         { 0, 0.0236, 0.54351, 0.16903, 0.14228, 0.06681, 0.02773, 0.02704, 0, 0 },
@@ -118,9 +119,9 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     };
 
     int nyrs_fsh_prop_at_len = 9;
-    atl::Vector<int> yrs_fsh_prop_at_len = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-    atl::Vector<T> obs_fsh_prop_at_len_N = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    atl::Matrix<T> obs_fsh_prop_at_len = {
+    std::vector<int> yrs_fsh_prop_at_len = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+    std::vector<T> obs_fsh_prop_at_len_N = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    atl::RealMatrix<T> obs_fsh_prop_at_len = {
         // 1    2    3    4    5    6    7   8
         // 1970
         { 0, 0.0004, 0.05658, 0.25321, 0.53612, 0.11717, 0.02408, 0.01244 },
@@ -142,7 +143,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
         { 0, 0, 0.00084, 0.14298, 0.6087, 0.22826, 0.01923, 0 }
     };
 
-    atl::Matrix<T> obs_fsh_wt_at_age = {
+    atl::RealMatrix<T> obs_fsh_wt_at_age = {
         // 1970
         { 0.096, 0.211, 0.375, 0.511, 0.633, 0.727, 0.829, 0.929, 0.952, 0.996 },
         // 1971
@@ -240,26 +241,26 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
 
     // EIT survey (indices are for age 3+ biomass)
     int nyrs_srv1a = 9;
-    atl::Vector<int> yrs_srv1a = { 11, 13, 14, 15, 16, 18, 19, 20, 21 };
-    atl::Vector<T> obs_srv_1a_biomass = { 2476000, 2207000, 1750000, 1097000, 442000, 294000, 278000, 308000, 368000 };
-    atl::Vector<T> obs_srv_1a_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
+    std::vector<int> yrs_srv1a = { 11, 13, 14, 15, 16, 18, 19, 20, 21 };
+    std::vector<T> obs_srv_1a_biomass = { 2476000, 2207000, 1750000, 1097000, 442000, 294000, 278000, 308000, 368000 };
+    std::vector<T> obs_srv_1a_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
 
     int nyrs_srv1b = 15;
-    atl::Vector<int> yrs_srv1b = { 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37 };
-    atl::Vector<T> obs_srv_1b_biomass = { 708000, 428882, 487456, 603188, 596187, 567746, 492512, 327874, 215958, 243278, 308498, 322281, 324851.639, 237235.945, 165682.213 };
-    atl::Vector<T> obs_srv_1b_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
+    std::vector<int> yrs_srv1b = { 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37 };
+    std::vector<T> obs_srv_1b_biomass = { 708000, 428882, 487456, 603188, 596187, 567746, 492512, 327874, 215958, 243278, 308498, 322281, 324851.639, 237235.945, 165682.213 };
+    std::vector<T> obs_srv_1b_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
 
     int nyrs_srv1 = 7;
-    atl::Vector<int> yrs_srv1 = { 38, 39, 40, 42, 43, 44, 45 };
-    atl::Vector<T> obs_srv_1_biomass = { 150320, 168300, 404740, 266920, 813690, 624290, 835430 };
-    atl::Vector<T> obs_srv_1_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
+    std::vector<int> yrs_srv1 = { 38, 39, 40, 42, 43, 44, 45 };
+    std::vector<T> obs_srv_1_biomass = { 150320, 168300, 404740, 266920, 813690, 624290, 835430 };
+    std::vector<T> obs_srv_1_CV = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };
 
     int nyrs_srv1_prop_at_age = 22;
     int age_young_srv1 = 3 - 1;
     int age_old_srv1 = 10 - 1;
-    atl::Vector<int> yrs_srv1_prop_at_age = { 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
-    atl::Vector<T> obs_srv_1_prop_at_age_N = { 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788 };
-    atl::Matrix<T> obs_srv_1_prop_at_age = {
+    std::vector<int> yrs_srv1_prop_at_age = { 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
+    std::vector<T> obs_srv_1_prop_at_age_N = { 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788, 10.36673788 };
+    atl::RealMatrix<T> obs_srv_1_prop_at_age = {
         // 1992
         { 0, 0, 0.06827, 0.17463, 0.34164, 0.07809, 0.0789, 0.15893, 0.03036, 0.06918 },
         // 1993
@@ -307,9 +308,9 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     };
 
     int nyrs_srv1_prop_at_len = 25;
-    atl::Vector<int> yrs_srv1_prop_at_len = { 11, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 38 };
-    atl::Vector<T> obs_srv_1_prop_at_len_N = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    atl::Matrix<T> obs_srv_1_prop_at_len = {
+    std::vector<int> yrs_srv1_prop_at_len = { 11, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 38 };
+    std::vector<T> obs_srv_1_prop_at_len_N = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    atl::RealMatrix<T> obs_srv_1_prop_at_len = {
         // 1    2    3    4    5    6    7
         // 1981
         { 0, 0.34311, 0.28693, 0.27433, 0.08289, 0.01117, 0.00158 },
@@ -363,8 +364,8 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
         { 0, 0.55127, 0.29407, 0.09259, 0.02593, 0.00914, 0.027 }
     };
 
-    atl::Vector<T> yrfrac_srv_1 = { 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209 };
-    atl::Matrix<T> obs_srv_1_wt_at_age = {
+    std::vector<T> yrfrac_srv_1 = { 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209, 0.209 };
+    atl::RealMatrix<T> obs_srv_1_wt_at_age = {
         // 1970
         { 0.01, 0.08, 0.235, 0.402, 0.58, 0.755, 0.901, 1.002, 1.066, 1.227 },
         // 1971
@@ -461,16 +462,16 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
 
     // NMFS bottom trawl survey
     int nyrs_srv2 = 12;
-    atl::Vector<int> yrs_srv2 = { 20, 23, 26, 29, 31, 33, 35, 37, 39, 41, 43, 45 };
-    atl::Vector<T> obs_srv_2_biomass = { 817040.061, 747942.33, 659603.963, 601968.515, 220140.54, 394333.355, 354208.896, 278540.575, 662556.59, 660207.116, 947876.763, 705442.986 };
-    atl::Vector<T> obs_srv_2_CV = { 0.117026651, 0.159023699, 0.145984725, 0.383779365, 0.297659341, 0.12011675, 0.153660591, 0.138519958, 0.152453286, 0.145764033, 0.21086392, 0.160163319 };
+    std::vector<int> yrs_srv2 = { 20, 23, 26, 29, 31, 33, 35, 37, 39, 41, 43, 45 };
+    std::vector<T> obs_srv_2_biomass = { 817040.061, 747942.33, 659603.963, 601968.515, 220140.54, 394333.355, 354208.896, 278540.575, 662556.59, 660207.116, 947876.763, 705442.986 };
+    std::vector<T> obs_srv_2_CV = { 0.117026651, 0.159023699, 0.145984725, 0.383779365, 0.297659341, 0.12011675, 0.153660591, 0.138519958, 0.152453286, 0.145764033, 0.21086392, 0.160163319 };
 
     int nyrs_srv2_prop_at_age = 11;
     int age_young_srv2 = 1 - 1;
     int age_old_srv2 = 10 - 1;
-    atl::Vector<int> yrs_srv2_prop_at_age = { 20, 23, 26, 29, 31, 33, 35, 37, 39, 41, 43 };
-    atl::Vector<T> obs_srv_2_prop_at_age_N = { 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401 };
-    atl::Matrix<T> obs_srv_2_prop_at_age = {
+    std::vector<int> yrs_srv2_prop_at_age = { 20, 23, 26, 29, 31, 33, 35, 37, 39, 41, 43 };
+    std::vector<T> obs_srv_2_prop_at_age_N = { 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401, 27.87288401 };
+    atl::RealMatrix<T> obs_srv_2_prop_at_age = {
         // 1990
         { 0.05583, 0.21898, 0.04213, 0.04069, 0.18286, 0.20992, 0.06486, 0.09624, 0.02277, 0.06571 },
         // 1993
@@ -496,9 +497,9 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     };
 
     int nyrs_srv2_prop_at_len = 8;
-    atl::Vector<int> yrs_srv2_prop_at_len = { 29, 31, 35, 37, 39, 41, 43, 45 };
-    atl::Vector<T> obs_srv_2_prop_at_len_N = { 0, 0, 0, 0, 0, 0, 0, 15 };
-    atl::Matrix<T> obs_srv_2_prop_at_len = {
+    std::vector<int> yrs_srv2_prop_at_len = { 29, 31, 35, 37, 39, 41, 43, 45 };
+    std::vector<T> obs_srv_2_prop_at_len_N = { 0, 0, 0, 0, 0, 0, 0, 15 };
+    atl::RealMatrix<T> obs_srv_2_prop_at_len = {
         // 1    2    3    4    5    6    7
         // 1999
         { 0, 0.04123851, 0.065115358, 0.14540564, 0.261895125, 0.235681114, 0.250664252 },
@@ -518,8 +519,8 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
         { 0.1113, 0.136367266, 0.329807517, 0.083441926, 0.091011559, 0.112390018, 0.135677866 }
     };
 
-    atl::Vector<T> yrfrac_srv_2 = { 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584 };
-    atl::Matrix<T> obs_srv_2_wt_at_age = {
+    std::vector<T> yrfrac_srv_2 = { 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.543, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584, 0.584 };
+    atl::RealMatrix<T> obs_srv_2_wt_at_age = {
         // 1970
         { 0.038, 0.147, 0.386, 0.619, 0.783, 0.893, 1, 1.123, 1.215, 1.376 },
         // 1971
@@ -617,14 +618,14 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
 
     // ADF&G nearshore trawl survey
     int nyrs_srv3 = 25;
-    atl::Vector<int> yrs_srv3 = { 19, 20, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45 };
-    atl::Vector<T> obs_srv_3_biomass = { 214430, 114450, 127360, 132850, 103420, 122480, 93730, 81220, 53590, 102870, 86970, 96237, 66989, 99358, 79089, 69044, 76674, 83476, 145438, 124110, 100839, 172007, 102406, 100158, 42277 };
-    atl::Vector<T> obs_srv_3_CV = { 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25 };
+    std::vector<int> yrs_srv3 = { 19, 20, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45 };
+    std::vector<T> obs_srv_3_biomass = { 214430, 114450, 127360, 132850, 103420, 122480, 93730, 81220, 53590, 102870, 86970, 96237, 66989, 99358, 79089, 69044, 76674, 83476, 145438, 124110, 100839, 172007, 102406, 100158, 42277 };
+    std::vector<T> obs_srv_3_CV = { 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25 };
 
     int nyrs_srv3_prop_at_age = 16;
-    atl::Vector<int> yrs_srv3_prop_at_age = { 19, 20, 22, 23, 24, 26, 27, 28, 30, 32, 34, 36, 38, 40, 42, 44 };
-    atl::Vector<T> obs_srv_3_prop_at_age_N = { 0, 0, 0, 0, 0, 0, 0, 0, 30, 30, 30, 30, 30, 30, 30, 30 };
-    atl::Matrix<T> obs_srv_3_prop_at_age = {
+    std::vector<int> yrs_srv3_prop_at_age = { 19, 20, 22, 23, 24, 26, 27, 28, 30, 32, 34, 36, 38, 40, 42, 44 };
+    std::vector<T> obs_srv_3_prop_at_age_N = { 0, 0, 0, 0, 0, 0, 0, 0, 30, 30, 30, 30, 30, 30, 30, 30 };
+    atl::RealMatrix<T> obs_srv_3_prop_at_age = {
         // 1989
         { 0, 0.01587, 0.01975, 0.18064, 0.31108, 0.18503, 0.11148, 0.06147, 0.035448833, 0.07924 },
         // 1990
@@ -660,9 +661,9 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     };
 
     int nyrs_srv3_prop_at_len = 23;
-    atl::Vector<int> yrs_srv3_prop_at_len = { 19, 20, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43 };
-    atl::Vector<T> obs_srv_3_prop_at_len_N = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    atl::Matrix<T> obs_srv_3_prop_at_len = {
+    std::vector<int> yrs_srv3_prop_at_len = { 19, 20, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43 };
+    std::vector<T> obs_srv_3_prop_at_len_N = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    atl::RealMatrix<T> obs_srv_3_prop_at_len = {
         // 1    2    3    4    5    6    7
         // 1989
         { 0.03672, 0.03011, 0.14114, 0.19086, 0.21189, 0.20459, 0.18468 },
@@ -712,8 +713,8 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
         { 0.11691, 0.01061, 0.0528, 0.03545, 0.08141, 0.23476, 0.46806 }
     };
 
-    atl::Vector<T> yrfrac_srv_3 = { 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989 };
-    atl::Matrix<T> obs_srv_3_wt_at_age = {
+    std::vector<T> yrfrac_srv_3 = { 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989, 0.60989 };
+    atl::RealMatrix<T> obs_srv_3_wt_at_age = {
         // 1970
         { 0.038, 0.147, 0.386, 0.619, 0.783, 0.893, 1, 1.123, 1.215, 1.376 },
         // 1971
@@ -811,45 +812,45 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
 
     // age-1 acoustic survey
     int nyrs_srv4 = 15;
-    atl::Vector<int> yrs_srv4 = { 24, 25, 31, 32, 33, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
-    atl::Vector<T> obs_srv_4_biomass = { 0.186, 10.698, 0.394, 0.008, 0.051, 1.626, 1.909, 0.170, 2.867, 2.498, 0.097170701, 0.094952138, 12.93527425, 0.707935349, 0.021684248 };
-    atl::Vector<T> obs_srv_4_CV = { 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885 };
+    std::vector<int> yrs_srv4 = { 24, 25, 31, 32, 33, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
+    std::vector<T> obs_srv_4_biomass = { 0.186, 10.698, 0.394, 0.008, 0.051, 1.626, 1.909, 0.170, 2.867, 2.498, 0.097170701, 0.094952138, 12.93527425, 0.707935349, 0.021684248 };
+    std::vector<T> obs_srv_4_CV = { 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885, 1.19885 };
 
 
     // age-2 acoustic survey
     int nyrs_srv5 = 15;
-    atl::Vector<int> yrs_srv5 = { 24, 25, 31, 32, 33, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
-    atl::Vector<T> obs_srv_5_biomass = { 0.036, 0.510, 4.267, 0.216, 0.095, 0.158, 0.857, 0.485, 0.406, 1.335, 0.334, 0.852, 0.150, 4.142770361, 0.173710023 };
-    atl::Vector<T> obs_srv_5_CV = { 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551 };
+    std::vector<int> yrs_srv5 = { 24, 25, 31, 32, 33, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45 };
+    std::vector<T> obs_srv_5_biomass = { 0.036, 0.510, 4.267, 0.216, 0.095, 0.158, 0.857, 0.485, 0.406, 1.335, 0.334, 0.852, 0.150, 4.142770361, 0.173710023 };
+    std::vector<T> obs_srv_5_CV = { 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551, 0.889551 };
 
 
     // summer survey
     int nyrs_srv6 = 2;
-    atl::Vector<int> yrs_srv6 = { 43, 45 };
-    atl::Vector<T> obs_srv_6_biomass = { 884048.507, 1482668.245 };
-    atl::Vector<T> obs_srv_6_CV = { 0.25, 0.25 };
+    std::vector<int> yrs_srv6 = { 43, 45 };
+    std::vector<T> obs_srv_6_biomass = { 884048.507, 1482668.245 };
+    std::vector<T> obs_srv_6_CV = { 0.25, 0.25 };
 
     int nyrs_srv6_prop_at_age = 1;
     int age_young_srv6 = 1 - 1;
     int age_old_srv6 = 10 - 1;
-    atl::Vector<int> yrs_srv6_prop_at_age = { 43 };
-    atl::Vector<T> obs_srv_6_prop_at_age_N = { 10 };
-    atl::Matrix<T> obs_srv_6_prop_at_age = {
+    std::vector<int> yrs_srv6_prop_at_age = { 43 };
+    std::vector<T> obs_srv_6_prop_at_age_N = { 10 };
+    atl::RealMatrix<T> obs_srv_6_prop_at_age = {
         // 2013
         { 0.9031, 0.0105, 0.04249, 0.00661, 0.00834, 0.01234, 0.00972, 0.00442, 0.00125, 0.00122 }
     };
 
     int nyrs_srv6_prop_at_len = 1;
-    atl::Vector<int> yrs_srv6_prop_at_len = { 45 };
-    atl::Vector<T> obs_srv_6_prop_at_len_N = { 10 };
-    atl::Matrix<T> obs_srv_6_prop_at_len = {
+    std::vector<int> yrs_srv6_prop_at_len = { 45 };
+    std::vector<T> obs_srv_6_prop_at_len_N = { 10 };
+    atl::RealMatrix<T> obs_srv_6_prop_at_len = {
         // 1    2    3    4    5    6    7
         // 2015
         { 0.00358, 0.254522364, 0.616399601, 0.081953758, 0.018230721, 0.012025345, 0.013290562 }
     };
 
-    atl::Vector<T> yrfrac_srv_6 = { 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519 };
-    atl::Matrix<T> obs_srv_6_wt_at_age = {
+    std::vector<T> yrfrac_srv_6 = { 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519, 0.519 };
+    atl::RealMatrix<T> obs_srv_6_wt_at_age = {
         // 1970
         { 0.028, 0.235, 0.498, 0.812, 1.128, 1.257, 1.364, 1.443, 1.465, 1.783 },
         // 1971
@@ -948,13 +949,13 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
 
     atl::Variable<T> yrfrac_sp = 0.21;  // fraction of the year for spawning
 
-    atl::Vector<T> M = { 1.39, 0.69, 0.48, 0.37, 0.34, 0.30, 0.30, 0.29, 0.28, 0.29 };
-    // atl::Vector<T> M = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
-    atl::Vector<T> maturity_old = { 0, 0.034, 0.116, 0.325, 0.639, 0.867, 0.96, 0.989, 0.997, 1.0 };
-    atl::Vector<T> maturity = { 0, 0.00047, 0.0156, 0.26413, 0.56377, 0.83147, 0.92048, 0.96569, 0.98681, 0.99269 };
+    std::vector<T> M = { 1.39, 0.69, 0.48, 0.37, 0.34, 0.30, 0.30, 0.29, 0.28, 0.29 };
+    // std::vector<T> M = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+    std::vector<T> maturity_old = { 0, 0.034, 0.116, 0.325, 0.639, 0.867, 0.96, 0.989, 0.997, 1.0 };
+    std::vector<T> maturity = { 0, 0.00047, 0.0156, 0.26413, 0.56377, 0.83147, 0.92048, 0.96569, 0.98681, 0.99269 };
 
 
-    atl::Matrix<T> wt_pop = {
+    atl::RealMatrix<T> wt_pop = {
         // 1970
         { 0.038, 0.147, 0.386, 0.619, 0.783, 0.893, 1, 1.123, 1.215, 1.376 },
         // 1971
@@ -1049,7 +1050,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
         { 0.038, 0.216, 0.423, 0.901, 1.151, 1.34, 1.503, 1.581, 1.674, 2.056 }
     };
 
-    atl::Matrix<T> wt_spawn = {
+    atl::RealMatrix<T> wt_spawn = {
         // 1970
         { 0.01, 0.08, 0.235, 0.402, 0.58, 0.755, 0.901, 1.002, 1.066, 1.227 },
         // 1971
@@ -1144,12 +1145,12 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
         { 0.013, 0.094, 0.2, 0.542, 0.88, 1.055, 1.43, 1.498, 1.594, 1.654 }
     };
 
-    atl::Vector<T> wt_pop_proj   = { 0.038, 0.244, 0.495, 0.919, 1.202, 1.481, 1.64, 1.766, 1.924, 2.068 };
-    atl::Vector<T> wt_spawn_proj = { 0.011, 0.087, 0.272, 0.617, 0.954, 1.268, 1.536, 1.689, 1.847, 1.95 };
-    atl::Vector<T> wt_fsh_proj   = { 0.121, 0.38, 0.679, 0.959, 1.187, 1.403, 1.561, 1.794, 2.003, 2.067 };
-    atl::Vector<T> wt_srv_proj   = { 0.011, 0.087, 0.272, 0.617, 0.954, 1.268, 1.536, 1.689, 1.847, 1.95 };
+    std::vector<T> wt_pop_proj   = { 0.038, 0.244, 0.495, 0.919, 1.202, 1.481, 1.64, 1.766, 1.924, 2.068 };
+    std::vector<T> wt_spawn_proj = { 0.011, 0.087, 0.272, 0.617, 0.954, 1.268, 1.536, 1.689, 1.847, 1.95 };
+    std::vector<T> wt_fsh_proj   = { 0.121, 0.38, 0.679, 0.959, 1.187, 1.403, 1.561, 1.794, 2.003, 2.067 };
+    std::vector<T> wt_srv_proj   = { 0.011, 0.087, 0.272, 0.617, 0.954, 1.268, 1.536, 1.689, 1.847, 1.95 };
 
-    atl::Matrix<T> age_age_err = {
+    atl::RealMatrix<T> age_age_err = {
         { 0.997, 0.003, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0.0138, 0.9724, 0.0138, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0.0329, 0.9342, 0.0329, 0, 0, 0, 0, 0, 0 },
@@ -1165,7 +1166,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     int n_fsh_len_bins = 8;
     int n_srv_len_bins = 7;
 
-    atl::Matrix<T> age_len_trans_1 = {
+    atl::RealMatrix<T> age_len_trans_1 = {
         { 1, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0.891, 0.109, 0, 0, 0, 0, 0 },
         { 0, 0.023, 0.722, 0.255, 0, 0, 0, 0 },
@@ -1178,7 +1179,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
         { 0, 0, 0, 0, 0.011, 0.107, 0.345, 0.537 }
     };
 
-    atl::Matrix<T> age_len_trans_2 = {
+    atl::RealMatrix<T> age_len_trans_2 = {
         { 1, 0, 0, 0, 0, 0, 0 },
         { 0, 0.79697, 0.17047, 0.03257, 0, 0, 0 },
         { 0, 0.1439, 0.67682, 0.15865, 0.02063, 0, 0 },
@@ -1191,7 +1192,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
         { 0, 0, 0, 0.001, 0.08494, 0.38309, 0.53096 }
     };
 
-    atl::Matrix<T> age_len_trans_3 = {
+    atl::RealMatrix<T> age_len_trans_3 = {
         { 1, 0, 0, 0, 0, 0, 0 },
         { 0, 0.98382, 0.01618, 0, 0, 0, 0 },
         { 0, 0.13582, 0.7119, 0.14867, 0.00361, 0, 0 },
@@ -1206,19 +1207,19 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
 
     // Transition standard deviations for random walk (endyr - styr) year for change
     // 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015
-    atl::Vector<T> fsh_sel_sd = { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.0001 };
+    std::vector<T> fsh_sel_sd = { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.0001 };
 
     //Estimated(read only)
-    atl::Vector<atl::Variable<T> > init_pop_devs;
-    atl::Vector<atl::Variable<T> > initial_population;
+    atl::VariableVector<atl::Variable<T> > init_pop_devs;
+    atl::VariableVector<atl::Variable<T> > initial_population;
 
     atl::Variable<T> log_mean_recruits;
-    atl::Vector<atl::Variable<T> > recruit_devs;
-    atl::Vector<atl::Variable<T> > recruits;
+    atl::VariableVector<atl::Variable<T> > recruit_devs;
+    atl::VariableVector<atl::Variable<T> > recruits;
 
     int nyrs_proj = 5;
-    atl::Vector<atl::Variable<T> > recruit_proj_devs;
-    atl::Vector<atl::Variable<T> > recruit_proj;
+    atl::VariableVector<atl::Variable<T> > recruit_proj_devs;
+    atl::VariableVector<atl::Variable<T> > recruit_proj;
 
     atl::Variable<T> log_h;
     atl::Variable<T> h;
@@ -1234,12 +1235,12 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Variable<T> fsh_sel_desc_alpha;
     atl::Variable<T> fsh_sel_desc_beta;
 
-    atl::Matrix<atl::Variable<T> > fsh_sel;
+    atl::VariableMatrix<atl::Variable<T> > fsh_sel;
 
-    atl::Vector<atl::Variable<T> > fsh_sel_asc_alpha_devs;
-    atl::Vector<atl::Variable<T> > fsh_sel_asc_beta_devs;
-    atl::Vector<atl::Variable<T> > fsh_sel_desc_alpha_devs;
-    atl::Vector<atl::Variable<T> > fsh_sel_desc_beta_devs;
+    atl::VariableVector<atl::Variable<T> > fsh_sel_asc_alpha_devs;
+    atl::VariableVector<atl::Variable<T> > fsh_sel_asc_beta_devs;
+    atl::VariableVector<atl::Variable<T> > fsh_sel_desc_alpha_devs;
+    atl::VariableVector<atl::Variable<T> > fsh_sel_desc_beta_devs;
 
     atl::Variable<T> log_srv1_sel_asc_alpha;
     atl::Variable<T> log_srv1_sel_asc_beta;
@@ -1285,7 +1286,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Variable<T> srv6_sel_desc_beta;
 
 
-    atl::Matrix<atl::Variable<T> > srv_sel;
+    atl::VariableMatrix<atl::Variable<T> > srv_sel;
 
 
     //growth model
@@ -1294,8 +1295,8 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Variable<T> gr_a0;
 
     atl::Variable<T> log_mean_fsh_mort;
-    atl::Vector<atl::Variable<T> > fsh_mort_devs;
-    atl::Vector<atl::Variable<T> > fsh_mort;
+    atl::VariableVector<atl::Variable<T> > fsh_mort_devs;
+    atl::VariableVector<atl::Variable<T> > fsh_mort;
 
     // catchability for srv 1 (EIT survey; 3 periods)
     atl::Variable<T> log_srv_1a_q;
@@ -1330,59 +1331,68 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::Variable<T> srv_6_q;
 
     //Runtime(writable)
-    atl::Matrix<atl::Variable<T> > wtAA;
-    atl::Matrix<atl::Variable<T> > F;
-    atl::Matrix<atl::Variable<T> > Z;
-    atl::Matrix<atl::Variable<T> > expZ;
-    atl::Matrix<atl::Variable<T> > expZ_sp;
-    atl::Matrix<atl::Variable<T> > expZ_yrfrac_srv1;
-    atl::Matrix<atl::Variable<T> > expZ_yrfrac_srv2;
-    atl::Matrix<atl::Variable<T> > expZ_yrfrac_srv3;
-    atl::Matrix<atl::Variable<T> > expZ_yrfrac_srv6;
-    atl::Matrix<atl::Variable<T> > N;
-    atl::Matrix<atl::Variable<T> > C;
+    atl::VariableMatrix<atl::Variable<T> > wtAA;
+    atl::VariableMatrix<atl::Variable<T> > F;
+    atl::VariableMatrix<atl::Variable<T> > Z;
+    atl::VariableMatrix<atl::Variable<T> > expZ;
+    atl::VariableMatrix<atl::Variable<T> > expZ_sp;
+    atl::VariableMatrix<atl::Variable<T> > expZ_yrfrac_srv1;
+    atl::VariableMatrix<atl::Variable<T> > expZ_yrfrac_srv2;
+    atl::VariableMatrix<atl::Variable<T> > expZ_yrfrac_srv3;
+    atl::VariableMatrix<atl::Variable<T> > expZ_yrfrac_srv6;
+    atl::VariableMatrix<atl::Variable<T> > N;
+    atl::VariableMatrix<atl::Variable<T> > C;
 
-    atl::Vector<atl::Variable<T> > est_catch;
-    atl::Matrix<atl::Variable<T> > est_fsh_prop_at_age;
-    atl::Matrix<atl::Variable<T> > est_fsh_prop_at_len;
-    atl::Vector<atl::Variable<T> > est_srv_1a_biomass;
-    atl::Vector<atl::Variable<T> > est_srv_1b_biomass;
-    atl::Vector<atl::Variable<T> > est_srv_1_biomass;
-    atl::Vector<atl::Variable<T> > est_srv_2_biomass;
-    atl::Vector<atl::Variable<T> > est_srv_3_biomass;
-    atl::Vector<atl::Variable<T> > est_srv_4_biomass;
-    atl::Vector<atl::Variable<T> > est_srv_5_biomass;
-    atl::Vector<atl::Variable<T> > est_srv_6_biomass;
-    atl::Matrix<atl::Variable<T> > est_srv_1_prop_at_age;
-    atl::Matrix<atl::Variable<T> > est_srv_1_prop_at_len;
-    atl::Matrix<atl::Variable<T> > est_srv_2_prop_at_age;
-    atl::Matrix<atl::Variable<T> > est_srv_2_prop_at_len;
-    atl::Matrix<atl::Variable<T> > est_srv_3_prop_at_age;
-    atl::Matrix<atl::Variable<T> > est_srv_3_prop_at_len;
-    atl::Matrix<atl::Variable<T> > est_srv_6_prop_at_age;
-    atl::Matrix<atl::Variable<T> > est_srv_6_prop_at_len;
-    atl::Vector<atl::Variable<T> > est_total_biomass;
-    atl::Vector<atl::Variable<T> > est_summary_biomass;
-    atl::Vector<atl::Variable<T> > est_spawn_biomass;
+    atl::VariableVector<atl::Variable<T> > est_catch;
+    atl::VariableMatrix<atl::Variable<T> > est_fsh_prop_at_age;
+    atl::VariableMatrix<atl::Variable<T> > est_fsh_prop_at_len;
+    atl::VariableVector<atl::Variable<T> > est_srv_1a_biomass;
+    atl::VariableVector<atl::Variable<T> > est_srv_1b_biomass;
+    atl::VariableVector<atl::Variable<T> > est_srv_1_biomass;
+    atl::VariableVector<atl::Variable<T> > est_srv_2_biomass;
+    atl::VariableVector<atl::Variable<T> > est_srv_3_biomass;
+    atl::VariableVector<atl::Variable<T> > est_srv_4_biomass;
+    atl::VariableVector<atl::Variable<T> > est_srv_5_biomass;
+    atl::VariableVector<atl::Variable<T> > est_srv_6_biomass;
+    atl::VariableMatrix<atl::Variable<T> > est_srv_1_prop_at_age;
+    atl::VariableMatrix<atl::Variable<T> > est_srv_1_prop_at_len;
+    atl::VariableMatrix<atl::Variable<T> > est_srv_2_prop_at_age;
+    atl::VariableMatrix<atl::Variable<T> > est_srv_2_prop_at_len;
+    atl::VariableMatrix<atl::Variable<T> > est_srv_3_prop_at_age;
+    atl::VariableMatrix<atl::Variable<T> > est_srv_3_prop_at_len;
+    atl::VariableMatrix<atl::Variable<T> > est_srv_6_prop_at_age;
+    atl::VariableMatrix<atl::Variable<T> > est_srv_6_prop_at_len;
+    atl::VariableVector<atl::Variable<T> > est_total_biomass;
+    atl::VariableVector<atl::Variable<T> > est_summary_biomass;
+    atl::VariableVector<atl::Variable<T> > est_spawn_biomass;
 
-    atl::Matrix<atl::Variable<T> > N_proj;
-    atl::Matrix<atl::Variable<T> > F_proj;
-    atl::Matrix<atl::Variable<T> > Z_proj;
-    atl::Matrix<atl::Variable<T> > C_proj;
-    atl::Vector<atl::Variable<T> > est_catch_proj;
-    atl::Vector<atl::Variable<T> > est_srv_1_biomass_proj;
+    atl::VariableMatrix<atl::Variable<T> > N_proj;
+    atl::VariableMatrix<atl::Variable<T> > F_proj;
+    atl::VariableMatrix<atl::Variable<T> > Z_proj;
+    atl::VariableMatrix<atl::Variable<T> > C_proj;
+    atl::VariableVector<atl::Variable<T> > est_catch_proj;
+    atl::VariableVector<atl::Variable<T> > est_srv_1_biomass_proj;
 
-    atl::Vector<atl::Variable<T> > nll_parts;
+    atl::VariableVector<atl::Variable<T> > nll_parts;
 
 public:
 
     CatchAtAge() { }
 
-    void RegisterHyperParameterVector(atl::Vector<atl::Variable<T> >& p_vec, const int phase = 1)
+    void RegisterHyperParameterVector(atl::VariableVector<atl::Variable<T> >& p_vec, const int phase = 1)
     {
         for (int i = 0; i < p_vec.Size(0); i++)
         {
             this->RegisterHyperParameter(p_vec(i),phase);
+        }
+
+    }
+
+    void RegisterRandomVariableVector(atl::VariableVector<atl::Variable<T> >& p_vec, const int phase = 1)
+    {
+        for (int i = 0; i < p_vec.Size(0); i++)
+        {
+            this->RegisterRandomVariable(p_vec(i),phase);
         }
 
     }
@@ -1690,11 +1700,11 @@ public:
         fsh_mort_devs = atl::Variable<T>(0.0);
 
         // this->RegisterHyperParameter(fsh_sel_asc_alpha_devs,5);
-        this->RegisterHyperParameterVector(fsh_sel_asc_alpha_devs,7);
+        this->RegisterRandomVariableVector(fsh_sel_asc_alpha_devs,7);
         fsh_sel_asc_alpha_devs.SetBounds(-5.0,5.0);
         fsh_sel_asc_alpha_devs = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(fsh_sel_asc_beta_devs,5);
-        this->RegisterHyperParameterVector(fsh_sel_asc_beta_devs,7);
+        this->RegisterRandomVariableVector(fsh_sel_asc_beta_devs,7);
         fsh_sel_asc_beta_devs.SetBounds(-5.0,5.0);
         fsh_sel_asc_beta_devs = atl::Variable<T>(0.0);
         // this->RegisterHyperParameter(fsh_sel_desc_alpha_devs,5);
@@ -1712,7 +1722,7 @@ public:
     void Selectivity()
     {
         atl::Variable<T> max_sel;
-        atl::Vector<atl::Variable<T> > sel_row;
+        atl::VariableVector<atl::Variable<T> > sel_row;
 
         sel_row.Resize(nages);
 
@@ -1728,7 +1738,7 @@ public:
                 fsh_sel(i, j) = (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_asc_beta * atl::exp(fsh_sel_asc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_asc_alpha + fsh_sel_asc_alpha_devs(i)))))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_desc_beta * atl::exp(fsh_sel_desc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_desc_alpha + fsh_sel_desc_alpha_devs(i)))))));
             }
 
-            // max_sel = atl::Max<atl::Variable<T> >(atl::Row(fsh_sel, i));
+            // max_sel = atl::Max<atl::Variable<T> >(atl::VariableMatrixRow<T>(fsh_sel, i));
 
             // if ( max_sel > T(0) )
             // {
@@ -1787,7 +1797,7 @@ public:
 
         // for ( int k = 0; k < nsrvs; k++ )
         // {
-        //     max_sel = atl::Max<atl::Variable<T> >(atl::Row(srv_sel, k));
+        //     max_sel = atl::Max<atl::Variable<T> >(atl::VariableMatrixRow<T>(srv_sel, k));
 
         //     if ( max_sel > T(0) )
         //     {
@@ -1857,7 +1867,7 @@ public:
 
     void NumbersAtAge()
     {
-        atl::Vector<atl::Variable<T> > n_at_age_row;
+        atl::VariableVector<atl::Variable<T> > n_at_age_row;
         atl::Variable<T> age_specific_biomass;
 
         initial_population(0) = atl::exp(log_mean_recruits);
@@ -1880,7 +1890,7 @@ public:
         // could put a S-R relationship here
         // N(0, 0) = something;
 
-        // std::cout << "first year N-at-age " << atl::Row(N, 0) << std::endl;
+        // std::cout << "first year N-at-age " << atl::VariableMatrixRow<T>(N, 0) << std::endl;
 
         for ( int i = 0; i < nyrs; i++ )
         {
@@ -1895,13 +1905,13 @@ public:
 
             N(i+1, 0) = atl::exp(log_mean_recruits);
 
-            // std::cout << "N-at-age in year " << i << " " << atl::Row(N, i) << std::endl;
+            // std::cout << "N-at-age in year " << i << " " << atl::VariableMatrixRow<T>(N, i) << std::endl;
 
             // calculate total and spawning biomass - vector operations
             est_total_biomass(i)   = T(0);
             est_summary_biomass(i) = T(0);
             est_spawn_biomass(i)   = T(0);
-            n_at_age_row = atl::Row(N, i);
+            n_at_age_row = atl::VariableMatrixRow<T>(N, i);
 
              for ( int j = 0; j < nages; j++ )
             {
@@ -1923,14 +1933,14 @@ public:
         // est_total_biomass /= 1000.0;
         // est_spawn_biomass /= 1000.0;
 
-        recruits = atl::Column(N,0);
+        recruits = atl::VariableMatrixColumn<T>(N,0);
     }
 
     void FleetIndices()
     {
         atl::Variable<T> est_srv_num;
-        atl::Vector<atl::Variable<T> > srv_sel_row;
-        atl::Vector<atl::Variable<T> > n_at_age_row;
+        atl::VariableVector<atl::Variable<T> > srv_sel_row;
+        atl::VariableVector<atl::Variable<T> > n_at_age_row;
         int y;
 
         srv_1a_q = atl::exp(log_srv_1a_q);
@@ -1943,27 +1953,27 @@ public:
         srv_6_q  = atl::exp(log_srv_6_q);
 
         // srv 1
-        srv_sel_row = atl::Row(srv_sel, 0);
+        srv_sel_row = atl::VariableMatrixRow<T>(srv_sel, 0);
 
         for ( int i = 0; i < nyrs_srv1a; i++ )
         {
             y = yrs_srv1a(i);
 
-            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(atl::Row(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(atl::VariableMatrixRow<T>(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b(i);
 
-            est_srv_1b_biomass(i) = srv_1b_q * atl::Sum(atl::Row(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1b_biomass(i) = srv_1b_q * atl::Sum(atl::VariableMatrixRow<T>(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             y = yrs_srv1(i);
 
-            est_srv_1_biomass(i) = srv_1_q * atl::Sum(atl::Row(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) / 1000.0;
+            est_srv_1_biomass(i) = srv_1_q * atl::Sum(atl::VariableMatrixRow<T>(obs_srv_1_wt_at_age, y) * srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y)) / 1000.0;
         }
 
         // calculate proportions at age
@@ -1971,14 +1981,14 @@ public:
         {
             y = yrs_srv1_prop_at_age(i);
 
-            // est_srv_1_prop_at_age(i) = atl::Vector<atl::Variable<T> >(age_age_err * (srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)));
-            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y);
+            // est_srv_1_prop_at_age(i) = atl::VariableVector<atl::Variable<T> >(age_age_err * (srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)));
+            n_at_age_row = atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_1_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(age_age_err,j));
+                est_srv_1_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::VariableMatrixColumn<T>(age_age_err,j));
             }
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_1_prop_at_age, i));
+            est_srv_num = atl::Sum(atl::VariableMatrixRow<T>(est_srv_1_prop_at_age, i));
             if ( est_srv_num > T(0) )
             {
                 est_srv_1_prop_at_age(i) /= est_srv_num;
@@ -2004,20 +2014,20 @@ public:
             }
         }
 
-        atl::Matrix<T> temp_mat_3 = age_age_err * age_len_trans_3;
+        atl::VariableMatrix<T> temp_mat_3 = age_age_err * age_len_trans_3;
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv1_prop_at_len; i++ )
         {
             y = yrs_srv1_prop_at_len(i);
 
-            // est_srv_1_prop_at_len(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y)) * temp_mat_3);
-            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv1, y);
+            // est_srv_1_prop_at_len(i) = atl::VariableVector<atl::Variable<T> >((srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y)) * temp_mat_3);
+            n_at_age_row = atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_1_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(temp_mat_3,j));
+                est_srv_1_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::VariableMatrixColumn<T>(temp_mat_3,j));
             }
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_1_prop_at_len, i));
+            est_srv_num = atl::Sum(atl::VariableMatrixRow<T>(est_srv_1_prop_at_len, i));
             if ( est_srv_num > T(0) )
             {
                 est_srv_1_prop_at_len(i) /= est_srv_num;
@@ -2026,7 +2036,7 @@ public:
 
 
         // srv 2
-        srv_sel_row = atl::Row(srv_sel, 1);
+        srv_sel_row = atl::VariableMatrixRow<T>(srv_sel, 1);
 
         for ( int i = 0; i < nyrs_srv2; i++ )
         {
@@ -2034,7 +2044,7 @@ public:
 
             // est_srv_2_biomass(i) = 0;
 
-            est_srv_2_biomass(i) = srv_2_q * atl::Sum(atl::Row(obs_srv_2_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) / 1000.0;
+            est_srv_2_biomass(i) = srv_2_q * atl::Sum(atl::VariableMatrixRow<T>(obs_srv_2_wt_at_age, y) * srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv2, y)) / 1000.0;
 
             // convert from kg to mt
             // est_srv_2_biomass(i) /= T(1000.0);
@@ -2045,14 +2055,14 @@ public:
         {
             y = yrs_srv2_prop_at_age(i);
 
-            // est_srv_2_prop_at_age(i) = atl::Row(srv_sel, 1) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
-            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
+            // est_srv_2_prop_at_age(i) = atl::VariableMatrixRow<T>(srv_sel, 1) * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv2, y);
+            n_at_age_row = atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv2, y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_2_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(age_age_err,j));
+                est_srv_2_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::VariableMatrixColumn<T>(age_age_err,j));
             }
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_age, i));
+            est_srv_num = atl::Sum(atl::VariableMatrixRow<T>(est_srv_2_prop_at_age, i));
             if ( est_srv_num > T(0) )
             {
                 est_srv_2_prop_at_age(i) /= est_srv_num;
@@ -2078,20 +2088,20 @@ public:
             }
         }
 
-        atl::Matrix<T> temp_mat_2 = age_age_err * age_len_trans_2;
+        atl::VariableMatrix<T> temp_mat_2 = age_age_err * age_len_trans_2;
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv2_prop_at_len; i++ )
         {
             y = yrs_srv2_prop_at_len(i);
 
-            // est_srv_2_prop_at_len(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y)) * temp_mat_2);
-            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv2, y);
+            // est_srv_2_prop_at_len(i) = atl::VariableVector<atl::Variable<T> >((srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv2, y)) * temp_mat_2);
+            n_at_age_row = atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv2, y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_2_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(temp_mat_2,j));
+                est_srv_2_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::VariableMatrixColumn<T>(temp_mat_2,j));
             }
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_2_prop_at_len, i));
+            est_srv_num = atl::Sum(atl::VariableMatrixRow<T>(est_srv_2_prop_at_len, i));
             if ( est_srv_num > T(0) )
             {
                 est_srv_2_prop_at_len(i) /= est_srv_num;
@@ -2100,7 +2110,7 @@ public:
 
 
         // srv 3
-        srv_sel_row = atl::Row(srv_sel, 2);
+        srv_sel_row = atl::VariableMatrixRow<T>(srv_sel, 2);
 
         for ( int i = 0; i < nyrs_srv3; i++ )
         {
@@ -2108,7 +2118,7 @@ public:
 
             // est_srv_3_biomass(i) = 0;
 
-            est_srv_3_biomass(i) = srv_3_q * atl::Sum(atl::Row(obs_srv_3_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) / 1000.0;
+            est_srv_3_biomass(i) = srv_3_q * atl::Sum(atl::VariableMatrixRow<T>(obs_srv_3_wt_at_age, y) * srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv3, y)) / 1000.0;
 
             // convert from kg to mt
             // est_srv_3_biomass(i) /= T(1000.0);
@@ -2119,14 +2129,14 @@ public:
         {
             y = yrs_srv3_prop_at_age(i);
 
-            // est_srv_3_prop_at_age(i) = atl::Row(srv_sel, 2) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
-            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
+            // est_srv_3_prop_at_age(i) = atl::VariableMatrixRow<T>(srv_sel, 2) * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv3, y);
+            n_at_age_row = atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv3, y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_3_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(age_age_err,j));
+                est_srv_3_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::VariableMatrixColumn<T>(age_age_err,j));
             }
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_age, i));
+            est_srv_num = atl::Sum(atl::VariableMatrixRow<T>(est_srv_3_prop_at_age, i));
             if ( est_srv_num > T(0) )
             {
                 est_srv_3_prop_at_age(i) /= est_srv_num;
@@ -2138,14 +2148,14 @@ public:
         {
             y = yrs_srv3_prop_at_len(i);
 
-            // est_srv_3_prop_at_len(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y)) * temp_mat_2);
-            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv3, y);
+            // est_srv_3_prop_at_len(i) = atl::VariableVector<atl::Variable<T> >((srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv3, y)) * temp_mat_2);
+            n_at_age_row = atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv3, y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_3_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(temp_mat_2,j));
+                est_srv_3_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::VariableMatrixColumn<T>(temp_mat_2,j));
             }
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_3_prop_at_len, i));
+            est_srv_num = atl::Sum(atl::VariableMatrixRow<T>(est_srv_3_prop_at_len, i));
             if ( est_srv_num > T(0) )
             {
                 est_srv_3_prop_at_len(i) /= est_srv_num;
@@ -2175,13 +2185,13 @@ public:
 
 
         // srv 6
-        srv_sel_row = atl::Row(srv_sel, 5);
+        srv_sel_row = atl::VariableMatrixRow<T>(srv_sel, 5);
 
         for ( int i = 0; i < nyrs_srv6; i++ )
         {
             y = yrs_srv6(i);
 
-            est_srv_6_biomass(i) = srv_6_q * atl::Sum(atl::Row(obs_srv_6_wt_at_age, y) * srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) / 1000.0;
+            est_srv_6_biomass(i) = srv_6_q * atl::Sum(atl::VariableMatrixRow<T>(obs_srv_6_wt_at_age, y) * srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv6, y)) / 1000.0;
         }
 
         // calculate proportions at age
@@ -2189,14 +2199,14 @@ public:
         {
             y = yrs_srv6_prop_at_age(i);
 
-            // est_srv_6_prop_at_age(i) = atl::Row(srv_sel, 5) * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
-            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
+            // est_srv_6_prop_at_age(i) = atl::VariableMatrixRow<T>(srv_sel, 5) * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv6, y);
+            n_at_age_row = atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv6, y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_6_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(age_age_err,j));
+                est_srv_6_prop_at_age(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::VariableMatrixColumn<T>(age_age_err,j));
             }
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_6_prop_at_age, i));
+            est_srv_num = atl::Sum(atl::VariableMatrixRow<T>(est_srv_6_prop_at_age, i));
             if ( est_srv_num > T(0) )
             {
                 est_srv_6_prop_at_age(i) /= est_srv_num;
@@ -2227,14 +2237,14 @@ public:
         {
             y = yrs_srv6_prop_at_len(i);
 
-            // est_srv_6_prop_at_len(i) = atl::Vector<atl::Variable<T> >((srv_sel_row * atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y)) * temp_mat_2);
-            n_at_age_row = atl::Row(N, y) * atl::Row(expZ_yrfrac_srv6, y);
+            // est_srv_6_prop_at_len(i) = atl::VariableVector<atl::Variable<T> >((srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv6, y)) * temp_mat_2);
+            n_at_age_row = atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv6, y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_6_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::Column(temp_mat_2,j));
+                est_srv_6_prop_at_len(i,j) = atl::Sum(srv_sel_row * n_at_age_row * atl::VariableMatrixColumn<T>(temp_mat_2,j));
             }
 
-            est_srv_num = atl::Sum(atl::Row(est_srv_6_prop_at_len, i));
+            est_srv_num = atl::Sum(atl::VariableMatrixRow<T>(est_srv_6_prop_at_len, i));
             if ( est_srv_num > T(0) )
             {
                 est_srv_6_prop_at_len(i) /= est_srv_num;
@@ -2244,7 +2254,7 @@ public:
 
     void CalculateCatchAtAge()
     {
-        atl::Vector<atl::Variable<T> > prop_at_age_row;
+        atl::VariableVector<atl::Variable<T> > prop_at_age_row;
         atl::Variable<T> est_catch_num;
 
         for ( int i = 0; i < nyrs; i++ )
@@ -2255,24 +2265,24 @@ public:
 
             for ( int j = 0; j < nages; j++ )
             {
-                C(i,j) = atl::Sum(((atl::Row(F,i) / atl::Row(Z,i)) * (1.0 - atl::Row(expZ,i)) * atl::Row(N,i)) * atl::Column(age_age_err,j));
+                C(i,j) = atl::Sum(((atl::VariableMatrixRow<T>(F,i) / atl::VariableMatrixRow<T>(Z,i)) * (1.0 - atl::VariableMatrixRow<T>(expZ,i)) * atl::VariableMatrixRow<T>(N,i)) * atl::VariableMatrixColumn<T>(age_age_err,j));
                 est_catch(i) += (obs_fsh_wt_at_age(i,j) * C(i,j));
             }
             est_catch(i) /= 1000.0;
 
             // calculate proportions at age
-            est_catch_num = atl::Sum(atl::Row(C,i));
+            est_catch_num = atl::Sum(atl::VariableMatrixRow<T>(C,i));
             if ( est_catch_num > T(0) )
             {
                 est_fsh_prop_at_age(i) = C(i) / est_catch_num;
             }
 
             // calculate proportions at length
-            // est_fsh_prop_at_len(i) = atl::Vector<atl::Variable<T> >(est_fsh_prop_at_age(i) * age_len_trans_1);
-            prop_at_age_row = atl::Row(est_fsh_prop_at_age,i);
+            // est_fsh_prop_at_len(i) = atl::VariableVector<atl::Variable<T> >(est_fsh_prop_at_age(i) * age_len_trans_1);
+            prop_at_age_row = atl::VariableMatrixRow<T>(est_fsh_prop_at_age,i);
             for ( int j = 0; j < n_fsh_len_bins; j++ )
             {
-                est_fsh_prop_at_len(i,j) = atl::Sum(prop_at_age_row * atl::Column(age_len_trans_1,j));
+                est_fsh_prop_at_len(i,j) = atl::Sum(prop_at_age_row * atl::VariableMatrixColumn<T>(age_len_trans_1,j));
             }
 
 
@@ -2681,7 +2691,7 @@ public:
 
         for ( int k = 0; k < nsrvs; k++ )
         {
-            std::cout << "srv_sel " << (k + 1) << " " << atl::Row(srv_sel, k) << std::endl;
+            std::cout << "srv_sel " << (k + 1) << " " << atl::VariableMatrixRow<T>(srv_sel, k) << std::endl;
         }
         std::cout << std::endl;
 
@@ -2761,29 +2771,28 @@ public:
 
     void GetVarCovar()
     {
-        // atl::Matrix<T> hess = this->Hessian();
-        atl::Matrix<T> hess = atl::Matrix<T>::Identity(10);    // for testing
-        atl::Matrix<T> inverse_hess = atl::Matrix<T>::Identity(hess.Size(0));
+        // std::cout << "\nSE vector\n" << se << std::endl;
 
-        std::cout << "\nHessian matrix\n" << hess << std::endl;
+        // atl::VariableMatrix<T> var_covar = inverse_hess / (atl::OuterProduct(se,se));
 
-        hess.Invert();
-        inverse_hess = hess;
+        std::cout << "\nVariance-covariance matrix\n" << std::endl;
 
-        std::cout << "\nInverse of Hessian matrix\n" << inverse_hess << std::endl;
-
-        atl::Vector<T> se(hess.Size(0));
-
-        for (int i = 0; i < hess.Size(0); i++)
+        atl::RealMatrix<T> var_covar = this->GetVarianceCovariance();
+        size_t dimM = var_covar.GetRows();
+        if (dimM > 0)   // if it is not, then there's a problem
         {
-            se(i) = std::sqrt(inverse_hess(i,i));
+            for (int i = 0; i < dimM; ++i)
+            {
+                std::cout << "Variable " << (i+1) << std::endl;
+
+                for (int j = 0; j < dimM; ++j)
+                {
+                    std::cout << " " << var_covar.GetValue(i, j);
+                }
+
+                std::cout << std::endl;
+            }
         }
-
-        std::cout << "\nSE vector\n" << se << std::endl;
-
-        atl::Matrix<T> var_covar = inverse_hess / (atl::OuterProduct(se,se));
-
-        std::cout << "\nVariance-covariance matrix\n" << var_covar << std::endl;
     }
 
 };
