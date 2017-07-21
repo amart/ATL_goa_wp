@@ -2398,7 +2398,7 @@ public:
         nll_parts(0) = 0;
         for ( int i = 0; i < nyrs; i++ )
         {
-            nll_parts(0) += (0.5 * SQUARE((atl::log(obs_catch[i] + o) - atl::log(est_catch(i) + o)) / obs_catch_CV[i]));
+            nll_parts(0) += (0.5 * SQUARE((std::log(obs_catch[i] + o) - atl::log(est_catch(i) + o)) / obs_catch_CV[i]));
         }
 
         // NLL for fsh proportions at age
@@ -2435,17 +2435,17 @@ public:
         nll_parts(3) = 0;
         for ( int i = 0; i < nyrs_srv1a; i++ )
         {
-            nll_parts(3) += (0.5 * SQUARE(((atl::log(obs_srv_1a_biomass[i] + o) - atl::log(est_srv_1a_biomass(i) + o) + SQUARE((obs_srv_1a_CV[i] / 2.0))) / obs_srv_1a_CV[i])));
+            nll_parts(3) += (0.5 * SQUARE(((std::log(obs_srv_1a_biomass[i] + o) - atl::log(est_srv_1a_biomass(i) + o) + SQUARE((obs_srv_1a_CV[i] / 2.0))) / obs_srv_1a_CV[i])));
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
-            nll_parts(3) += (0.5 * SQUARE(((atl::log(obs_srv_1b_biomass[i] + o) - atl::log(est_srv_1b_biomass(i) + o) + SQUARE((obs_srv_1b_CV[i] / 2.0))) / obs_srv_1b_CV[i])));
+            nll_parts(3) += (0.5 * SQUARE(((std::log(obs_srv_1b_biomass[i] + o) - atl::log(est_srv_1b_biomass(i) + o) + SQUARE((obs_srv_1b_CV[i] / 2.0))) / obs_srv_1b_CV[i])));
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
-            nll_parts(3) += (0.5 * SQUARE(((atl::log(obs_srv_1_biomass[i] + o) - atl::log(est_srv_1_biomass(i) + o) + SQUARE((obs_srv_1_CV[i] / 2.0))) / obs_srv_1_CV[i])));
+            nll_parts(3) += (0.5 * SQUARE(((std::log(obs_srv_1_biomass[i] + o) - atl::log(est_srv_1_biomass(i) + o) + SQUARE((obs_srv_1_CV[i] / 2.0))) / obs_srv_1_CV[i])));
         }
 
         // NLL for srv 1 proportions at age
@@ -2478,7 +2478,7 @@ public:
         nll_parts(6) = 0;
         for ( int i = 0; i < nyrs_srv2; i++ )
         {
-            nll_parts(6) += (0.5 * SQUARE(((atl::log(obs_srv_2_biomass[i] + o) - atl::log(est_srv_2_biomass(i) + o) + SQUARE((obs_srv_2_CV[i] / 2.0))) / obs_srv_2_CV[i])));
+            nll_parts(6) += (0.5 * SQUARE(((std::log(obs_srv_2_biomass[i] + o) - atl::log(est_srv_2_biomass(i) + o) + SQUARE((obs_srv_2_CV[i] / 2.0))) / obs_srv_2_CV[i])));
         }
 
         // NLL for srv 2 proportions at age
@@ -2511,7 +2511,7 @@ public:
         nll_parts(9) = 0;
         for ( int i = 0; i < nyrs_srv3; i++ )
         {
-            nll_parts(9) += (0.5 * SQUARE(((atl::log(obs_srv_3_biomass[i] + o) - atl::log(est_srv_3_biomass(i) + o) + SQUARE((obs_srv_3_CV[i] / 2.0))) / obs_srv_3_CV[i])));
+            nll_parts(9) += (0.5 * SQUARE(((std::log(obs_srv_3_biomass[i] + o) - atl::log(est_srv_3_biomass(i) + o) + SQUARE((obs_srv_3_CV[i] / 2.0))) / obs_srv_3_CV[i])));
         }
 
         // NLL for srv 3 proportions at age
@@ -2544,21 +2544,21 @@ public:
         nll_parts(12) = 0;
         for ( int i = 0; i < nyrs_srv4; i++ )
         {
-            nll_parts(12) += (0.5 * SQUARE(((atl::log(obs_srv_4_biomass[i] + o) - atl::log(est_srv_4_biomass(i) + o) + SQUARE((obs_srv_4_CV[i] / 2.0))) / obs_srv_4_CV[i])));
+            nll_parts(12) += (0.5 * SQUARE(((std::log(obs_srv_4_biomass[i] + o) - atl::log(est_srv_4_biomass(i) + o) + SQUARE((obs_srv_4_CV[i] / 2.0))) / obs_srv_4_CV[i])));
         }
 
         // NLL for srv 5 biomass
         nll_parts(13) = 0;
         for ( int i = 0; i < nyrs_srv5; i++ )
         {
-            nll_parts(13) += (0.5 * SQUARE(((atl::log(obs_srv_5_biomass[i] + o) - atl::log(est_srv_5_biomass(i) + o) + SQUARE((obs_srv_5_CV[i] / 2.0))) / obs_srv_5_CV[i])));
+            nll_parts(13) += (0.5 * SQUARE(((std::log(obs_srv_5_biomass[i] + o) - atl::log(est_srv_5_biomass(i) + o) + SQUARE((obs_srv_5_CV[i] / 2.0))) / obs_srv_5_CV[i])));
         }
 
         // NLL for srv 6 biomass
         nll_parts(14) = 0;
         for ( int i = 0; i < nyrs_srv6; i++ )
         {
-            nll_parts(14) += (0.5 * SQUARE(((atl::log(obs_srv_6_biomass[i] + o) - atl::log(est_srv_6_biomass(i) + o) + SQUARE((obs_srv_6_CV[i] / 2.0))) / obs_srv_6_CV[i])));
+            nll_parts(14) += (0.5 * SQUARE(((std::log(obs_srv_6_biomass[i] + o) - atl::log(est_srv_6_biomass(i) + o) + SQUARE((obs_srv_6_CV[i] / 2.0))) / obs_srv_6_CV[i])));
         }
 
         // NLL for srv 6 proportions at age
