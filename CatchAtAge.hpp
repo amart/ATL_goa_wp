@@ -2615,10 +2615,22 @@ public:
         // likelihood component for q for srv1
         nll_parts(22) = 0.5 * SQUARE((log_srv_2_q - log(0.85)) / 0.1);
 
-        nll_parts(23)  = (0.5 * atl::Norm2(atl::FirstDifference(fsh_sel_asc_alpha_devs) / (4.0 * fsh_sel_sd)));
-        nll_parts(23) += (0.5 * atl::Norm2(atl::FirstDifference(fsh_sel_asc_beta_devs) / (1.0 * fsh_sel_sd)));
-        nll_parts(23) += (0.5 * atl::Norm2(atl::FirstDifference(fsh_sel_desc_alpha_devs) / (4.0 * fsh_sel_sd)));
-        nll_parts(23) += (0.5 * atl::Norm2(atl::FirstDifference(fsh_sel_desc_beta_devs) / (1.0 * fsh_sel_sd)));
+        auto temp_vec1 = atl::FirstDifference(fsh_sel_asc_alpha_devs);
+        auto temp_vec2 = atl::FirstDifference(fsh_sel_asc_beta_devs);
+        auto temp_vec3 = atl::FirstDifference(fsh_sel_desc_alpha_devs);
+        auto temp_vec4 = atl::FirstDifference(fsh_sel_desc_beta_devs);
+        for ( int i = 0; i < fsh_sel_sd.size(); ++i )
+        {
+            temp_vec1(i) /= (4.0 * fsh_sel_sd[i]);
+            temp_vec2(i) /= (1.0 * fsh_sel_sd[i]);
+            temp_vec3(i) /= (4.0 * fsh_sel_sd[i]);
+            temp_vec4(i) /= (1.0 * fsh_sel_sd[i]);
+        }
+        nll_parts(23)  = 0.5 * atl::Norm2(temp_vec1);
+        nll_parts(23) += 0.5 * atl::Norm2(temp_vec2);
+        nll_parts(23) += 0.5 * atl::Norm2(temp_vec3);
+        nll_parts(23) += 0.5 * atl::Norm2(temp_vec4);
+
 
         f = atl::Sum(nll_parts);
 
