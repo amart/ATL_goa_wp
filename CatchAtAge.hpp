@@ -1962,7 +1962,6 @@ public:
 
     void NumbersAtAge()
     {
-        atl::VariableVector<T> n_at_age_row;
         atl::Variable<T> age_specific_biomass;
 
         initial_population(0) = atl::exp(log_mean_recruits);
@@ -2006,7 +2005,7 @@ public:
             est_total_biomass(i)   = T(0);
             est_summary_biomass(i) = T(0);
             est_spawn_biomass(i)   = T(0);
-            n_at_age_row = N.Row(i);
+            auto n_at_age_row = N.Row(i);
 
              for ( int j = 0; j < nages; j++ )
             {
@@ -2038,8 +2037,6 @@ public:
     void FleetIndices()
     {
         atl::Variable<T> est_srv_num;
-        atl::VariableVector<T> srv_sel_row;
-        atl::VariableVector<T> n_at_age_row;
         int y;
 
         srv_1a_q = atl::exp(log_srv_1a_q);
@@ -2052,27 +2049,27 @@ public:
         srv_6_q  = atl::exp(log_srv_6_q);
 
         // srv 1
-        srv_sel_row = srv_sel.Row(0);
+        auto srv_sel_1 = srv_sel.Row(0);
 
         for ( int i = 0; i < nyrs_srv1a; i++ )
         {
             y = yrs_srv1a[i];
 
-            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_row * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
+            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b[i];
 
-            est_srv_1b_biomass(i) = srv_1b_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_row * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
+            est_srv_1b_biomass(i) = srv_1b_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             y = yrs_srv1[i];
 
-            est_srv_1_biomass(i) = srv_1_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_row * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
+            est_srv_1_biomass(i) = srv_1_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
         }
 
         // calculate proportions at age
@@ -2081,10 +2078,10 @@ public:
             y = yrs_srv1_prop_at_age[i];
 
             // est_srv_1_prop_at_age(i) = atl::VariableVector<T>(age_age_err * (srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)));
-            n_at_age_row = N.Row(y) * expZ_yrfrac_srv1.Row(y);
+            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv1.Row(y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_1_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_row * n_at_age_row * age_age_err.Column(j)));
+                est_srv_1_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_1 * n_at_age_row * age_age_err.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_1_prop_at_age.Row(i)));
@@ -2119,11 +2116,11 @@ public:
         {
             y = yrs_srv1_prop_at_len[i];
 
-            // est_srv_1_prop_at_len(i) = atl::VariableVector<T>((srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y)) * temp_mat_3);
-            n_at_age_row = N.Row(y) * expZ_yrfrac_srv1.Row(y);
+            // est_srv_1_prop_at_len(i) = atl::VariableVector<T>((srv_sel_1 * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y)) * temp_mat_3);
+            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv1.Row(y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_1_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_row * n_at_age_row * temp_mat_3.Column(j)));
+                est_srv_1_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_1 * n_at_age_row * temp_mat_3.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_1_prop_at_len.Row(i)));
@@ -2135,7 +2132,7 @@ public:
 
 
         // srv 2
-        srv_sel_row = srv_sel.Row(1);
+        auto srv_sel_2 = srv_sel.Row(1);
 
         for ( int i = 0; i < nyrs_srv2; i++ )
         {
@@ -2143,7 +2140,7 @@ public:
 
             // est_srv_2_biomass(i) = 0;
 
-            est_srv_2_biomass(i) = srv_2_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_2_wt_at_age.Row(y) * srv_sel_row * N.Row(y) * expZ_yrfrac_srv2.Row(y))) / 1000.0;
+            est_srv_2_biomass(i) = srv_2_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_2_wt_at_age.Row(y) * srv_sel_2 * N.Row(y) * expZ_yrfrac_srv2.Row(y))) / 1000.0;
 
             // convert from kg to mt
             // est_srv_2_biomass(i) /= T(1000.0);
@@ -2155,10 +2152,10 @@ public:
             y = yrs_srv2_prop_at_age[i];
 
             // est_srv_2_prop_at_age(i) = atl::VariableMatrixRow<T>(srv_sel, 1) * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv2, y);
-            n_at_age_row = N.Row(y) * expZ_yrfrac_srv2.Row(y);
+            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv2.Row(y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_2_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_row * n_at_age_row * age_age_err.Column(j)));
+                est_srv_2_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_2 * n_at_age_row * age_age_err.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_2_prop_at_age.Row(i)));
@@ -2193,11 +2190,11 @@ public:
         {
             y = yrs_srv2_prop_at_len[i];
 
-            // est_srv_2_prop_at_len(i) = atl::VariableVector<T>((srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv2, y)) * temp_mat_2);
-            n_at_age_row = N.Row(y) * expZ_yrfrac_srv2.Row(y);
+            // est_srv_2_prop_at_len(i) = atl::VariableVector<T>((srv_sel_2 * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv2, y)) * temp_mat_2);
+            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv2.Row(y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_2_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_row * n_at_age_row * temp_mat_2.Column(j)));
+                est_srv_2_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_2 * n_at_age_row * temp_mat_2.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_2_prop_at_len.Row(i)));
@@ -2209,7 +2206,7 @@ public:
 
 
         // srv 3
-        srv_sel_row = srv_sel.Row(2);
+        auto srv_sel_3 = srv_sel.Row(2);
 
         for ( int i = 0; i < nyrs_srv3; i++ )
         {
@@ -2217,7 +2214,7 @@ public:
 
             // est_srv_3_biomass(i) = 0;
 
-            est_srv_3_biomass(i) = srv_3_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_3_wt_at_age.Row(y) * srv_sel_row * N.Row(y) * expZ_yrfrac_srv3.Row(y))) / 1000.0;
+            est_srv_3_biomass(i) = srv_3_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_3_wt_at_age.Row(y) * srv_sel_3 * N.Row(y) * expZ_yrfrac_srv3.Row(y))) / 1000.0;
 
             // convert from kg to mt
             // est_srv_3_biomass(i) /= T(1000.0);
@@ -2229,10 +2226,10 @@ public:
             y = yrs_srv3_prop_at_age[i];
 
             // est_srv_3_prop_at_age(i) = atl::VariableMatrixRow<T>(srv_sel, 2) * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv3, y);
-            n_at_age_row = N.Row(y) * expZ_yrfrac_srv3.Row(y);
+            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv3.Row(y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_3_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_row * n_at_age_row * age_age_err.Column(j)));
+                est_srv_3_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_3 * n_at_age_row * age_age_err.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_3_prop_at_age.Row(i)));
@@ -2247,11 +2244,11 @@ public:
         {
             y = yrs_srv3_prop_at_len[i];
 
-            // est_srv_3_prop_at_len(i) = atl::VariableVector<T>((srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv3, y)) * temp_mat_2);
-            n_at_age_row = N.Row(y) * expZ_yrfrac_srv3.Row(y);
+            // est_srv_3_prop_at_len(i) = atl::VariableVector<T>((srv_sel_3 * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv3, y)) * temp_mat_2);
+            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv3.Row(y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_3_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_row * n_at_age_row * temp_mat_2.Column(j)));
+                est_srv_3_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_3 * n_at_age_row * temp_mat_2.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_3_prop_at_len.Row(i)));
@@ -2284,13 +2281,13 @@ public:
 
 
         // srv 6
-        srv_sel_row = srv_sel.Row(5);
+        auto srv_sel_6 = srv_sel.Row(5);
 
         for ( int i = 0; i < nyrs_srv6; i++ )
         {
             y = yrs_srv6[i];
 
-            est_srv_6_biomass(i) = srv_6_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_6_wt_at_age.Row(y) * srv_sel_row * N.Row(y) * expZ_yrfrac_srv6.Row(y))) / 1000.0;
+            est_srv_6_biomass(i) = srv_6_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_6_wt_at_age.Row(y) * srv_sel_6 * N.Row(y) * expZ_yrfrac_srv6.Row(y))) / 1000.0;
         }
 
         // calculate proportions at age
@@ -2299,10 +2296,10 @@ public:
             y = yrs_srv6_prop_at_age[i];
 
             // est_srv_6_prop_at_age(i) = atl::VariableMatrixRow<T>(srv_sel, 5) * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv6, y);
-            n_at_age_row = N.Row(y) * expZ_yrfrac_srv6.Row(y);
+            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv6.Row(y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_6_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_row * n_at_age_row * age_age_err.Column(j)));
+                est_srv_6_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_6 * n_at_age_row * age_age_err.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_6_prop_at_age.Row(i)));
@@ -2336,11 +2333,11 @@ public:
         {
             y = yrs_srv6_prop_at_len[i];
 
-            // est_srv_6_prop_at_len(i) = atl::VariableVector<T>((srv_sel_row * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv6, y)) * temp_mat_2);
-            n_at_age_row = N.Row(y) * expZ_yrfrac_srv6.Row(y);
+            // est_srv_6_prop_at_len(i) = atl::VariableVector<T>((srv_sel_6 * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv6, y)) * temp_mat_2);
+            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv6.Row(y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_6_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_row * n_at_age_row * temp_mat_2.Column(j)));
+                est_srv_6_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_6 * n_at_age_row * temp_mat_2.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_6_prop_at_len.Row(i)));
@@ -2708,195 +2705,245 @@ public:
         f = atl::Sum(nll_parts);
     }
 
+    atl::VariableVector<T> NormalizeVariableVector(atl::VariableVector<T>& v, size_t idx)
+    {
+        atl::VariableVector<T> new_v;
+
+        size_t v_len = v.GetSize();
+
+        if ( v_len > 0 && idx < v_len && v(idx) != T(0.0))
+        {
+            new_v.Resize(v_len);
+
+            for ( int i = 0; i < v_len; ++i )
+            {
+                new_v(i) = v(i) / v(idx);
+            }
+        }
+
+        return new_v;
+    }
+
     void Report()
     {
         atl::Variable<T> one_meeellion = 1000000.0;     // conversion factor
 
-        std::cout << std::endl << std::endl;
-        std::cout << "objective function " << atl::Sum(nll_parts) << std::endl;
-        std::cout << "objective function components " << nll_parts << std::endl;
-        std::cout << std::endl;
+        std::ofstream output("goa_wp_report.txt");
+        output << std::fixed;
 
-        std::cout << "init devs " << init_pop_devs << std::endl;
-        std::cout << "init N-at-age " << initial_population << std::endl;
-        std::cout << "ratios " << (initial_population / initial_population(0)) << std::endl;
-        std::cout << std::endl;
+        output << std::endl << std::endl;
+        output << "objective function " << atl::Sum(nll_parts) << std::endl;
+        output << "objective function components " << nll_parts << std::endl;
+        output << std::endl;
 
-        std::cout << "log mean_recruits " << log_mean_recruits << "\t" << atl::exp(log_mean_recruits) << std::endl;
-        std::cout << "recruit_devs " << recruit_devs << std::endl;
-        std::cout << "recruits " << recruits << std::endl;
-        std::cout << std::endl;
+        output << "init devs " << init_pop_devs << std::endl;
+        output << "init N-at-age " << initial_population << std::endl;
+        output << "ratios " << this->NormalizeVariableVector(initial_population, 0) << std::endl;
+        output << std::endl;
 
-        std::cout << "log mean_fsh_mort " << log_mean_fsh_mort << "\t" << atl::exp(log_mean_fsh_mort) << std::endl;
-        std::cout << "fsh_mort_devs " << fsh_mort_devs << std::endl;
-        std::cout << "fsh_mort " << fsh_mort << std::endl;
-        std::cout << std::endl;
+        output << "log mean_recruits " << log_mean_recruits << "\t" << atl::exp(log_mean_recruits) << std::endl;
+        output << "recruit_devs " << recruit_devs << std::endl;
+        output << "recruits " << recruits << std::endl;
+        output << std::endl;
 
-        std::cout << "log fsh_sel_asc_alpha " << log_fsh_sel_asc_alpha << std::endl;
-        std::cout << "log fsh_sel_asc_beta " << log_fsh_sel_asc_beta << std::endl;
-        std::cout << "log fsh_sel_desc_alpha " << log_fsh_sel_desc_alpha << std::endl;
-        std::cout << "log fsh_sel_desc_beta " << log_fsh_sel_desc_beta << std::endl;
-        std::cout << "fsh_sel_asc_alpha " << fsh_sel_asc_alpha << std::endl;
-        std::cout << "fsh_sel_asc_beta " << fsh_sel_asc_beta << std::endl;
-        std::cout << "fsh_sel_desc_alpha " << fsh_sel_desc_alpha << std::endl;
-        std::cout << "fsh_sel_desc_beta " << fsh_sel_desc_beta << std::endl;
-        std::cout << "fsh_sel_asc_alpha_devs " << fsh_sel_asc_alpha_devs << std::endl;
-        std::cout << "fsh_sel_asc_beta_devs " << fsh_sel_asc_beta_devs << std::endl;
-        std::cout << "fsh_sel_desc_alpha_devs " << fsh_sel_desc_alpha_devs << std::endl;
-        std::cout << "fsh_sel_desc_beta_devs " << fsh_sel_desc_beta_devs << std::endl;
-        std::cout << std::endl;
-        std::cout << "fsh sel" << std::endl;
-        std::cout << fsh_sel << std::endl;
-        std::cout << std::endl;
+        output << "log mean_fsh_mort " << log_mean_fsh_mort << "\t" << atl::exp(log_mean_fsh_mort) << std::endl;
+        output << "fsh_mort_devs " << fsh_mort_devs << std::endl;
+        output << "fsh_mort " << fsh_mort << std::endl;
+        output << std::endl;
 
-        std::cout << "observed catch " << obs_catch << std::endl;
-        std::cout << "estimated catch " << est_catch << std::endl;
-        std::cout << std::endl;
+        output << "log fsh_sel_asc_alpha " << log_fsh_sel_asc_alpha << std::endl;
+        output << "log fsh_sel_asc_beta " << log_fsh_sel_asc_beta << std::endl;
+        output << "log fsh_sel_desc_alpha " << log_fsh_sel_desc_alpha << std::endl;
+        output << "log fsh_sel_desc_beta " << log_fsh_sel_desc_beta << std::endl;
+        output << "fsh_sel_asc_alpha " << fsh_sel_asc_alpha << std::endl;
+        output << "fsh_sel_asc_beta " << fsh_sel_asc_beta << std::endl;
+        output << "fsh_sel_desc_alpha " << fsh_sel_desc_alpha << std::endl;
+        output << "fsh_sel_desc_beta " << fsh_sel_desc_beta << std::endl;
+        output << "fsh_sel_asc_alpha_devs " << fsh_sel_asc_alpha_devs << std::endl;
+        output << "fsh_sel_asc_beta_devs " << fsh_sel_asc_beta_devs << std::endl;
+        output << "fsh_sel_desc_alpha_devs " << fsh_sel_desc_alpha_devs << std::endl;
+        output << "fsh_sel_desc_beta_devs " << fsh_sel_desc_beta_devs << std::endl;
+        output << std::endl;
+        output << "fsh sel" << std::endl;
+        output << fsh_sel << std::endl;
+        output << std::endl;
 
-        std::cout << "srv_1a_q " << srv_1a_q << std::endl;
-        std::cout << "srv_1b_q " << srv_1b_q << std::endl;
-        std::cout << "srv_1_q " << srv_1_q << std::endl;
-        std::cout << "srv_2_q " << srv_2_q << std::endl;
-        std::cout << "srv_3_q " << srv_3_q << std::endl;
-        std::cout << "srv_4_q " << srv_4_q << std::endl;
-        std::cout << "srv_4_q_pow " << srv_4_q_pow << std::endl;
-        std::cout << "srv_5_q " << srv_5_q << std::endl;
-        std::cout << "srv_5_q_pow " << srv_5_q_pow << std::endl;
-        std::cout << "srv_6_q " << srv_6_q << std::endl;
-        std::cout << std::endl;
+        output << "observed catch " << obs_catch << std::endl;
+        output << "estimated catch " << est_catch << std::endl;
+        output << std::endl;
 
-        std::cout << "log_srv1_sel_asc_alpha " << log_srv1_sel_asc_alpha << std::endl;
-        std::cout << "log_srv1_sel_asc_beta " << log_srv1_sel_asc_beta << std::endl;
-        std::cout << "log_srv1_sel_desc_alpha " << log_srv1_sel_desc_alpha << std::endl;
-        std::cout << "log_srv1_sel_desc_beta " << log_srv1_sel_desc_beta << std::endl;
-        std::cout << "srv1_sel_asc_alpha " << srv1_sel_asc_alpha << std::endl;
-        std::cout << "srv1_sel_asc_beta " << srv1_sel_asc_beta << std::endl;
-        std::cout << "srv1_sel_desc_alpha " << srv1_sel_desc_alpha << std::endl;
-        std::cout << "srv1_sel_desc_beta " << srv1_sel_desc_beta << std::endl;
-        std::cout << std::endl;
+        output << "srv_1a_q " << srv_1a_q << std::endl;
+        output << "srv_1b_q " << srv_1b_q << std::endl;
+        output << "srv_1_q " << srv_1_q << std::endl;
+        output << "srv_2_q " << srv_2_q << std::endl;
+        output << "srv_3_q " << srv_3_q << std::endl;
+        output << "srv_4_q " << srv_4_q << std::endl;
+        output << "srv_4_q_pow " << srv_4_q_pow << std::endl;
+        output << "srv_5_q " << srv_5_q << std::endl;
+        output << "srv_5_q_pow " << srv_5_q_pow << std::endl;
+        output << "srv_6_q " << srv_6_q << std::endl;
+        output << std::endl;
 
-        std::cout << "log_srv2_sel_asc_alpha " << log_srv2_sel_asc_alpha << std::endl;
-        std::cout << "log_srv2_sel_asc_beta " << log_srv2_sel_asc_beta << std::endl;
-        std::cout << "log_srv2_sel_desc_alpha " << log_srv2_sel_desc_alpha << std::endl;
-        std::cout << "log_srv2_sel_desc_beta " << log_srv2_sel_desc_beta << std::endl;
-        std::cout << "srv2_sel_asc_alpha " << srv2_sel_asc_alpha << std::endl;
-        std::cout << "srv2_sel_asc_beta " << srv2_sel_asc_beta << std::endl;
-        std::cout << "srv2_sel_desc_alpha " << srv2_sel_desc_alpha << std::endl;
-        std::cout << "srv2_sel_desc_beta " << srv2_sel_desc_beta << std::endl;
-        std::cout << std::endl;
+        output << "log_srv1_sel_asc_alpha " << log_srv1_sel_asc_alpha << std::endl;
+        output << "log_srv1_sel_asc_beta " << log_srv1_sel_asc_beta << std::endl;
+        output << "log_srv1_sel_desc_alpha " << log_srv1_sel_desc_alpha << std::endl;
+        output << "log_srv1_sel_desc_beta " << log_srv1_sel_desc_beta << std::endl;
+        output << "srv1_sel_asc_alpha " << srv1_sel_asc_alpha << std::endl;
+        output << "srv1_sel_asc_beta " << srv1_sel_asc_beta << std::endl;
+        output << "srv1_sel_desc_alpha " << srv1_sel_desc_alpha << std::endl;
+        output << "srv1_sel_desc_beta " << srv1_sel_desc_beta << std::endl;
+        output << std::endl;
 
-        std::cout << "log_srv3_sel_asc_alpha " << log_srv3_sel_asc_alpha << std::endl;
-        std::cout << "log_srv3_sel_asc_beta " << log_srv3_sel_asc_beta << std::endl;
-        std::cout << "log_srv3_sel_desc_alpha " << log_srv3_sel_desc_alpha << std::endl;
-        std::cout << "log_srv3_sel_desc_beta " << log_srv3_sel_desc_beta << std::endl;
-        std::cout << "srv3_sel_asc_alpha " << srv3_sel_asc_alpha << std::endl;
-        std::cout << "srv3_sel_asc_beta " << srv3_sel_asc_beta << std::endl;
-        std::cout << "srv3_sel_desc_alpha " << srv3_sel_desc_alpha << std::endl;
-        std::cout << "srv3_sel_desc_beta " << srv3_sel_desc_beta << std::endl;
-        std::cout << std::endl;
+        output << "log_srv2_sel_asc_alpha " << log_srv2_sel_asc_alpha << std::endl;
+        output << "log_srv2_sel_asc_beta " << log_srv2_sel_asc_beta << std::endl;
+        output << "log_srv2_sel_desc_alpha " << log_srv2_sel_desc_alpha << std::endl;
+        output << "log_srv2_sel_desc_beta " << log_srv2_sel_desc_beta << std::endl;
+        output << "srv2_sel_asc_alpha " << srv2_sel_asc_alpha << std::endl;
+        output << "srv2_sel_asc_beta " << srv2_sel_asc_beta << std::endl;
+        output << "srv2_sel_desc_alpha " << srv2_sel_desc_alpha << std::endl;
+        output << "srv2_sel_desc_beta " << srv2_sel_desc_beta << std::endl;
+        output << std::endl;
 
-        std::cout << "log_srv6_sel_asc_alpha " << log_srv6_sel_asc_alpha << std::endl;
-        std::cout << "log_srv6_sel_asc_beta " << log_srv6_sel_asc_beta << std::endl;
-        std::cout << "log_srv6_sel_desc_alpha " << log_srv6_sel_desc_alpha << std::endl;
-        std::cout << "log_srv6_sel_desc_beta " << log_srv6_sel_desc_beta << std::endl;
-        std::cout << "srv6_sel_asc_alpha " << srv6_sel_asc_alpha << std::endl;
-        std::cout << "srv6_sel_asc_beta " << srv6_sel_asc_beta << std::endl;
-        std::cout << "srv6_sel_desc_alpha " << srv6_sel_desc_alpha << std::endl;
-        std::cout << "srv6_sel_desc_beta " << srv6_sel_desc_beta << std::endl;
-        std::cout << std::endl;
+        output << "log_srv3_sel_asc_alpha " << log_srv3_sel_asc_alpha << std::endl;
+        output << "log_srv3_sel_asc_beta " << log_srv3_sel_asc_beta << std::endl;
+        output << "log_srv3_sel_desc_alpha " << log_srv3_sel_desc_alpha << std::endl;
+        output << "log_srv3_sel_desc_beta " << log_srv3_sel_desc_beta << std::endl;
+        output << "srv3_sel_asc_alpha " << srv3_sel_asc_alpha << std::endl;
+        output << "srv3_sel_asc_beta " << srv3_sel_asc_beta << std::endl;
+        output << "srv3_sel_desc_alpha " << srv3_sel_desc_alpha << std::endl;
+        output << "srv3_sel_desc_beta " << srv3_sel_desc_beta << std::endl;
+        output << std::endl;
 
-        atl::VariableVector<T> srv_sel_row;
+        output << "log_srv6_sel_asc_alpha " << log_srv6_sel_asc_alpha << std::endl;
+        output << "log_srv6_sel_asc_beta " << log_srv6_sel_asc_beta << std::endl;
+        output << "log_srv6_sel_desc_alpha " << log_srv6_sel_desc_alpha << std::endl;
+        output << "log_srv6_sel_desc_beta " << log_srv6_sel_desc_beta << std::endl;
+        output << "srv6_sel_asc_alpha " << srv6_sel_asc_alpha << std::endl;
+        output << "srv6_sel_asc_beta " << srv6_sel_asc_beta << std::endl;
+        output << "srv6_sel_desc_alpha " << srv6_sel_desc_alpha << std::endl;
+        output << "srv6_sel_desc_beta " << srv6_sel_desc_beta << std::endl;
+        output << std::endl;
+
         for ( int k = 0; k < nsrvs; k++ )
         {
-            srv_sel_row = srv_sel.Row(k);
-
-            std::cout << "srv_sel " << (k + 1) << " " << srv_sel_row << std::endl;
+            output << "srv_sel " << (k + 1) << " " << srv_sel.Row(k) << std::endl;
         }
-        std::cout << std::endl;
+        output << std::endl;
 
-        std::cout << "observed srv 1a " << obs_srv_1a_biomass << std::endl;
-        std::cout << "estimated srv 1a " << est_srv_1a_biomass << std::endl;
-        std::cout << "observed srv 1b " << obs_srv_1b_biomass << std::endl;
-        std::cout << "estimated srv 1b " << est_srv_1b_biomass << std::endl;
-        std::cout << "observed srv 1 " << obs_srv_1_biomass << std::endl;
-        std::cout << "estimated srv 1 " << est_srv_1_biomass << std::endl;
-        std::cout << std::endl;
+        output << "observed srv 1a " << obs_srv_1a_biomass << std::endl;
+        output << "estimated srv 1a " << est_srv_1a_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "observed srv 2 " << obs_srv_2_biomass << std::endl;
-        std::cout << "estimated srv 2 " << est_srv_2_biomass << std::endl;
-        std::cout << std::endl;
+        output << "observed srv 1b " << obs_srv_1b_biomass << std::endl;
+        output << "estimated srv 1b " << est_srv_1b_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "observed srv 3 " << obs_srv_3_biomass << std::endl;
-        std::cout << "estimated srv 3 " << est_srv_3_biomass << std::endl;
-        std::cout << std::endl;
+        output << "observed srv 1 " << obs_srv_1_biomass << std::endl;
+        output << "estimated srv 1 " << est_srv_1_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "observed srv 4 " << obs_srv_4_biomass << std::endl;
-        std::cout << "estimated srv 4 " << est_srv_4_biomass << std::endl;
-        std::cout << std::endl;
+        output << "observed srv 2 " << obs_srv_2_biomass << std::endl;
+        output << "estimated srv 2 " << est_srv_2_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "observed srv 5 " << obs_srv_5_biomass << std::endl;
-        std::cout << "estimated srv 5 " << est_srv_5_biomass << std::endl;
-        std::cout << std::endl;
+        output << "observed srv 3 " << obs_srv_3_biomass << std::endl;
+        output << "estimated srv 3 " << est_srv_3_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "observed srv 6 " << obs_srv_6_biomass << std::endl;
-        std::cout << "estimated srv 6 " << est_srv_6_biomass << std::endl;
-        std::cout << std::endl;
+        output << "observed srv 4 " << obs_srv_4_biomass << std::endl;
+        output << "estimated srv 4 " << est_srv_4_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "total biomass " << est_total_biomass << std::endl;
-        std::cout << "summary (age 3+) biomass " << est_summary_biomass << std::endl;
-        std::cout << "spawning biomass " << est_spawn_biomass << std::endl;
-        std::cout << std::endl;
+        output << "observed srv 5 " << obs_srv_5_biomass << std::endl;
+        output << "estimated srv 5 " << est_srv_5_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "N at age" << std::endl;
-        std::cout << (N / one_meeellion) << std::endl;
-        std::cout << std::endl;
+        output << "observed srv 6 " << obs_srv_6_biomass << std::endl;
+        output << "estimated srv 6 " << est_srv_6_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "Observed fishery proportions-at-age" << std::endl;
-        std::cout << obs_fsh_prop_at_age << std::endl;
-        std::cout << "Estimated fishery proportions-at-age" << std::endl;
-        std::cout << est_fsh_prop_at_age << std::endl;
-        std::cout << std::endl;
+        output << "total biomass " << est_total_biomass << std::endl;
+        output << "summary (age 3+) biomass " << est_summary_biomass << std::endl;
+        output << "spawning biomass " << est_spawn_biomass << std::endl;
+        output << std::endl;
 
-        std::cout << "Observed survey 1 proportions-at-age" << std::endl;
-        std::cout << obs_srv_1_prop_at_age << std::endl;
-        std::cout << "Estimated survey 1 proportions-at-age" << std::endl;
-        std::cout << est_srv_1_prop_at_age << std::endl;
-        std::cout << std::endl;
+        output << "N at age" << std::endl;
+        // output << (N / one_meeellion) << std::endl;
+        output << N << std::endl;
+        output << std::endl;
 
-        std::cout << "Observed survey 2 proportions-at-age" << std::endl;
-        std::cout << obs_srv_2_prop_at_age << std::endl;
-        std::cout << "Estimated survey 2 proportions-at-age" << std::endl;
-        std::cout << est_srv_2_prop_at_age << std::endl;
-        std::cout << std::endl;
+        output << "Observed fishery proportions-at-age" << std::endl;
+        output << obs_fsh_prop_at_age << std::endl;
+        output << "Estimated fishery proportions-at-age" << std::endl;
+        output << est_fsh_prop_at_age << std::endl;
+        output << std::endl;
 
-        std::cout << "Observed survey 3 proportions-at-age" << std::endl;
-        std::cout << obs_srv_3_prop_at_age << std::endl;
-        std::cout << "Estimated survey 3 proportions-at-age" << std::endl;
-        std::cout << est_srv_3_prop_at_age << std::endl;
-        std::cout << std::endl;
+        output << "Observed survey 1 proportions-at-age" << std::endl;
+        output << obs_srv_1_prop_at_age << std::endl;
+        output << "Estimated survey 1 proportions-at-age" << std::endl;
+        output << est_srv_1_prop_at_age << std::endl;
+        output << std::endl;
 
-        std::cout << "Observed survey 6 proportions-at-age" << std::endl;
-        std::cout << obs_srv_6_prop_at_age << std::endl;
-        std::cout << "Estimated survey 6 proportions-at-age" << std::endl;
-        std::cout << est_srv_6_prop_at_age << std::endl;
-        std::cout << std::endl;
+        output << "Observed survey 2 proportions-at-age" << std::endl;
+        output << obs_srv_2_prop_at_age << std::endl;
+        output << "Estimated survey 2 proportions-at-age" << std::endl;
+        output << est_srv_2_prop_at_age << std::endl;
+        output << std::endl;
 
-        std::cout << std::endl;
+        output << "Observed survey 3 proportions-at-age" << std::endl;
+        output << obs_srv_3_prop_at_age << std::endl;
+        output << "Estimated survey 3 proportions-at-age" << std::endl;
+        output << est_srv_3_prop_at_age << std::endl;
+        output << std::endl;
+
+        output << "Observed survey 6 proportions-at-age" << std::endl;
+        output << obs_srv_6_prop_at_age << std::endl;
+        output << "Estimated survey 6 proportions-at-age" << std::endl;
+        output << est_srv_6_prop_at_age << std::endl;
+        output << std::endl;
+
+        output << std::endl;
     }
 
     void CalculateHarvestStrategy()
     {
     }
 
+    void OutputOptimInfo()
+    {
+        std::ofstream optim_stats("optim_stats.txt");
+
+        auto stats = this->GetObjectiveFunctionStatistics();
+
+        optim_stats << "Optimization Information" << std::endl;
+        optim_stats << std::endl;
+
+        optim_stats << "Parameter names" << std::endl;
+        optim_stats << stats.parameter_names << std::endl;
+        optim_stats << std::endl;
+
+        optim_stats << "Parameter values" << std::endl;
+        optim_stats << stats.parameter_values << std::endl;
+        optim_stats << std::endl;
+
+        optim_stats << "Parameter gradient" << std::endl;
+        optim_stats << stats.gradient << std::endl;
+        optim_stats << std::endl;
+
+        optim_stats << std::endl;
+    }
+
     void OutputVarCovar()
     {
-        // std::cout << "\nSE vector\n" << se << std::endl;
+        // std::cout << std::endl << "SE vector" << std::endl << se << std::endl;
 
         // atl::VariableMatrix<T> var_covar = inverse_hess / (atl::OuterProduct(se,se));
 
-        std::cout << "\nVariance-covariance matrix\n" << std::endl;
+        std::cout << std::endl << "Calculating variance-covariance matrix" << std::endl << std::endl;
 
-        atl::RealMatrix<T> var_covar = this->GetVarianceCovariance();
+        std::cout << std::endl << "Variance-covariance matrix" << std::endl << std::endl;
+
+        auto var_covar = this->GetVarianceCovariance();
         size_t dimM = var_covar.GetRows();
         if (dimM > 0)   // if it is not, then there's a problem
         {

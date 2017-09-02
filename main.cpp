@@ -43,7 +43,10 @@ main( int argc, char** argv )
     caa_obj_func.Report();
 
 
-    std::cout << std::endl << "Optimization completed. Calculating variance-covariance matrix" << std::endl << std::endl;
+    std::cout << std::endl << "Optimization completed" << std::endl << std::endl;
+
+
+    caa_obj_func.OutputOptimInfo();
 
 
     caa_obj_func.OutputVarCovar();
