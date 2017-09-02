@@ -1716,38 +1716,38 @@ public:
         // this->RegisterParameter(init_pop_devs,4);
         // this->RegisterParameterVector(init_pop_devs,4);
         // init_pop_devs.SetBounds(-15.0, 15.0);
-        init_pop_devs = atl::Variable<T>(0.0);
+        init_pop_devs = T(0.0);
 
         // this->RegisterParameter(recruit_devs, 3);
         this->RegisterParameterVector(recruit_devs, 3);
         recruit_devs.SetBounds(-15.0, 15.0);
-        recruit_devs = atl::Variable<T>(0.0);
+        recruit_devs = T(0.0);
 
         // this->RegisterParameterVector(recruit_proj_devs, 9);
         // recruit_proj_devs.SetBounds(-5.0, 5.0);
-        recruit_proj_devs = atl::Variable<T>(0.0);
+        recruit_proj_devs = T(0.0);
 
         // this->RegisterParameter(fsh_mort_devs, 2);
          this->RegisterParameterVector(fsh_mort_devs, 2);
         fsh_mort_devs.SetBounds(-10.0, 10.0);
-        fsh_mort_devs = atl::Variable<T>(0.0);
+        fsh_mort_devs = T(0.0);
 
         // this->RegisterParameter(fsh_sel_asc_alpha_devs, 5);
         this->RegisterRandomVariableVector(fsh_sel_asc_alpha_devs, 7);
         fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
-        fsh_sel_asc_alpha_devs = atl::Variable<T>(0.0);
+        fsh_sel_asc_alpha_devs = T(0.0);
         // this->RegisterParameter(fsh_sel_asc_beta_devs, 5);
         this->RegisterRandomVariableVector(fsh_sel_asc_beta_devs, 7);
         fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
-        fsh_sel_asc_beta_devs = atl::Variable<T>(0.0);
+        fsh_sel_asc_beta_devs = T(0.0);
         // this->RegisterParameter(fsh_sel_desc_alpha_devs, 5);
         // this->RegisterParameterVector(fsh_sel_desc_alpha_devs, 7);
         // fsh_sel_desc_alpha_devs.SetBounds(-5.0, 5.0);
-        fsh_sel_desc_alpha_devs = atl::Variable<T>(0.0);
+        fsh_sel_desc_alpha_devs = T(0.0);
         // this->RegisterParameter(fsh_sel_desc_beta_devs, 5);
         // this->RegisterParameterVector(fsh_sel_desc_beta_devs, 7);
         // fsh_sel_desc_beta_devs.SetBounds(-5.0, 5.0);
-        fsh_sel_desc_beta_devs = atl::Variable<T>(0.0);
+        fsh_sel_desc_beta_devs = T(0.0);
 
         AdjustInputData();
     }
@@ -1768,7 +1768,7 @@ public:
         {
             for ( int j = 0; j < nages; j++ )
             {
-                fsh_sel(i, j) = (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_asc_beta * atl::exp(fsh_sel_asc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_asc_alpha + fsh_sel_asc_alpha_devs(i)))))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_desc_beta * atl::exp(fsh_sel_desc_beta_devs(i))) * (T(ages(j)) - (fsh_sel_desc_alpha + fsh_sel_desc_alpha_devs(i)))))));
+                fsh_sel(i, j) = (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_asc_beta * atl::exp(fsh_sel_asc_beta_devs(i))) * (T(ages[j]) - (fsh_sel_asc_alpha + fsh_sel_asc_alpha_devs(i)))))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * (fsh_sel_desc_beta * atl::exp(fsh_sel_desc_beta_devs(i))) * (T(ages[j]) - (fsh_sel_desc_alpha + fsh_sel_desc_alpha_devs(i)))))));
             }
 
             // max_sel = atl::Max<atl::Variable<T> >(atl::VariableMatrixRow<T>(fsh_sel, i));
@@ -1807,16 +1807,16 @@ public:
         for ( int j = 0; j < nages ; j++ )
         {
             // srv 1
-            srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv1_sel_asc_beta * (T(ages(j)) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv1_sel_desc_beta * (T(ages(j)) - srv1_sel_desc_alpha)))));
+            srv_sel(0, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv1_sel_asc_beta * (T(ages[j]) - srv1_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv1_sel_desc_beta * (T(ages[j]) - srv1_sel_desc_alpha)))));
 
             // srv 2
-            srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv2_sel_asc_beta * (T(ages(j)) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv2_sel_desc_beta * (T(ages(j)) - srv2_sel_desc_alpha)))));
+            srv_sel(1, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv2_sel_asc_beta * (T(ages[j]) - srv2_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv2_sel_desc_beta * (T(ages[j]) - srv2_sel_desc_alpha)))));
 
             // srv 3
-            srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv3_sel_asc_beta * (T(ages(j)) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv3_sel_desc_beta * (T(ages(j)) - srv3_sel_desc_alpha)))));
+            srv_sel(2, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv3_sel_asc_beta * (T(ages[j]) - srv3_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv3_sel_desc_beta * (T(ages[j]) - srv3_sel_desc_alpha)))));
 
             // srv 6
-            srv_sel(5, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv6_sel_asc_beta * (T(ages(j)) - srv6_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv6_sel_desc_beta * (T(ages(j)) - srv6_sel_desc_alpha)))));
+            srv_sel(5, j) = (1.0 / (1.0 + atl::exp(-1.0 * srv6_sel_asc_beta * (T(ages[j]) - srv6_sel_asc_alpha)))) * (1.0 - (1.0 / (1.0 + atl::exp(-1.0 * srv6_sel_desc_beta * (T(ages[j]) - srv6_sel_desc_alpha)))));
         }
 
         // zero out sel for ages 1 and 2 for srv 1
@@ -1849,7 +1849,7 @@ public:
     {
         for ( int j = 0; j < nages ; j++ )
         {
-            wtAA(0, j) = gr_Winf * (1.0 - atl::exp(-gr_k * (T(ages(j)) - gr_a0)));
+            wtAA(0, j) = gr_Winf * (1.0 - atl::exp(-gr_k * (T(ages[j]) - gr_a0)));
         }
 
         for ( int i = 1; i < nyrs; i++ )
@@ -1955,7 +1955,7 @@ public:
                 // summary biomass is age 3+
                 if ( j >= 2 ) est_summary_biomass(i) += age_specific_biomass;
 
-                est_spawn_biomass(i) += (n_at_age_row(j) * expZ_sp(i, j) * wt_spawn(i, j) * 0.5 * maturity(j));
+                est_spawn_biomass(i) += (n_at_age_row(j) * expZ_sp(i, j) * wt_spawn(i, j) * 0.5 * maturity[j]);
             }
             est_total_biomass(i)   /= 1000.0;
             est_summary_biomass(i) /= 1000.0;
@@ -2819,7 +2819,7 @@ public:
     {
     }
 
-    void GetVarCovar()
+    void OutputVarCovar()
     {
         // std::cout << "\nSE vector\n" << se << std::endl;
 

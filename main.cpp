@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   main.cpp
  * Author: z
  *
@@ -18,22 +18,39 @@
 // using namespace std;
 
 /*
- * 
+ *
  */
 int
 main( int argc, char** argv )
 {
     CatchAtAge<double> caa_obj_func;
-    
+
     caa_obj_func.Initialize();
 
-    atl::LBFGS<double> func_min;
+    // atl::LBFGS<double> func_min;
 
-    func_min.SetObjectiveFunction(&caa_obj_func);
-    func_min.Run();
+    //create an instance of a L-BFGS minimizer
+    atl::PortMinimizer<double> fm;
 
+    //set the objective function
+    fm.SetObjectiveFunction(&caa_obj_func);
+
+    //run the minimizer
+    fm.Run();
+
+
+    // caa_obj_func.Finalize();
     caa_obj_func.Report();
-    caa_obj_func.GetVarCovar();
-    
+
+
+    std::cout << std::endl << "Optimization completed. Calculating variance-covariance matrix" << std::endl << std::endl;
+
+
+    caa_obj_func.OutputVarCovar();
+
+
+    std::cout << std::endl << "Done" << std::endl << std::endl;
+
+
     return 0;
 }
