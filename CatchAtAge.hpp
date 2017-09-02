@@ -1421,6 +1421,15 @@ public:
 
     }
 
+    void RegisterParameterDevVector(atl::VariableVector<T>& p_vec, const int phase = 1)
+    {
+        for (int i = 0; i < (p_vec.GetSize() - 1); i++)
+        {
+            this->RegisterParameter(p_vec(i),phase);
+        }
+
+    }
+
     void RegisterRandomVariableVector(atl::VariableVector<T>& p_vec, const int phase = 1)
     {
         for (int i = 0; i < p_vec.GetSize(); i++)
@@ -1767,38 +1776,38 @@ public:
         fsh_sel_desc_beta_devs.Resize(nyrs);
 
         // this->RegisterParameter(init_pop_devs,4);
-        // this->RegisterParameterVector(init_pop_devs,4);
+        // this->RegisterParameterDevVector(init_pop_devs,4);
         // init_pop_devs.SetBounds(-15.0, 15.0);
         init_pop_devs = T(0.0);
 
         // this->RegisterParameter(recruit_devs, 3);
-        this->RegisterParameterVector(recruit_devs, 3);
+        this->RegisterParameterDevVector(recruit_devs, 3);
         recruit_devs.SetBounds(-15.0, 15.0);
         recruit_devs = T(0.0);
 
-        // this->RegisterParameterVector(recruit_proj_devs, 9);
+        // this->RegisterParameterDevVector(recruit_proj_devs, 9);
         // recruit_proj_devs.SetBounds(-5.0, 5.0);
         recruit_proj_devs = T(0.0);
 
         // this->RegisterParameter(fsh_mort_devs, 2);
-         this->RegisterParameterVector(fsh_mort_devs, 2);
+         this->RegisterParameterDevVector(fsh_mort_devs, 2);
         fsh_mort_devs.SetBounds(-10.0, 10.0);
         fsh_mort_devs = T(0.0);
 
         // this->RegisterParameter(fsh_sel_asc_alpha_devs, 5);
-        this->RegisterRandomVariableVector(fsh_sel_asc_alpha_devs, 7);
+        this->RegisterParameterDevVector(fsh_sel_asc_alpha_devs, 7);
         fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_alpha_devs = T(0.0);
         // this->RegisterParameter(fsh_sel_asc_beta_devs, 5);
-        this->RegisterRandomVariableVector(fsh_sel_asc_beta_devs, 7);
+        this->RegisterParameterDevVector(fsh_sel_asc_beta_devs, 7);
         fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_beta_devs = T(0.0);
         // this->RegisterParameter(fsh_sel_desc_alpha_devs, 5);
-        // this->RegisterParameterVector(fsh_sel_desc_alpha_devs, 7);
+        // this->RegisterParameterDevVector(fsh_sel_desc_alpha_devs, 7);
         // fsh_sel_desc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_alpha_devs = T(0.0);
         // this->RegisterParameter(fsh_sel_desc_beta_devs, 5);
-        // this->RegisterParameterVector(fsh_sel_desc_beta_devs, 7);
+        // this->RegisterParameterDevVector(fsh_sel_desc_beta_devs, 7);
         // fsh_sel_desc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_desc_beta_devs = T(0.0);
 
@@ -2104,7 +2113,7 @@ public:
             }
         }
 
-        atl::VariableMatrix<T> temp_mat_3 = RealMatrixMult(age_age_err,  age_len_trans_3);
+        atl::VariableMatrix<T> temp_mat_3 = this->RealMatrixMult(age_age_err,  age_len_trans_3);
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv1_prop_at_len; i++ )
         {
@@ -2178,7 +2187,7 @@ public:
             }
         }
 
-        atl::VariableMatrix<T> temp_mat_2 = RealMatrixMult(age_age_err, age_len_trans_2);
+        atl::VariableMatrix<T> temp_mat_2 = this->RealMatrixMult(age_age_err, age_len_trans_2);
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv2_prop_at_len; i++ )
         {
@@ -2355,7 +2364,7 @@ public:
 
             for ( int j = 0; j < nages; j++ )
             {
-                C(i, j) = atl::Sum(atl::VariableMatrix<T>((VariableRowVectorDiv(F, i, Z, i) * (1.0 - expZ.Row(i)) * N.Row(i)) * age_age_err.Column(j)));
+                C(i, j) = atl::Sum(atl::VariableMatrix<T>((this->VariableRowVectorDiv(F, i, Z, i) * (1.0 - expZ.Row(i)) * N.Row(i)) * age_age_err.Column(j)));
                 est_catch(i) += (obs_fsh_wt_at_age(i, j) * C(i, j));
             }
             est_catch(i) /= 1000.0;
@@ -2397,41 +2406,48 @@ public:
         }
     }
 
-   void PrepareDeviations()
-   {
+    void PrepareDevVector(atl::VariableVector<T> v)
+    {
+        size_t last_idx = v.GetSize() - 1;
+        v(last_idx) = T(0.0);
+        v(last_idx) -= atl::Sum(v);
+    }
+
+    void PrepareDeviations()
+    {
         // if (this->Phase() >= this->GetActivePhase(init_pop_devs(0)))
         {
-            init_pop_devs -= (atl::Sum(init_pop_devs) / T(init_pop_devs.GetSize()));
+            this->PrepareDevVector(init_pop_devs);
         }
 
         // if (this->Phase() >= this->GetActivePhase(recruit_devs(0)))
         {
-            recruit_devs -= (atl::Sum(recruit_devs) / T(recruit_devs.GetSize()));
+            this->PrepareDevVector(recruit_devs);
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_mort_devs(0)))
         {
-            fsh_mort_devs -= (atl::Sum(fsh_mort_devs) / T(fsh_mort_devs.GetSize()));
+            this->PrepareDevVector(fsh_mort_devs);
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_sel_asc_alpha_devs(0)))
         {
-            fsh_sel_asc_alpha_devs -= (atl::Sum(fsh_sel_asc_alpha_devs) / T(fsh_sel_asc_alpha_devs.GetSize()));
+            this->PrepareDevVector(fsh_sel_asc_alpha_devs);
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_sel_asc_beta_devs(0)))
         {
-            fsh_sel_asc_beta_devs -= (atl::Sum(fsh_sel_asc_beta_devs) / T(fsh_sel_asc_beta_devs.GetSize()));
+            this->PrepareDevVector(fsh_sel_asc_beta_devs);
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_sel_desc_alpha_devs(0)))
         {
-            fsh_sel_desc_alpha_devs -= (atl::Sum(fsh_sel_desc_alpha_devs) / T(fsh_sel_desc_alpha_devs.GetSize()));
+            this->PrepareDevVector(fsh_sel_desc_alpha_devs);
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_sel_desc_beta_devs(0)))
         {
-            fsh_sel_desc_beta_devs -= (atl::Sum(fsh_sel_desc_beta_devs) / T(fsh_sel_desc_beta_devs.GetSize()));
+            this->PrepareDevVector(fsh_sel_desc_beta_devs);
         }
     }
 
