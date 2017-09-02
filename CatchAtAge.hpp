@@ -1430,6 +1430,59 @@ public:
 
     }
 
+    atl::VariableMatrix<T> RealMatrixMult(atl::RealMatrix<T>& a, atl::RealMatrix<T>& b)
+    {
+        atl::VariableMatrix<T> m;
+
+        size_t a_i = a.GetRows();
+        size_t a_j = a.GetColumns();
+        size_t b_i = b.GetRows();
+        size_t b_j = b.GetColumns();
+
+        if ( a_i > 0 && a_j > 0 && b_i > 0 && b_j > 0 && a_j == b_i )
+        {
+            m.Resize(a_i, b_j);
+
+            for ( int i = 0; i < a_i; ++i )
+            {
+                for ( int j = 0; j < b_j; ++j )
+                {
+                    m(i, j) = atl::Sum(atl::VariableMatrix<T>(a.Row(i) * b.Column(j)));
+                }
+            }
+        }
+
+        return m;
+    }
+
+    atl::VariableVector<T> VariableRowVectorDiv(atl::VariableMatrix<T>& num, int& num_row_idx, atl::VariableMatrix<T>& den, int& den_row_idx)
+    {
+        atl::VariableVector<T> v;
+
+        size_t num_i = num.GetRows();
+        size_t num_j = num.GetColumns();
+        size_t den_i = den.GetRows();
+        size_t den_j = den.GetColumns();
+
+        if ( num_i > 0 && num_j > 0 && den_i > 0 && den_j > 0 && num_j == den_j)
+        {
+            if ( num_row_idx >= 0 && num_row_idx < num_i && den_row_idx >= 0 && den_row_idx < den_i )
+            {
+                auto num_v = num.Row(num_row_idx);
+                auto den_v = den.Row(den_row_idx);
+
+                v.Resize(num_j);
+
+                for ( int i = 0; i < num_j; ++i )
+                {
+                    v(i) = num_v(i) / den_v(i);
+                }
+            }
+        }
+
+        return v;
+    }
+
     void AdjustInputData()
     {
         // match the 2015 assessment with adjusting the age comp data
@@ -2051,7 +2104,7 @@ public:
             }
         }
 
-        atl::VariableMatrix<T> temp_mat_3 = age_age_err * age_len_trans_3;
+        atl::VariableMatrix<T> temp_mat_3 = RealMatrixMult(age_age_err,  age_len_trans_3);
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv1_prop_at_len; i++ )
         {
@@ -2073,7 +2126,7 @@ public:
 
 
         // srv 2
-        srv_sel_row = atl::VariableMatrixRow<T>(srv_sel, 1);
+        srv_sel_row = srv_sel.Row(1);
 
         for ( int i = 0; i < nyrs_srv2; i++ )
         {
@@ -2125,7 +2178,7 @@ public:
             }
         }
 
-        atl::VariableMatrix<T> temp_mat_2 = age_age_err * age_len_trans_2;
+        atl::VariableMatrix<T> temp_mat_2 = RealMatrixMult(age_age_err, age_len_trans_2);
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv2_prop_at_len; i++ )
         {
@@ -2302,7 +2355,7 @@ public:
 
             for ( int j = 0; j < nages; j++ )
             {
-                C(i, j) = atl::Sum(atl::VariableMatrix<T>(((F.Row(i) / Z.Row(i)) * (1.0 - expZ.Row(i)) * N.Row(i)) * age_age_err.Column(j)));
+                C(i, j) = atl::Sum(atl::VariableMatrix<T>((VariableRowVectorDiv(F, i, Z, i) * (1.0 - expZ.Row(i)) * N.Row(i)) * age_age_err.Column(j)));
                 est_catch(i) += (obs_fsh_wt_at_age(i, j) * C(i, j));
             }
             est_catch(i) /= 1000.0;
@@ -2348,37 +2401,37 @@ public:
    {
         // if (this->Phase() >= this->GetActivePhase(init_pop_devs(0)))
         {
-            init_pop_devs -= (atl::Sum(init_pop_devs) / (double) init_pop_devs.GetSize());
+            init_pop_devs -= (atl::Sum(init_pop_devs) / T(init_pop_devs.GetSize()));
         }
 
         // if (this->Phase() >= this->GetActivePhase(recruit_devs(0)))
         {
-            recruit_devs -= (atl::Sum(recruit_devs) / (double) recruit_devs.GetSize());
+            recruit_devs -= (atl::Sum(recruit_devs) / T(recruit_devs.GetSize()));
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_mort_devs(0)))
         {
-            fsh_mort_devs -= (atl::Sum(fsh_mort_devs) / (double) fsh_mort_devs.GetSize());
+            fsh_mort_devs -= (atl::Sum(fsh_mort_devs) / T(fsh_mort_devs.GetSize()));
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_sel_asc_alpha_devs(0)))
         {
-            fsh_sel_asc_alpha_devs -= (atl::Sum(fsh_sel_asc_alpha_devs) / (double) fsh_sel_asc_alpha_devs.GetSize());
+            fsh_sel_asc_alpha_devs -= (atl::Sum(fsh_sel_asc_alpha_devs) / T(fsh_sel_asc_alpha_devs.GetSize()));
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_sel_asc_beta_devs(0)))
         {
-            fsh_sel_asc_beta_devs -= (atl::Sum(fsh_sel_asc_beta_devs) / (double) fsh_sel_asc_beta_devs.GetSize());
+            fsh_sel_asc_beta_devs -= (atl::Sum(fsh_sel_asc_beta_devs) / T(fsh_sel_asc_beta_devs.GetSize()));
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_sel_desc_alpha_devs(0)))
         {
-            fsh_sel_desc_alpha_devs -= (atl::Sum(fsh_sel_desc_alpha_devs) / (double) fsh_sel_desc_alpha_devs.GetSize());
+            fsh_sel_desc_alpha_devs -= (atl::Sum(fsh_sel_desc_alpha_devs) / T(fsh_sel_desc_alpha_devs.GetSize()));
         }
 
         // if (this->Phase() >= this->GetActivePhase(fsh_sel_desc_beta_devs(0)))
         {
-            fsh_sel_desc_beta_devs -= (atl::Sum(fsh_sel_desc_beta_devs) / (double) fsh_sel_desc_beta_devs.GetSize());
+            fsh_sel_desc_beta_devs -= (atl::Sum(fsh_sel_desc_beta_devs) / T(fsh_sel_desc_beta_devs.GetSize()));
         }
     }
 
