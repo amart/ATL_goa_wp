@@ -52,6 +52,61 @@ std::ostream& operator<<(std::ostream& out, const std::vector<T>& v)
 }
 
 template<typename T>
+atl::VariableMatrix<T> RealMatrixMult(atl::RealMatrix<T>& a, atl::RealMatrix<T>& b)
+{
+    atl::VariableMatrix<T> m;
+
+    size_t a_i = a.GetRows();
+    size_t a_j = a.GetColumns();
+    size_t b_i = b.GetRows();
+    size_t b_j = b.GetColumns();
+
+    if ( a_i > 0 && a_j > 0 && b_i > 0 && b_j > 0 && a_j == b_i )
+    {
+        m.Resize(a_i, b_j);
+
+        for ( int i = 0; i < a_i; ++i )
+        {
+            for ( int j = 0; j < b_j; ++j )
+            {
+                m(i, j) = atl::Sum(atl::VariableMatrix<T>(a.Row(i) * b.Column(j)));
+            }
+        }
+    }
+
+    return m;
+}
+
+template<typename T>
+atl::VariableVector<T> VariableRowVectorDiv(atl::VariableMatrix<T>& num, int& num_row_idx, atl::VariableMatrix<T>& den, int& den_row_idx)
+{
+    atl::VariableVector<T> v;
+
+    size_t num_i = num.GetRows();
+    size_t num_j = num.GetColumns();
+    size_t den_i = den.GetRows();
+    size_t den_j = den.GetColumns();
+
+    if ( num_i > 0 && num_j > 0 && den_i > 0 && den_j > 0 && num_j == den_j)
+    {
+        if ( num_row_idx >= 0 && num_row_idx < num_i && den_row_idx >= 0 && den_row_idx < den_i )
+        {
+            auto num_v = num.Row(num_row_idx);
+            auto den_v = den.Row(den_row_idx);
+
+            v.Resize(num_j);
+
+            for ( int i = 0; i < num_j; ++i )
+            {
+                v(i) = num_v(i) / den_v(i);
+            }
+        }
+    }
+
+    return v;
+}
+
+template<typename T>
 class CatchAtAge : public atl::ObjectiveFunction<T>
 {
     int nages = 10;
@@ -1416,96 +1471,46 @@ public:
 
     void RegisterParameterVector(atl::VariableVector<T>& p_vec, std::string base_param_name, const int phase = 1)
     {
-        std::stringstream ss;
+        p_vec.SetName(base_param_name);
 
         for (int i = 0; i < p_vec.GetSize(); i++)
         {
-            ss << base_param_name << "_" << i;
-            p_vec(i).SetName(ss.str());
             this->RegisterParameter(p_vec(i), phase);
         }
     }
 
     void RegisterParameterDevVector(atl::VariableVector<T>& p_vec, std::string base_param_name, const int phase = 1)
     {
-        std::stringstream ss;
         size_t last_idx = p_vec.GetSize() - 1;
+
+        p_vec.SetName(base_param_name);
 
         for (int i = 0; i < last_idx; i++)
         {
-            ss << base_param_name << "_" << i;
-            p_vec(i).SetName(ss.str());
             this->RegisterParameter(p_vec(i), phase);
         }
 
+        std::stringstream ss;
         ss << base_param_name << "_" << last_idx << "_calc";
         p_vec(last_idx).SetName(ss.str());
         // this->RegisterParameter(p_vec(last_idx), -1);
     }
 
+    void PrepareDevVector(atl::VariableVector<T> v)
+    {
+        size_t last_idx = v.GetSize() - 1;
+        v(last_idx) = T(0.0);
+        v(last_idx) -= atl::Sum(v);
+    }
+
     void RegisterRandomVariableVector(atl::VariableVector<T>& p_vec, std::string base_param_name, const int phase = 1)
     {
-        std::stringstream ss;
+        p_vec.SetName(base_param_name);
 
         for (int i = 0; i < p_vec.GetSize(); i++)
         {
-            ss << base_param_name << "_" << i;
-            p_vec(i).SetName(ss.str());
             this->RegisterRandomVariable(p_vec(i), phase);
         }
-    }
-
-    atl::VariableMatrix<T> RealMatrixMult(atl::RealMatrix<T>& a, atl::RealMatrix<T>& b)
-    {
-        atl::VariableMatrix<T> m;
-
-        size_t a_i = a.GetRows();
-        size_t a_j = a.GetColumns();
-        size_t b_i = b.GetRows();
-        size_t b_j = b.GetColumns();
-
-        if ( a_i > 0 && a_j > 0 && b_i > 0 && b_j > 0 && a_j == b_i )
-        {
-            m.Resize(a_i, b_j);
-
-            for ( int i = 0; i < a_i; ++i )
-            {
-                for ( int j = 0; j < b_j; ++j )
-                {
-                    m(i, j) = atl::Sum(atl::VariableMatrix<T>(a.Row(i) * b.Column(j)));
-                }
-            }
-        }
-
-        return m;
-    }
-
-    atl::VariableVector<T> VariableRowVectorDiv(atl::VariableMatrix<T>& num, int& num_row_idx, atl::VariableMatrix<T>& den, int& den_row_idx)
-    {
-        atl::VariableVector<T> v;
-
-        size_t num_i = num.GetRows();
-        size_t num_j = num.GetColumns();
-        size_t den_i = den.GetRows();
-        size_t den_j = den.GetColumns();
-
-        if ( num_i > 0 && num_j > 0 && den_i > 0 && den_j > 0 && num_j == den_j)
-        {
-            if ( num_row_idx >= 0 && num_row_idx < num_i && den_row_idx >= 0 && den_row_idx < den_i )
-            {
-                auto num_v = num.Row(num_row_idx);
-                auto den_v = den.Row(den_row_idx);
-
-                v.Resize(num_j);
-
-                for ( int i = 0; i < num_j; ++i )
-                {
-                    v(i) = num_v(i) / den_v(i);
-                }
-            }
-        }
-
-        return v;
     }
 
     void AdjustInputData()
@@ -1653,10 +1658,10 @@ public:
         nll_parts.Resize(25);
 
 
-        log_fsh_sel_asc_alpha.SetName("log_fsh_sel_asc_alpha");
-        log_fsh_sel_asc_beta.SetName("log_fsh_sel_asc_beta");
-        log_fsh_sel_desc_alpha.SetName("log_fsh_sel_desc_alpha");
-        log_fsh_sel_desc_beta.SetName("log_fsh_sel_desc_beta");
+        log_fsh_sel_asc_alpha.SetName(std::string("log_fsh_sel_asc_alpha"));
+        log_fsh_sel_asc_beta.SetName(std::string("log_fsh_sel_asc_beta"));
+        log_fsh_sel_desc_alpha.SetName(std::string("log_fsh_sel_desc_alpha"));
+        log_fsh_sel_desc_beta.SetName(std::string("log_fsh_sel_desc_beta"));
 
         log_fsh_sel_asc_alpha.SetBounds(0.0, 2.0);
         log_fsh_sel_asc_beta.SetBounds(-5.0, 5.0);
@@ -1678,13 +1683,13 @@ public:
         // this->Register(log_srv1_sel_asc_beta, 7, "log_srv1_sel_asc_beta");
         // log_srv1_sel_asc_alpha.SetBounds(-1.0, 5.0);
         // log_srv1_sel_asc_beta.SetBounds(-5.0, 5.0);
-        log_srv1_sel_asc_alpha.SetName("log_srv1_sel_asc_alpha");
-        log_srv1_sel_asc_beta.SetName("log_srv1_sel_asc_beta");
+        log_srv1_sel_asc_alpha.SetName(std::string("log_srv1_sel_asc_alpha"));
+        log_srv1_sel_asc_beta.SetName(std::string("log_srv1_sel_asc_beta"));
         log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
         log_srv1_sel_asc_beta  = atl::Variable<T>(4.0);
 
-        log_srv1_sel_desc_alpha.SetName("log_srv1_sel_desc_alpha");
-        log_srv1_sel_desc_beta.SetName("log_srv1_sel_desc_beta");
+        log_srv1_sel_desc_alpha.SetName(std::string("log_srv1_sel_desc_alpha"));
+        log_srv1_sel_desc_beta.SetName(std::string("log_srv1_sel_desc_beta"));
         log_srv1_sel_desc_alpha.SetBounds(1.0, 3.0);
         log_srv1_sel_desc_beta.SetBounds(-5.0, 5.0);
         log_srv1_sel_desc_alpha = atl::Variable<T>(1.6094);
@@ -1693,8 +1698,8 @@ public:
         this->RegisterParameter(log_srv1_sel_desc_beta, 6);
 
 
-        log_srv2_sel_asc_alpha.SetName("log_srv2_sel_asc_alpha");
-        log_srv2_sel_asc_beta.SetName("log_srv2_sel_asc_beta");
+        log_srv2_sel_asc_alpha.SetName(std::string("log_srv2_sel_asc_alpha"));
+        log_srv2_sel_asc_beta.SetName(std::string("log_srv2_sel_asc_beta"));
         log_srv2_sel_asc_alpha.SetBounds(0.0, 4.0);
         log_srv2_sel_asc_beta.SetBounds(-5.0, 5.0);
         log_srv2_sel_asc_alpha = atl::Variable<T>(1.3863);
@@ -1706,14 +1711,14 @@ public:
         // this->RegisterParameter(log_srv2_sel_desc_beta, 8);
         // log_srv2_sel_desc_alpha.SetBounds(1.5, 3.5);
         // log_srv2_sel_desc_beta.SetBounds(-5.0, 5.0);
-        log_srv2_sel_desc_alpha.SetName("log_srv2_sel_desc_alpha");
-        log_srv2_sel_desc_beta.SetName("log_srv2_sel_desc_beta");
+        log_srv2_sel_desc_alpha.SetName(std::string("log_srv2_sel_desc_alpha"));
+        log_srv2_sel_desc_beta.SetName(std::string("log_srv2_sel_desc_beta"));
         log_srv2_sel_desc_alpha = atl::Variable<T>(2.9957);
         log_srv2_sel_desc_beta  = atl::Variable<T>(1.0);
 
 
-        log_srv3_sel_asc_alpha.SetName("log_srv3_sel_asc_alpha");
-        log_srv3_sel_asc_beta.SetName("log_srv3_sel_asc_beta");
+        log_srv3_sel_asc_alpha.SetName(std::string("log_srv3_sel_asc_alpha"));
+        log_srv3_sel_asc_beta.SetName(std::string("log_srv3_sel_asc_beta"));
         log_srv3_sel_asc_alpha.SetBounds(0.0, 3.0);
         log_srv3_sel_asc_beta.SetBounds(-5.0, 5.0);
         log_srv3_sel_asc_alpha = atl::Variable<T>(1.6094);
@@ -1725,8 +1730,8 @@ public:
         // this->Register(log_srv3_sel_desc_beta, 9, "log_srv3_sel_desc_beta");
         // log_srv3_sel_desc_alpha.SetBounds(1.0, 5.0);
         // log_srv3_sel_desc_beta.SetBounds(-5.0, 5.0);
-        log_srv3_sel_desc_alpha.SetName("log_srv3_sel_desc_alpha");
-        log_srv3_sel_desc_beta.SetName("log_srv3_sel_desc_beta");
+        log_srv3_sel_desc_alpha.SetName(std::string("log_srv3_sel_desc_alpha"));
+        log_srv3_sel_desc_beta.SetName(std::string("log_srv3_sel_desc_beta"));
         log_srv3_sel_desc_alpha = atl::Variable<T>(0.0);
         log_srv3_sel_desc_beta  = atl::Variable<T>(-20.0);
 
@@ -1735,8 +1740,8 @@ public:
         // this->RegisterParameter(log_srv6_sel_asc_beta, 8);
         // log_srv6_sel_asc_alpha.SetBounds(0.0, 5.0);
         // log_srv6_sel_asc_beta.SetBounds(-5.0, 5.0);
-        log_srv6_sel_asc_alpha.SetName("log_srv6_sel_asc_alpha");
-        log_srv6_sel_asc_beta.SetName("log_srv6_sel_asc_beta");
+        log_srv6_sel_asc_alpha.SetName(std::string("log_srv6_sel_asc_alpha"));
+        log_srv6_sel_asc_beta.SetName(std::string("log_srv6_sel_asc_beta"));
         log_srv6_sel_asc_alpha = atl::Variable<T>(-0.6931);
         log_srv6_sel_asc_beta  = atl::Variable<T>(4.9);
 
@@ -1744,70 +1749,72 @@ public:
         // this->RegisterParameter(log_srv6_sel_desc_beta, 8);
         // log_srv6_sel_desc_alpha.SetBounds(1.0, 5.0);
         // log_srv6_sel_desc_beta.SetBounds(-5.0, 5.0);
-        log_srv6_sel_desc_alpha.SetName("log_srv6_sel_desc_alpha");
-        log_srv6_sel_desc_beta.SetName("log_srv6_sel_desc_beta");
+        log_srv6_sel_desc_alpha.SetName(std::string("log_srv6_sel_desc_alpha"));
+        log_srv6_sel_desc_beta.SetName(std::string("log_srv6_sel_desc_beta"));
         log_srv6_sel_desc_alpha = atl::Variable<T>(2.9957);
         log_srv6_sel_desc_beta  = atl::Variable<T>(1.0);
 
 
         // this->RegisterParameter(log_srv_1a_q,5);
         // log_srv_1a_q.SetBounds(-10.0,10.0);
-        log_srv_1a_q.SetName("log_srv_1a_q");
+        log_srv_1a_q.SetName(std::string("log_srv_1a_q"));
+        log_srv_1a_q.SetBounds(-10.0, 10.0);
         log_srv_1a_q = atl::Variable<T>(0.0);
-        this->RegisterParameter(log_srv_1b_q, 5);
+        this->RegisterParameter(log_srv_1a_q, 5);
 
-        log_srv_1b_q.SetName("log_srv_1b_q");
+        log_srv_1b_q.SetName(std::string("log_srv_1b_q"));
         log_srv_1b_q.SetBounds(-10.0, 10.0);
         log_srv_1b_q = atl::Variable<T>(-0.1);
-        this->RegisterParameter(log_srv_1_q, 5);
+        this->RegisterParameter(log_srv_1b_q, 5);
 
-        log_srv_1_q.SetName("log_srv_1_q");
+        log_srv_1_q.SetName(std::string("log_srv_1_q"));
         log_srv_1_q.SetBounds(-10.0, 10.0);
         log_srv_1_q = atl::Variable<T>(-0.1);
+        // this->RegisterParameter(log_srv_1_q, 5);
 
-        log_srv_2_q.SetName("log_srv_2_q");
+        log_srv_2_q.SetName(std::string("log_srv_2_q"));
         log_srv_2_q.SetBounds(-10.0, 10.0);
         log_srv_2_q = atl::Variable<T>(0.0);
         this->RegisterParameter(log_srv_2_q, 5);
 
-        log_srv_3_q.SetName("log_srv_3_q");
+        log_srv_3_q.SetName(std::string("log_srv_3_q"));
         log_srv_3_q.SetBounds(-10.0, 10.0);
         log_srv_3_q = atl::Variable<T>(-1.6);
         this->RegisterParameter(log_srv_3_q, 6);
 
-        log_srv_4_q.SetName("log_srv_4_q");
+        log_srv_4_q.SetName(std::string("log_srv_4_q"));
         log_srv_4_q.SetBounds(-10.0, 10.0);
         log_srv_4_q = atl::Variable<T>(0.0);
         this->RegisterParameter(log_srv_4_q, 6);
 
-        srv_4_q_pow.SetName("srv_4_q_pow");
+        srv_4_q_pow.SetName(std::string("srv_4_q_pow"));
         srv_4_q_pow.SetBounds(-10.0, 10.0);
         srv_4_q_pow = atl::Variable<T>(1.0);
         this->RegisterParameter(srv_4_q_pow, 6);
 
-        log_srv_5_q.SetName("log_srv_5_q");
+        log_srv_5_q.SetName(std::string("log_srv_5_q"));
         log_srv_5_q.SetBounds(-10.0, 10.0);
         log_srv_5_q = atl::Variable<T>(0.0);
         this->RegisterParameter(log_srv_5_q, 6);
 
         // this->RegisterParameter(srv_5_q_pow, 7);
         // srv_5_q_pow.SetBounds(-10.0, 10.0);
-        srv_5_q_pow.SetName("srv_5_q_pow");
+        srv_5_q_pow.SetName(std::string("srv_5_q_pow"));
         srv_5_q_pow = atl::Variable<T>(0.0);
 
-        log_srv_6_q.SetName("log_srv_6_q");
+        log_srv_6_q.SetName(std::string("log_srv_6_q"));
         log_srv_6_q.SetBounds(-10.0, 10.0);
         log_srv_6_q = atl::Variable<T>(0.0);
         this->RegisterParameter(log_srv_6_q, 5);
 
 
-        log_mean_recruits.SetName("log_mean_recruits");
+        log_mean_recruits.SetName(std::string("log_mean_recruits"));
         log_mean_recruits.SetBounds(5.0, 36.0);
         log_mean_recruits = atl::Variable<T>(20.7232658369);
         this->RegisterParameter(log_mean_recruits, 1);
 
 
-        log_mean_fsh_mort.SetName("log_mean_fsh_mort");
+        log_mean_fsh_mort.SetName(std::string("log_mean_fsh_mort"));
         log_mean_fsh_mort.SetBounds(-10.0, 10.0);
         log_mean_fsh_mort = atl::Variable<T>(-1.6);
         this->RegisterParameter(log_mean_fsh_mort, 1);
@@ -2168,7 +2175,7 @@ public:
             }
         }
 
-        atl::VariableMatrix<T> temp_mat_3 = this->RealMatrixMult(age_age_err,  age_len_trans_3);
+        atl::VariableMatrix<T> temp_mat_3 = RealMatrixMult(age_age_err,  age_len_trans_3);
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv1_prop_at_len; i++ )
         {
@@ -2242,7 +2249,7 @@ public:
             }
         }
 
-        atl::VariableMatrix<T> temp_mat_2 = this->RealMatrixMult(age_age_err, age_len_trans_2);
+        atl::VariableMatrix<T> temp_mat_2 = RealMatrixMult(age_age_err, age_len_trans_2);
         // calculate proportions at length
         for ( int i = 0; i < nyrs_srv2_prop_at_len; i++ )
         {
@@ -2419,7 +2426,7 @@ public:
 
             for ( int j = 0; j < nages; j++ )
             {
-                C(i, j) = atl::Sum(atl::VariableMatrix<T>((this->VariableRowVectorDiv(F, i, Z, i) * (1.0 - expZ.Row(i)) * N.Row(i)) * age_age_err.Column(j)));
+                C(i, j) = atl::Sum(atl::VariableMatrix<T>((VariableRowVectorDiv(F, i, Z, i) * (1.0 - expZ.Row(i)) * N.Row(i)) * age_age_err.Column(j)));
                 est_catch(i) += (obs_fsh_wt_at_age(i, j) * C(i, j));
             }
             est_catch(i) /= 1000.0;
@@ -2459,13 +2466,6 @@ public:
                 }
             }
         }
-    }
-
-    void PrepareDevVector(atl::VariableVector<T> v)
-    {
-        size_t last_idx = v.GetSize() - 1;
-        v(last_idx) = T(0.0);
-        v(last_idx) -= atl::Sum(v);
     }
 
     void PrepareDeviations()
