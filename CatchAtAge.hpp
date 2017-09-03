@@ -2167,9 +2167,14 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_1_prop_at_age.Row(i)));
-            if ( est_srv_num > T(0) )
+            if ( est_srv_num > T(0.0) )
             {
-                est_srv_1_prop_at_age(i) /= est_srv_num;
+                // est_srv_1_prop_at_age(i) /= est_srv_num;
+
+                for ( int j = 0; j < nages; ++j )
+                {
+                    est_srv_1_prop_at_age(i, j) /= est_srv_num;
+                }
             }
 
             // accumulations
@@ -2206,9 +2211,14 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_1_prop_at_len.Row(i)));
-            if ( est_srv_num > T(0) )
+            if ( est_srv_num > T(0.0) )
             {
-                est_srv_1_prop_at_len(i) /= est_srv_num;
+                // est_srv_1_prop_at_len(i) /= est_srv_num;
+
+                for ( int j = 0; j < n_srv_len_bins; ++j )
+                {
+                    est_srv_1_prop_at_len(i, j) /= est_srv_num;
+                }
             }
         }
 
@@ -2241,9 +2251,14 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_2_prop_at_age.Row(i)));
-            if ( est_srv_num > T(0) )
+            if ( est_srv_num > T(0.0) )
             {
-                est_srv_2_prop_at_age(i) /= est_srv_num;
+                // est_srv_2_prop_at_age(i) /= est_srv_num;
+
+                for ( int j = 0; j < nages; j++ )
+                {
+                    est_srv_2_prop_at_age(i, j) /= est_srv_num;
+                }
             }
 
             // accumulations
@@ -2280,9 +2295,14 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_2_prop_at_len.Row(i)));
-            if ( est_srv_num > T(0) )
+            if ( est_srv_num > T(0.0) )
             {
-                est_srv_2_prop_at_len(i) /= est_srv_num;
+                // est_srv_2_prop_at_len(i) /= est_srv_num;
+
+                for ( int j = 0; j < n_srv_len_bins; j++ )
+                {
+                    est_srv_2_prop_at_len(i, j) /= est_srv_num;
+                }
             }
         }
 
@@ -2315,9 +2335,14 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_3_prop_at_age.Row(i)));
-            if ( est_srv_num > T(0) )
+            if ( est_srv_num > T(0.0) )
             {
-                est_srv_3_prop_at_age(i) /= est_srv_num;
+                // est_srv_3_prop_at_age(i) /= est_srv_num;
+
+                for ( int j = 0; j < nages; j++ )
+                {
+                    est_srv_3_prop_at_age(i, j) /= est_srv_num;
+                }
             }
         }
 
@@ -2334,9 +2359,14 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_3_prop_at_len.Row(i)));
-            if ( est_srv_num > T(0) )
+            if ( est_srv_num > T(0.0) )
             {
-                est_srv_3_prop_at_len(i) /= est_srv_num;
+                // est_srv_3_prop_at_len(i) /= est_srv_num;
+
+                for ( int j = 0; j < n_srv_len_bins; j++ )
+                {
+                    est_srv_3_prop_at_len(i, j) /= est_srv_num;
+                }
             }
         }
 
@@ -2385,9 +2415,14 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_6_prop_at_age.Row(i)));
-            if ( est_srv_num > T(0) )
+            if ( est_srv_num > T(0.0) )
             {
-                est_srv_6_prop_at_age(i) /= est_srv_num;
+                // est_srv_6_prop_at_age(i) /= est_srv_num;
+
+                for ( int j = 0; j < nages; j++ )
+                {
+                    est_srv_6_prop_at_age(i, j) /= est_srv_num;
+                }
             }
 
             // accumulations
@@ -2423,9 +2458,14 @@ public:
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_6_prop_at_len.Row(i)));
-            if ( est_srv_num > T(0) )
+            if ( est_srv_num > T(0.0) )
             {
-                est_srv_6_prop_at_len(i) /= est_srv_num;
+                // est_srv_6_prop_at_len(i) /= est_srv_num;
+
+                for ( int j = 0; j < n_srv_len_bins; j++ )
+                {
+                    est_srv_6_prop_at_len(i, j) /= est_srv_num;
+                }
             }
         }
     }
@@ -2450,9 +2490,14 @@ public:
 
             // calculate proportions at age
             est_catch_num = atl::Sum(atl::VariableMatrix<T>(C.Row(i)));
-            if ( est_catch_num > T(0) )
+            if ( est_catch_num > T(0.0) )
             {
-                est_fsh_prop_at_age(i) = C(i) / est_catch_num;
+                // est_fsh_prop_at_age(i) = C(i) / est_catch_num;
+
+                for ( int j = 0; j < nages; j++ )
+                {
+                    est_fsh_prop_at_age(i, j) = C(i, j) / est_catch_num;
+                }
             }
 
             // calculate proportions at length
@@ -2460,7 +2505,7 @@ public:
             prop_at_age_row = est_fsh_prop_at_age.Row(i);
             for ( int j = 0; j < n_fsh_len_bins; j++ )
             {
-                est_fsh_prop_at_len(i,j) = atl::Sum(atl::VariableMatrix<T>(prop_at_age_row * age_len_trans_1.Column(j)));
+                est_fsh_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(prop_at_age_row * age_len_trans_1.Column(j)));
             }
 
 
@@ -2470,7 +2515,7 @@ public:
                 for ( int j = 0; j < age_young_fsh; j++ )
                 {
                     est_fsh_prop_at_age(i, age_young_fsh) += est_fsh_prop_at_age(i, j);
-                    est_fsh_prop_at_age(i, j) = T(0);
+                    est_fsh_prop_at_age(i, j) = T(0.0);
                 }
             }
 
@@ -2479,7 +2524,7 @@ public:
                 for ( int j = (age_old_fsh + 1); j < nages; j++ )
                 {
                     est_fsh_prop_at_age(i, age_old_fsh) += est_fsh_prop_at_age(i, j);
-                    est_fsh_prop_at_age(i,j) = T(0);
+                    est_fsh_prop_at_age(i,j) = T(0.0);
                 }
             }
         }
