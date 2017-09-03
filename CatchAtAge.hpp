@@ -1906,10 +1906,16 @@ public:
             // }
 
             // replace max - matches assessment model
-            fsh_sel(i) /= fsh_sel(i, 6);
+            // fsh_sel(i) /= fsh_sel(i, 6);
+
+            // does VariableMatrix(i) - Variable divide not work correctly?
+            for ( int j = 0; j < nages; j++ )
+            {
+                fsh_sel(i, j) /= fsh_sel(i, 6);
+            }
         }
 
-        srv_sel = 0.0;
+        srv_sel = T(0.0);
 
         srv1_sel_asc_alpha  = atl::exp(log_srv1_sel_asc_alpha);
         srv1_sel_asc_beta   = atl::exp(log_srv1_sel_asc_beta);
@@ -1947,13 +1953,15 @@ public:
         }
 
         // zero out sel for ages 1 and 2 for srv 1
-        srv_sel(0, 1) = srv_sel(0, 0) = 0.0;
+        srv_sel(0, 0) = T(0.0);
+        srv_sel(0, 1) = T(0.0);
 
         // separate sel for age 1 for srv 2
         // srv_sel(1,0) = srv2_sel_age1;
 
         // set sel to 1 for age 1 in srv 4 and age 2 in srv 5
-        srv_sel(4, 1) = srv_sel(3, 0) = 1.0;
+        srv_sel(3, 0) = T(1.0);
+        srv_sel(4, 1) = T(1.0);
 
         // for ( int k = 0; k < nsrvs; k++ )
         // {
@@ -1966,10 +1974,19 @@ public:
         // }
 
         // replace max - matches assessment model
-        srv_sel(0) /= srv_sel(0, 2);
-        srv_sel(1) /= srv_sel(1, 9);
-        srv_sel(2) /= srv_sel(2, 9);
-        srv_sel(5) /= srv_sel(5, 0);
+        // srv_sel(0) /= srv_sel(0, 2);
+        // srv_sel(1) /= srv_sel(1, 9);
+        // srv_sel(2) /= srv_sel(2, 9);
+        // srv_sel(5) /= srv_sel(5, 0);
+
+        // does VariableMatrix(i) - Variable divide not work correctly?
+        for ( int j = 0; j < nages ; j++ )
+        {
+            srv_sel(0, j) /= srv_sel(0, 2);
+            srv_sel(1, j) /= srv_sel(1, 9);
+            srv_sel(2, j) /= srv_sel(2, 9);
+            srv_sel(5, j) /= srv_sel(5, 0);
+        }
     }
 
     void Growth()
@@ -2759,8 +2776,14 @@ public:
         nll_parts(23) += 0.5 * atl::Norm2(temp_vec3);
         nll_parts(23) += 0.5 * atl::Norm2(temp_vec4);
 
-
         f = atl::Sum(nll_parts);
+
+        /*
+        if (this->LastPhase())
+        {
+            this->CalculateHarvestStrategy();
+        }
+        */
     }
 
     atl::VariableVector<T> NormalizeVariableVector(atl::VariableVector<T>& v, size_t idx)
@@ -2780,6 +2803,30 @@ public:
         }
 
         return new_v;
+    }
+
+    void PrintVariableMatrix(std::ofstream& out, atl::VariableMatrix<T>& m)
+    {
+        for ( int i = 0; i < m.GetRows(); ++i )
+        {
+            out << m.Row(i) << std::endl;
+        }
+    }
+
+    void PrintRealMatrix(std::ofstream& out, atl::RealMatrix<T>& m)
+    {
+        for ( int i = 0; i < m.GetRows(); ++i )
+        {
+            // WHY DOESN'T THIS WORK???
+            // out << m.Row(i) << std::endl;
+
+            for ( int j = 0; j < m.GetColumns(); ++j )
+            {
+                out << m(i, j) << " ";
+            }
+
+            out << std::endl;
+        }
     }
 
     void Report()
@@ -2823,7 +2870,8 @@ public:
         output << "fsh_sel_desc_beta_devs " << fsh_sel_desc_beta_devs << std::endl;
         output << std::endl;
         output << "fsh sel" << std::endl;
-        output << fsh_sel << std::endl;
+        // output << fsh_sel << std::endl;
+        this->PrintVariableMatrix(output, fsh_sel);
         output << std::endl;
 
         output << "observed catch " << obs_catch << std::endl;
@@ -2882,7 +2930,7 @@ public:
         output << "srv6_sel_desc_beta " << srv6_sel_desc_beta << std::endl;
         output << std::endl;
 
-        for ( int k = 0; k < nsrvs; k++ )
+        for ( int k = 0; k < srv_sel.GetRows(); k++ )
         {
             output << "srv_sel " << (k + 1) << " " << srv_sel.Row(k) << std::endl;
         }
@@ -2927,37 +2975,43 @@ public:
 
         output << "N at age" << std::endl;
         // output << (N / one_meeellion) << std::endl;
-        output << N << std::endl;
+        // output << N << std::endl;
+        this->PrintVariableMatrix(output, N);
         output << std::endl;
 
         output << "Observed fishery proportions-at-age" << std::endl;
-        output << obs_fsh_prop_at_age << std::endl;
+        this->PrintRealMatrix(output, obs_fsh_prop_at_age);
+        output << std::endl;
         output << "Estimated fishery proportions-at-age" << std::endl;
-        output << est_fsh_prop_at_age << std::endl;
+        this->PrintVariableMatrix(output, est_fsh_prop_at_age);
         output << std::endl;
 
         output << "Observed survey 1 proportions-at-age" << std::endl;
-        output << obs_srv_1_prop_at_age << std::endl;
+        this->PrintRealMatrix(output, obs_srv_1_prop_at_age);
+        output << std::endl;
         output << "Estimated survey 1 proportions-at-age" << std::endl;
-        output << est_srv_1_prop_at_age << std::endl;
+        this->PrintVariableMatrix(output, est_srv_1_prop_at_age);
         output << std::endl;
 
         output << "Observed survey 2 proportions-at-age" << std::endl;
-        output << obs_srv_2_prop_at_age << std::endl;
+        this->PrintRealMatrix(output, obs_srv_2_prop_at_age);
+        output << std::endl;
         output << "Estimated survey 2 proportions-at-age" << std::endl;
-        output << est_srv_2_prop_at_age << std::endl;
+        this->PrintVariableMatrix(output, est_srv_2_prop_at_age);
         output << std::endl;
 
         output << "Observed survey 3 proportions-at-age" << std::endl;
-        output << obs_srv_3_prop_at_age << std::endl;
+        this->PrintRealMatrix(output, obs_srv_3_prop_at_age);
+        output << std::endl;
         output << "Estimated survey 3 proportions-at-age" << std::endl;
-        output << est_srv_3_prop_at_age << std::endl;
+        this->PrintVariableMatrix(output, est_srv_3_prop_at_age);
         output << std::endl;
 
         output << "Observed survey 6 proportions-at-age" << std::endl;
-        output << obs_srv_6_prop_at_age << std::endl;
+        this->PrintRealMatrix(output, obs_srv_6_prop_at_age);
+        output << std::endl;
         output << "Estimated survey 6 proportions-at-age" << std::endl;
-        output << est_srv_6_prop_at_age << std::endl;
+        this->PrintVariableMatrix(output, est_srv_6_prop_at_age);
         output << std::endl;
 
         output << std::endl;
