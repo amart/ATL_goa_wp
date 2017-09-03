@@ -2120,21 +2120,21 @@ public:
         {
             y = yrs_srv1a[i];
 
-            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
+            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y)) * obs_srv_1_wt_at_age.Row(y))) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b[i];
 
-            est_srv_1b_biomass(i) = srv_1b_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
+            est_srv_1b_biomass(i) = srv_1b_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y)) * obs_srv_1_wt_at_age.Row(y))) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             y = yrs_srv1[i];
 
-            est_srv_1_biomass(i) = srv_1_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_1_wt_at_age.Row(y) * srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y))) / 1000.0;
+            est_srv_1_biomass(i) = srv_1_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y)) * obs_srv_1_wt_at_age.Row(y))) / 1000.0;
         }
 
         // calculate proportions at age
@@ -2205,7 +2205,7 @@ public:
 
             // est_srv_2_biomass(i) = 0;
 
-            est_srv_2_biomass(i) = srv_2_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_2_wt_at_age.Row(y) * srv_sel_2 * N.Row(y) * expZ_yrfrac_srv2.Row(y))) / 1000.0;
+            est_srv_2_biomass(i) = srv_2_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_2 * N.Row(y) * expZ_yrfrac_srv2.Row(y)) * obs_srv_2_wt_at_age.Row(y))) / 1000.0;
 
             // convert from kg to mt
             // est_srv_2_biomass(i) /= T(1000.0);
@@ -2279,7 +2279,7 @@ public:
 
             // est_srv_3_biomass(i) = 0;
 
-            est_srv_3_biomass(i) = srv_3_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_3_wt_at_age.Row(y) * srv_sel_3 * N.Row(y) * expZ_yrfrac_srv3.Row(y))) / 1000.0;
+            est_srv_3_biomass(i) = srv_3_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_3 * N.Row(y) * expZ_yrfrac_srv3.Row(y)) * obs_srv_3_wt_at_age.Row(y))) / 1000.0;
 
             // convert from kg to mt
             // est_srv_3_biomass(i) /= T(1000.0);
@@ -2352,7 +2352,7 @@ public:
         {
             y = yrs_srv6[i];
 
-            est_srv_6_biomass(i) = srv_6_q * atl::Sum(atl::VariableMatrix<T>(obs_srv_6_wt_at_age.Row(y) * srv_sel_6 * N.Row(y) * expZ_yrfrac_srv6.Row(y))) / 1000.0;
+            est_srv_6_biomass(i) = srv_6_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_6 * N.Row(y) * expZ_yrfrac_srv6.Row(y)) * obs_srv_6_wt_at_age.Row(y))) / 1000.0;
         }
 
         // calculate proportions at age
