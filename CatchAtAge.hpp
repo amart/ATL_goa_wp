@@ -2475,15 +2475,27 @@ public:
         atl::VariableVector<T> prop_at_age_row;
         atl::Variable<T> est_catch_num;
 
+        atl::VariableVector<T> one_sub_expZ;
+
         for ( int i = 0; i < nyrs; i++ )
         {
             est_catch(i)           = T(0);
             est_fsh_prop_at_age(i) = T(0);
             est_fsh_prop_at_len(i) = T(0);
 
+            // calculate T(1.0) - expZ.Row(i)
+            atl::VariableRowVector<T> expZ_row = expZ.Row(i);
+            one_sub_expZ.Resize(expZ_row.GetSize());
+            for ( int j = 0; j < expZ_row.GetSize(); ++j )
+            {
+                one_sub_expZ(j) = T(1.0) - expZ_row(j);
+            }
+
+            auto i_row_vector = VariableRowVectorDiv(F, i, Z, i) * one_sub_expZ * N.Row(i);
+
             for ( int j = 0; j < nages; j++ )
             {
-                C(i, j) = atl::Sum(atl::VariableMatrix<T>((VariableRowVectorDiv(F, i, Z, i) * (1.0 - expZ.Row(i)) * N.Row(i)) * age_age_err.Column(j)));
+                C(i, j) = atl::Sum(atl::VariableMatrix<T>(i_row_vector * age_age_err.Column(j)));
                 est_catch(i) += (obs_fsh_wt_at_age(i, j) * C(i, j));
             }
             est_catch(i) /= 1000.0;
@@ -2917,6 +2929,12 @@ public:
         output << "fsh sel" << std::endl;
         // output << fsh_sel << std::endl;
         this->PrintVariableMatrix(output, fsh_sel);
+        output << std::endl;
+
+        output << "Natural mortality-at-age" << std::endl;
+        output << M << std::endl;
+        output << "Total mortality-at-age" << std::endl;
+        this->PrintVariableMatrix(output, Z);
         output << std::endl;
 
         output << "observed catch " << obs_catch << std::endl;
