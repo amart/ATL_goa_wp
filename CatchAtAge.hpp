@@ -1481,26 +1481,22 @@ public:
 
     void RegisterParameterDevVector(atl::VariableVector<T>& p_vec, std::string base_param_name, const int phase = 1)
     {
-        size_t last_idx = p_vec.GetSize() - 1;
-
         p_vec.SetName(base_param_name);
 
-        for (int i = 0; i < last_idx; i++)
+        for (int i = 0; i < p_vec.GetSize(); i++)
         {
             this->RegisterParameter(p_vec(i), phase);
         }
-
-        std::stringstream ss;
-        ss << base_param_name << "_" << last_idx << "_calc";
-        p_vec(last_idx).SetName(ss.str());
-        // this->RegisterParameter(p_vec(last_idx), -1);
     }
 
-    void PrepareDevVector(atl::VariableVector<T> v)
+    void PrepareDevVector(atl::VariableVector<T>& v)
     {
-        size_t last_idx = v.GetSize() - 1;
-        v(last_idx) = T(0.0);
-        v(last_idx) -= atl::Sum(v);
+        atl::Variable<T> avg = atl::Average(v);
+
+        for ( int i = 0; i < v.GetSize(); ++i )
+        {
+            v(i) -= avg;
+        }
     }
 
     void RegisterRandomVariableVector(atl::VariableVector<T>& p_vec, std::string base_param_name, const int phase = 1)
@@ -2007,18 +2003,13 @@ public:
 
     void Mortality()
     {
-         for (int i = 0; i < nyrs; i++)
+        for (int i = 0; i < nyrs; i++)
         {
             fsh_mort(i) = atl::exp(log_mean_fsh_mort + fsh_mort_devs(i));
 
             for (int j = 0; j < nages; j++)
             {
                 F(i, j) = fsh_mort(i) * fsh_sel(i, j);
-            }
-        }
-
-        for (int i = 0; i < nyrs; i++) {
-            for (int j = 0; j < nages; j++) {
                 Z(i, j) = F(i, j) + M[j];
             }
         }
@@ -2484,7 +2475,7 @@ public:
             est_fsh_prop_at_len(i) = T(0);
 
             // calculate T(1.0) - expZ.Row(i)
-            atl::VariableRowVector<T> expZ_row = expZ.Row(i);
+            auto expZ_row = expZ.Row(i);
             one_sub_expZ.Resize(expZ_row.GetSize());
             for ( int j = 0; j < expZ_row.GetSize(); ++j )
             {
@@ -2582,7 +2573,7 @@ public:
 
     virtual void Objective_Function(atl::Variable<T>& f)
     {
-        atl::Variable<T> o = 0.00001;  // small value for proportions calculations
+        T o = 0.00001;  // small value for proportions calculations
 
         f = 0;
 
@@ -2613,7 +2604,7 @@ public:
 
                 for ( int j = age_young_fsh; j <= age_old_fsh; j++ )
                 {
-                    nll_parts(1) -= (T(obs_fsh_prop_at_age_N[i]) * obs_fsh_prop_at_age(i, j) * (atl::log(est_fsh_prop_at_age(y, j) + o) - atl::log(obs_fsh_prop_at_age(i, j) + o)));
+                    nll_parts(1) -= (T(obs_fsh_prop_at_age_N[i]) * obs_fsh_prop_at_age(i, j) * (atl::log(est_fsh_prop_at_age(y, j) + o) - std::log(obs_fsh_prop_at_age(i, j) + o)));
                 }
             }
         }
@@ -2628,7 +2619,7 @@ public:
 
                 for ( int j = 0; j < n_fsh_len_bins; j++ )
                 {
-                    nll_parts(2) -= (T(obs_fsh_prop_at_len_N[i]) * obs_fsh_prop_at_len(i, j) * (atl::log(est_fsh_prop_at_len(y, j) + o) - atl::log(obs_fsh_prop_at_len(i, j) + o)));
+                    nll_parts(2) -= (T(obs_fsh_prop_at_len_N[i]) * obs_fsh_prop_at_len(i, j) * (atl::log(est_fsh_prop_at_len(y, j) + o) - std::log(obs_fsh_prop_at_len(i, j) + o)));
                 }
             }
         }
@@ -2658,7 +2649,7 @@ public:
             {
                 for ( int j = age_young_srv1; j <= age_old_srv1; j++ )
                 {
-                    nll_parts(4) -= (T(obs_srv_1_prop_at_age_N[i]) * obs_srv_1_prop_at_age(i, j) * (atl::log(est_srv_1_prop_at_age(i, j) + o) - atl::log(obs_srv_1_prop_at_age(i, j) + o)));
+                    nll_parts(4) -= (T(obs_srv_1_prop_at_age_N[i]) * obs_srv_1_prop_at_age(i, j) * (atl::log(est_srv_1_prop_at_age(i, j) + o) - std::log(obs_srv_1_prop_at_age(i, j) + o)));
                 }
             }
         }
@@ -2671,7 +2662,7 @@ public:
             {
                 for ( int j = 0; j < n_srv_len_bins; j++ )
                 {
-                    nll_parts(5) -= (T(obs_srv_1_prop_at_len_N[i]) * obs_srv_1_prop_at_len(i, j) * (atl::log(est_srv_1_prop_at_len(i, j) + o) - atl::log(obs_srv_1_prop_at_len(i, j) + o)));
+                    nll_parts(5) -= (T(obs_srv_1_prop_at_len_N[i]) * obs_srv_1_prop_at_len(i, j) * (atl::log(est_srv_1_prop_at_len(i, j) + o) - std::log(obs_srv_1_prop_at_len(i, j) + o)));
                 }
             }
         }
@@ -2691,7 +2682,7 @@ public:
             {
                 for ( int j = age_young_srv2; j <= age_old_srv2; j++ )
                 {
-                    nll_parts(7) -= (T(obs_srv_2_prop_at_age_N[i]) * obs_srv_2_prop_at_age(i, j) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - atl::log(obs_srv_2_prop_at_age(i, j) + o)));
+                    nll_parts(7) -= (T(obs_srv_2_prop_at_age_N[i]) * obs_srv_2_prop_at_age(i, j) * (atl::log(est_srv_2_prop_at_age(i, j) + o) - std::log(obs_srv_2_prop_at_age(i, j) + o)));
                 }
             }
         }
@@ -2704,7 +2695,7 @@ public:
             {
                 for ( int j = 0; j < n_srv_len_bins; j++ )
                 {
-                    nll_parts(8) -= (T(obs_srv_2_prop_at_len_N[i]) * obs_srv_2_prop_at_len(i, j) * (atl::log(est_srv_2_prop_at_len(i, j) + o) - atl::log(obs_srv_2_prop_at_len(i, j) + o)));
+                    nll_parts(8) -= (T(obs_srv_2_prop_at_len_N[i]) * obs_srv_2_prop_at_len(i, j) * (atl::log(est_srv_2_prop_at_len(i, j) + o) - std::log(obs_srv_2_prop_at_len(i, j) + o)));
                 }
             }
         }
@@ -2724,7 +2715,7 @@ public:
             {
                 for ( int j = 0; j < nages; j++ )
                 {
-                    nll_parts(10) -= (T(obs_srv_3_prop_at_age_N[i]) * obs_srv_3_prop_at_age(i, j) * (atl::log(est_srv_3_prop_at_age(i, j) + o) - atl::log(obs_srv_3_prop_at_age(i, j) + o)));
+                    nll_parts(10) -= (T(obs_srv_3_prop_at_age_N[i]) * obs_srv_3_prop_at_age(i, j) * (atl::log(est_srv_3_prop_at_age(i, j) + o) - std::log(obs_srv_3_prop_at_age(i, j) + o)));
                 }
             }
         }
@@ -2737,7 +2728,7 @@ public:
             {
                 for ( int j = 0; j < n_srv_len_bins; j++ )
                 {
-                    nll_parts(11) -= (T(obs_srv_3_prop_at_len_N[i]) * obs_srv_3_prop_at_len(i, j) * (atl::log(est_srv_3_prop_at_len(i, j) + o) - atl::log(obs_srv_3_prop_at_len(i, j) + o)));
+                    nll_parts(11) -= (T(obs_srv_3_prop_at_len_N[i]) * obs_srv_3_prop_at_len(i, j) * (atl::log(est_srv_3_prop_at_len(i, j) + o) - std::log(obs_srv_3_prop_at_len(i, j) + o)));
                 }
             }
         }
@@ -2771,7 +2762,7 @@ public:
             {
                 for ( int j = age_young_srv6; j <= age_old_srv6; j++ )
                 {
-                    nll_parts(15) -= (T(obs_srv_6_prop_at_age_N[i]) * obs_srv_6_prop_at_age(i, j) * (atl::log(est_srv_6_prop_at_age(i, j) + o) - atl::log(obs_srv_6_prop_at_age(i, j) + o)));
+                    nll_parts(15) -= (T(obs_srv_6_prop_at_age_N[i]) * obs_srv_6_prop_at_age(i, j) * (atl::log(est_srv_6_prop_at_age(i, j) + o) - std::log(obs_srv_6_prop_at_age(i, j) + o)));
                 }
             }
         }
@@ -2784,7 +2775,7 @@ public:
             {
                 for ( int j = 0; j < n_srv_len_bins; j++ )
                 {
-                    nll_parts(16) -= (T(obs_srv_6_prop_at_len_N[i]) * obs_srv_6_prop_at_len(i, j) * (atl::log(est_srv_6_prop_at_len(i, j) + o) - atl::log(obs_srv_6_prop_at_len(i, j) + o)));
+                    nll_parts(16) -= (T(obs_srv_6_prop_at_len_N[i]) * obs_srv_6_prop_at_len(i, j) * (atl::log(est_srv_6_prop_at_len(i, j) + o) - std::log(obs_srv_6_prop_at_len(i, j) + o)));
                 }
             }
         }
@@ -2821,13 +2812,15 @@ public:
         auto temp_vec2 = atl::FirstDifference(fsh_sel_asc_beta_devs);
         auto temp_vec3 = atl::FirstDifference(fsh_sel_desc_alpha_devs);
         auto temp_vec4 = atl::FirstDifference(fsh_sel_desc_beta_devs);
+
         for ( int i = 0; i < fsh_sel_sd.size(); ++i )
         {
-            temp_vec1(i) /= (4.0 * fsh_sel_sd[i]);
-            temp_vec2(i) /= (1.0 * fsh_sel_sd[i]);
-            temp_vec3(i) /= (4.0 * fsh_sel_sd[i]);
-            temp_vec4(i) /= (1.0 * fsh_sel_sd[i]);
+            temp_vec1(i) /= T(4.0 * fsh_sel_sd[i]);
+            temp_vec2(i) /= T(1.0 * fsh_sel_sd[i]);
+            temp_vec3(i) /= T(4.0 * fsh_sel_sd[i]);
+            temp_vec4(i) /= T(1.0 * fsh_sel_sd[i]);
         }
+
         nll_parts(23)  = 0.5 * atl::Norm2(temp_vec1);
         nll_parts(23) += 0.5 * atl::Norm2(temp_vec2);
         nll_parts(23) += 0.5 * atl::Norm2(temp_vec3);
