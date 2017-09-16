@@ -2543,33 +2543,39 @@ public:
         atl::VariableVector<T> prop_at_age_row;
         atl::Variable<T> est_catch_num;
 
-        atl::VariableVector<T> one_sub_expZ;
+        atl::VariableVector<T> one_sub_expZ(nages);
 
         for ( int i = 0; i < nyrs; i++ )
         {
-            est_catch(i)           = T(0);
-            est_fsh_prop_at_age(i) = T(0);
-            est_fsh_prop_at_len(i) = T(0);
+            est_catch(i)           = T(0.0);
+            est_fsh_prop_at_age(i) = T(0.0);
+            est_fsh_prop_at_len(i) = T(0.0);
 
             // calculate T(1.0) - expZ.Row(i)
-            auto expZ_row = expZ.Row(i);
-            one_sub_expZ.Resize(expZ_row.GetSize());
-            for ( int j = 0; j < expZ_row.GetSize(); ++j )
+            for ( int j = 0; j < nages; ++j )
             {
-                one_sub_expZ(j) = T(1.0) - expZ_row(j);
+                one_sub_expZ(j) = T(1.0) - expZ.Row(i)(j);
             }
 
-            auto i_row_vector = VariableRowVectorDiv(F, i, Z, i) * one_sub_expZ * N.Row(i);
+            est_catch_num = T(0.0);
+
+            auto F_over_Z_vec = VariableRowVectorDiv(F, i, Z, i);
 
             for ( int j = 0; j < nages; j++ )
             {
-                C(i, j) = atl::Sum(atl::VariableMatrix<T>(i_row_vector * age_age_err.Column(j)));
-                est_catch(i) += (obs_fsh_wt_at_age(i, j) * C(i, j));
+                C(i, j) = T(0.0);
+                for ( int k = 0; k < nages; ++k )
+                {
+                    C(i, j) += F_over_Z_vec(k) * one_sub_expZ(k) * N.Row(i)(k) * age_age_err.Column(j)(k);
+                }
+
+                est_catch_num += C(i, j);
+
+                est_catch(i)  += (obs_fsh_wt_at_age(i, j) * C(i, j));
             }
             est_catch(i) /= 1000.0;
 
             // calculate proportions at age
-            est_catch_num = atl::Sum(atl::VariableMatrix<T>(C.Row(i)));
             if ( est_catch_num > T(0.0) )
             {
                 // est_fsh_prop_at_age(i) = C(i) / est_catch_num;
@@ -2582,12 +2588,14 @@ public:
 
             // calculate proportions at length
             // est_fsh_prop_at_len(i) = atl::VariableVector<T>(est_fsh_prop_at_age(i) * age_len_trans_1);
-            prop_at_age_row = est_fsh_prop_at_age.Row(i);
             for ( int j = 0; j < n_fsh_len_bins; j++ )
             {
-                est_fsh_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(prop_at_age_row * age_len_trans_1.Column(j)));
+                est_fsh_prop_at_len(i, j) = T(0.0);
+                for ( int k = 0; k < nages; ++k )
+                {
+                    est_fsh_prop_at_len(i, j) += est_fsh_prop_at_age.Row(i)(k) * age_len_trans_1.Column(j)(k);
+                }
             }
-
 
             // accumulation
             if ( age_young_fsh > 0 )
