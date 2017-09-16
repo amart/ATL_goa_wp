@@ -2122,39 +2122,46 @@ public:
         srv_6_q  = atl::exp(log_srv_6_q);
 
         // srv 1
-        auto srv_sel_1 = srv_sel.Row(0);
-        auto row_len   = srv_sel_1.GetSize();
 
-        atl::VariableVector<T> var_row_vec(row_len);
+        auto row_len = srv_sel.Row(0).GetSize();
 
         for ( int i = 0; i < nyrs_srv1a; i++ )
         {
             y = yrs_srv1a[i];
 
-            auto N_row_vec    = N.Row(y);
-            auto expZ_row_vec = expZ_yrfrac_srv1.Row(y);
-            auto obs_row_vec  = obs_srv_1_wt_at_age.Row(y);
-
+            atl::Variable<T> var_vec_sum = T(0.0);
             for ( int j = 0; j < row_len; ++j )
             {
-                var_row_vec(j) = srv_sel_1(j) * N_row_vec(j) * expZ_row_vec(j) * obs_row_vec(j);
+                var_vec_sum += srv_sel.Row(0)(j) * N.Row(y)(j) * expZ_yrfrac_srv1.Row(y)(j) * obs_srv_1_wt_at_age.Row(y)(j);
             }
 
-            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(var_row_vec) / 1000.0;
+            est_srv_1a_biomass(i) = srv_1a_q * var_vec_sum / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
         {
             y = yrs_srv1b[i];
 
-            est_srv_1b_biomass(i) = srv_1b_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y)) * obs_srv_1_wt_at_age.Row(y))) / 1000.0;
+            atl::Variable<T> var_vec_sum = T(0.0);
+            for ( int j = 0; j < row_len; ++j )
+            {
+                var_vec_sum += srv_sel.Row(0)(j) * N.Row(y)(j) * expZ_yrfrac_srv1.Row(y)(j) * obs_srv_1_wt_at_age.Row(y)(j);
+            }
+
+            est_srv_1b_biomass(i) = srv_1b_q * var_vec_sum / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1; i++ )
         {
             y = yrs_srv1[i];
 
-            est_srv_1_biomass(i) = srv_1_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y)) * obs_srv_1_wt_at_age.Row(y))) / 1000.0;
+            atl::Variable<T> var_vec_sum = T(0.0);
+            for ( int j = 0; j < row_len; ++j )
+            {
+                var_vec_sum += srv_sel.Row(0)(j) * N.Row(y)(j) * expZ_yrfrac_srv1.Row(y)(j) * obs_srv_1_wt_at_age.Row(y)(j);
+            }
+
+            est_srv_1_biomass(i) = srv_1_q * var_vec_sum / 1000.0;
         }
 
         // calculate proportions at age
@@ -2163,10 +2170,10 @@ public:
             y = yrs_srv1_prop_at_age[i];
 
             // est_srv_1_prop_at_age(i) = atl::VariableVector<T>(age_age_err * (srv_sel(0) * N(y) * expZ_yrfrac_srv1(y)));
-            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv1.Row(y);
+            auto n_at_age_row = srv_sel.Row(0) * N.Row(y) * expZ_yrfrac_srv1.Row(y);
             for ( int j = 0; j < nages; j++ )
             {
-                est_srv_1_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_1 * n_at_age_row * age_age_err.Column(j)));
+                est_srv_1_prop_at_age(i, j) = atl::Sum(atl::VariableMatrix<T>(n_at_age_row * age_age_err.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_1_prop_at_age.Row(i)));
@@ -2207,10 +2214,10 @@ public:
             y = yrs_srv1_prop_at_len[i];
 
             // est_srv_1_prop_at_len(i) = atl::VariableVector<T>((srv_sel_1 * atl::VariableMatrixRow<T>(N, y) * atl::VariableMatrixRow<T>(expZ_yrfrac_srv1, y)) * temp_mat_3);
-            auto n_at_age_row = N.Row(y) * expZ_yrfrac_srv1.Row(y);
+            auto n_at_age_row = srv_sel.Row(0) * N.Row(y) * expZ_yrfrac_srv1.Row(y);
             for ( int j = 0; j < n_srv_len_bins; j++ )
             {
-                est_srv_1_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(srv_sel_1 * n_at_age_row * temp_mat_3.Column(j)));
+                est_srv_1_prop_at_len(i, j) = atl::Sum(atl::VariableMatrix<T>(n_at_age_row * temp_mat_3.Column(j)));
             }
 
             est_srv_num = atl::Sum(atl::VariableMatrix<T>(est_srv_1_prop_at_len.Row(i)));
