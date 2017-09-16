@@ -2123,12 +2123,24 @@ public:
 
         // srv 1
         auto srv_sel_1 = srv_sel.Row(0);
+        auto row_len   = srv_sel_1.GetSize();
+
+        atl::VariableVector<T> var_row_vec(row_len);
 
         for ( int i = 0; i < nyrs_srv1a; i++ )
         {
             y = yrs_srv1a[i];
 
-            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(atl::VariableMatrix<T>((srv_sel_1 * N.Row(y) * expZ_yrfrac_srv1.Row(y)) * obs_srv_1_wt_at_age.Row(y))) / 1000.0;
+            auto N_row_vec    = N.Row(y);
+            auto expZ_row_vec = expZ_yrfrac_srv1.Row(y);
+            auto obs_row_vec  = obs_srv_1_wt_at_age.Row(y);
+
+            for ( int j = 0; j < row_len; ++j )
+            {
+                var_row_vec(j) = srv_sel_1(j) * N_row_vec(j) * expZ_row_vec(j) * obs_row_vec(j);
+            }
+
+            est_srv_1a_biomass(i) = srv_1a_q * atl::Sum(var_row_vec) / 1000.0;
         }
 
         for ( int i = 0; i < nyrs_srv1b; i++ )
