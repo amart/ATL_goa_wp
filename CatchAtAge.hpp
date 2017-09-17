@@ -1806,13 +1806,13 @@ public:
 
         log_mean_recruits.SetName(std::string("log_mean_recruits"));
         log_mean_recruits.SetBounds(5.0, 36.0);
-        log_mean_recruits = atl::Variable<T>(20.7232658369);
+        log_mean_recruits = atl::Variable<T>(20.2);
         this->RegisterParameter(log_mean_recruits, 1);
 
 
         log_mean_fsh_mort.SetName(std::string("log_mean_fsh_mort"));
         log_mean_fsh_mort.SetBounds(-10.0, 10.0);
-        log_mean_fsh_mort = atl::Variable<T>(-1.6);
+        log_mean_fsh_mort = atl::Variable<T>(-2.2);
         this->RegisterParameter(log_mean_fsh_mort, 1);
 
 
@@ -1838,28 +1838,28 @@ public:
         // this->RegisterParameterDevVector(init_pop_devs, "init_pop_devs", 4);
 
         // this->RegisterParameter(recruit_devs, 3);
-        // recruit_devs.SetBounds(-15.0, 15.0);
+        recruit_devs.SetBounds(-15.0, 15.0);
         recruit_devs = T(0.0);
-        // this->RegisterParameterDevVector(recruit_devs, std::string("recruit_devs"), 3);
+        this->RegisterParameterDevVector(recruit_devs, std::string("recruit_devs"), 3);
 
         // recruit_proj_devs.SetBounds(-5.0, 5.0);
         recruit_proj_devs = T(0.0);
         // this->RegisterParameterDevVector(recruit_proj_devs, std::string("recruit_proj_devs"), 9);
 
         // this->RegisterParameter(fsh_mort_devs, 2);
-        // fsh_mort_devs.SetBounds(-10.0, 10.0);
+        fsh_mort_devs.SetBounds(-10.0, 10.0);
         fsh_mort_devs = T(0.0);
-        // this->RegisterParameterDevVector(fsh_mort_devs, std::string("fsh_mort_devs"), 2);
+        this->RegisterParameterDevVector(fsh_mort_devs, std::string("fsh_mort_devs"), 2);
 
         // this->RegisterParameter(fsh_sel_asc_alpha_devs, 5);
-        // fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
+        fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_alpha_devs = T(0.0);
-        // this->RegisterParameterDevVector(fsh_sel_asc_alpha_devs, std::string("fsh_sel_asc_alpha_devs"), 7);
+        this->RegisterParameterDevVector(fsh_sel_asc_alpha_devs, std::string("fsh_sel_asc_alpha_devs"), 7);
 
         // this->RegisterParameter(fsh_sel_asc_beta_devs, 5);
-        // fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
+        fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_beta_devs = T(0.0);
-        // this->RegisterParameterDevVector(fsh_sel_asc_beta_devs, std::string("fsh_sel_asc_beta_devs"), 7);
+        this->RegisterParameterDevVector(fsh_sel_asc_beta_devs, std::string("fsh_sel_asc_beta_devs"), 7);
 
         // this->RegisterParameter(fsh_sel_desc_alpha_devs, 5);
         // fsh_sel_desc_alpha_devs.SetBounds(-5.0, 5.0);
@@ -3127,11 +3127,25 @@ public:
         this->PrintVariableMatrix(output, est_fsh_prop_at_age);
         output << std::endl;
 
+        output << "Observed fishery proportions-at-length" << std::endl;
+        this->PrintRealMatrix(output, obs_fsh_prop_at_len);
+        output << std::endl;
+        output << "Estimated fishery proportions-at-length" << std::endl;
+        this->PrintVariableMatrix(output, est_fsh_prop_at_len);
+        output << std::endl;
+
         output << "Observed survey 1 proportions-at-age" << std::endl;
         this->PrintRealMatrix(output, obs_srv_1_prop_at_age);
         output << std::endl;
         output << "Estimated survey 1 proportions-at-age" << std::endl;
         this->PrintVariableMatrix(output, est_srv_1_prop_at_age);
+        output << std::endl;
+
+        output << "Observed survey 1 proportions-at-length" << std::endl;
+        this->PrintRealMatrix(output, obs_srv_1_prop_at_len);
+        output << std::endl;
+        output << "Estimated survey 1 proportions-at-length" << std::endl;
+        this->PrintVariableMatrix(output, est_srv_1_prop_at_len);
         output << std::endl;
 
         output << "Observed survey 2 proportions-at-age" << std::endl;
@@ -3141,6 +3155,13 @@ public:
         this->PrintVariableMatrix(output, est_srv_2_prop_at_age);
         output << std::endl;
 
+        output << "Observed survey 2 proportions-at-length" << std::endl;
+        this->PrintRealMatrix(output, obs_srv_2_prop_at_len);
+        output << std::endl;
+        output << "Estimated survey 2 proportions-at-length" << std::endl;
+        this->PrintVariableMatrix(output, est_srv_2_prop_at_len);
+        output << std::endl;
+
         output << "Observed survey 3 proportions-at-age" << std::endl;
         this->PrintRealMatrix(output, obs_srv_3_prop_at_age);
         output << std::endl;
@@ -3148,11 +3169,25 @@ public:
         this->PrintVariableMatrix(output, est_srv_3_prop_at_age);
         output << std::endl;
 
+        output << "Observed survey 3 proportions-at-length" << std::endl;
+        this->PrintRealMatrix(output, obs_srv_3_prop_at_len);
+        output << std::endl;
+        output << "Estimated survey 3 proportions-at-length" << std::endl;
+        this->PrintVariableMatrix(output, est_srv_3_prop_at_len);
+        output << std::endl;
+
         output << "Observed survey 6 proportions-at-age" << std::endl;
         this->PrintRealMatrix(output, obs_srv_6_prop_at_age);
         output << std::endl;
         output << "Estimated survey 6 proportions-at-age" << std::endl;
         this->PrintVariableMatrix(output, est_srv_6_prop_at_age);
+        output << std::endl;
+
+        output << "Observed survey 6 proportions-at-length" << std::endl;
+        this->PrintRealMatrix(output, obs_srv_6_prop_at_len);
+        output << std::endl;
+        output << "Estimated survey 6 proportions-at-length" << std::endl;
+        this->PrintVariableMatrix(output, est_srv_6_prop_at_len);
         output << std::endl;
 
         output << std::endl;
