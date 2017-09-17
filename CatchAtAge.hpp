@@ -1838,28 +1838,28 @@ public:
         // this->RegisterParameterDevVector(init_pop_devs, "init_pop_devs", 4);
 
         // this->RegisterParameter(recruit_devs, 3);
-        recruit_devs.SetBounds(-15.0, 15.0);
+        // recruit_devs.SetBounds(-15.0, 15.0);
         recruit_devs = T(0.0);
-        this->RegisterParameterDevVector(recruit_devs, std::string("recruit_devs"), 3);
+        // this->RegisterParameterDevVector(recruit_devs, std::string("recruit_devs"), 3);
 
         // recruit_proj_devs.SetBounds(-5.0, 5.0);
         recruit_proj_devs = T(0.0);
         // this->RegisterParameterDevVector(recruit_proj_devs, std::string("recruit_proj_devs"), 9);
 
         // this->RegisterParameter(fsh_mort_devs, 2);
-        fsh_mort_devs.SetBounds(-10.0, 10.0);
+        // fsh_mort_devs.SetBounds(-10.0, 10.0);
         fsh_mort_devs = T(0.0);
-        this->RegisterParameterDevVector(fsh_mort_devs, std::string("fsh_mort_devs"), 2);
+        // this->RegisterParameterDevVector(fsh_mort_devs, std::string("fsh_mort_devs"), 2);
 
         // this->RegisterParameter(fsh_sel_asc_alpha_devs, 5);
-        fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
+        // fsh_sel_asc_alpha_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_alpha_devs = T(0.0);
-        this->RegisterParameterDevVector(fsh_sel_asc_alpha_devs, std::string("fsh_sel_asc_alpha_devs"), 7);
+        // this->RegisterParameterDevVector(fsh_sel_asc_alpha_devs, std::string("fsh_sel_asc_alpha_devs"), 7);
 
         // this->RegisterParameter(fsh_sel_asc_beta_devs, 5);
-        fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
+        // fsh_sel_asc_beta_devs.SetBounds(-5.0, 5.0);
         fsh_sel_asc_beta_devs = T(0.0);
-        this->RegisterParameterDevVector(fsh_sel_asc_beta_devs, std::string("fsh_sel_asc_beta_devs"), 7);
+        // this->RegisterParameterDevVector(fsh_sel_asc_beta_devs, std::string("fsh_sel_asc_beta_devs"), 7);
 
         // this->RegisterParameter(fsh_sel_desc_alpha_devs, 5);
         // fsh_sel_desc_alpha_devs.SetBounds(-5.0, 5.0);
