@@ -23,14 +23,26 @@
 int
 main( int argc, char** argv )
 {
-    CatchAtAge<double> caa_obj_func;
+    typedef double REAL;
+
+    CatchAtAge<REAL> caa_obj_func;
 
     caa_obj_func.Initialize();
 
-    // atl::LBFGS<double> func_min;
+    // atl::LBFGS<REAL> func_min;
 
     //create an instance of a L-BFGS minimizer
-    atl::PortMinimizer<double> fm;
+    atl::PortMinimizer<REAL> fm;
+    // atl::LBFGS<REAL> fm;
+
+    // set options
+    fm.SetTolerance(static_cast<REAL>(1e-5));
+
+    fm.max_iterations    = 5000;
+    fm.max_line_searches = 50;
+    fm.print_interval    = 10;
+
+    fm.SetPrintWidth(3);
 
     //set the objective function
     fm.SetObjectiveFunction(&caa_obj_func);
