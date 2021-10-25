@@ -8,11 +8,11 @@
 #ifndef CATCHATAGE_HPP
 #    define CATCHATAGE_HPP
 
-#include "../ATL2/ATL.hpp"
+#include "../ATL/ATL.hpp"
 
-#include "../ATL2/Optimization.hpp"
-#include "../ATL2/MatrixUtilities.hpp"
-#include "../ATL2/Utilities/IO/StreamedDataFile.hpp"
+#include "../ATL/lib/Optimization.hpp"
+#include "../ATL/lib/MatrixUtilities.hpp"
+#include "../ATL/lib/Utilities/IO/StreamedDataFile.hpp"
 
 #include <sstream>
 
