@@ -1308,7 +1308,7 @@ class CatchAtAge : public atl::ObjectiveFunction<T>
     atl::VariableVector<T> recruits;
 
     int nyrs_proj = 5;
-    atl::VariableVector<T> recruit_proj_devs;
+    // atl::VariableVector<T> recruit_proj_devs;
     atl::VariableVector<T> recruit_proj;
 
     atl::Variable<T> log_h;
@@ -1675,10 +1675,8 @@ public:
         this->RegisterParameter(log_fsh_sel_desc_beta, 4);
 
 
-        // this->Register(log_srv1_sel_asc_alpha, 7, "log_srv1_sel_asc_alpha");
-        // this->Register(log_srv1_sel_asc_beta, 7, "log_srv1_sel_asc_beta");
-        // log_srv1_sel_asc_alpha.SetBounds(-1.0, 5.0);
-        // log_srv1_sel_asc_beta.SetBounds(-5.0, 5.0);
+        log_srv1_sel_asc_alpha.SetBounds(-1.0, 5.0);
+        log_srv1_sel_asc_beta.SetBounds(-5.0, 5.0);
         log_srv1_sel_asc_alpha = atl::Variable<T>(0.0);
         log_srv1_sel_asc_beta  = atl::Variable<T>(4.0);
         log_srv1_sel_asc_alpha.SetName(std::string("log_srv1_sel_asc_alpha"));
@@ -1705,14 +1703,14 @@ public:
         this->RegisterParameter(log_srv2_sel_asc_alpha, 6);
         this->RegisterParameter(log_srv2_sel_asc_beta, 6);
 
-        // this->RegisterParameter(log_srv2_sel_desc_alpha, 8);
-        // this->RegisterParameter(log_srv2_sel_desc_beta, 8);
         // log_srv2_sel_desc_alpha.SetBounds(1.5, 3.5);
         // log_srv2_sel_desc_beta.SetBounds(-5.0, 5.0);
         log_srv2_sel_desc_alpha = atl::Variable<T>(2.9957);
         log_srv2_sel_desc_beta  = atl::Variable<T>(1.0);
         log_srv2_sel_desc_alpha.SetName(std::string("log_srv2_sel_desc_alpha"));
         log_srv2_sel_desc_beta.SetName(std::string("log_srv2_sel_desc_beta"));
+        // this->RegisterParameter(log_srv2_sel_desc_alpha, 8);
+        // this->RegisterParameter(log_srv2_sel_desc_beta, 8);
 
 
         log_srv3_sel_asc_alpha.SetBounds(0.0, 3.0);
@@ -1724,37 +1722,35 @@ public:
         this->RegisterParameter(log_srv3_sel_asc_alpha, 8);
         this->RegisterParameter(log_srv3_sel_asc_beta, 8);
 
-        // this->Register(log_srv3_sel_desc_alpha, 9, "log_srv3_sel_desc_alpha");
-        // this->Register(log_srv3_sel_desc_beta, 9, "log_srv3_sel_desc_beta");
         // log_srv3_sel_desc_alpha.SetBounds(1.0, 5.0);
         // log_srv3_sel_desc_beta.SetBounds(-5.0, 5.0);
         log_srv3_sel_desc_alpha = atl::Variable<T>(0.0);
         log_srv3_sel_desc_beta  = atl::Variable<T>(-20.0);
         log_srv3_sel_desc_alpha.SetName(std::string("log_srv3_sel_desc_alpha"));
         log_srv3_sel_desc_beta.SetName(std::string("log_srv3_sel_desc_beta"));
+        // this->Register(log_srv3_sel_desc_alpha, 9);
+        // this->Register(log_srv3_sel_desc_beta, 9);
 
 
-        // this->RegisterParameter(log_srv6_sel_asc_alpha, 8);
-        // this->RegisterParameter(log_srv6_sel_asc_beta, 8);
         // log_srv6_sel_asc_alpha.SetBounds(0.0, 5.0);
         // log_srv6_sel_asc_beta.SetBounds(-5.0, 5.0);
         log_srv6_sel_asc_alpha = atl::Variable<T>(-0.6931);
         log_srv6_sel_asc_beta  = atl::Variable<T>(4.9);
         log_srv6_sel_asc_alpha.SetName(std::string("log_srv6_sel_asc_alpha"));
         log_srv6_sel_asc_beta.SetName(std::string("log_srv6_sel_asc_beta"));
+        // this->RegisterParameter(log_srv6_sel_asc_alpha, 8);
+        // this->RegisterParameter(log_srv6_sel_asc_beta, 8);
 
-        // this->RegisterParameter(log_srv6_sel_desc_alpha, 8);
-        // this->RegisterParameter(log_srv6_sel_desc_beta, 8);
         // log_srv6_sel_desc_alpha.SetBounds(1.0, 5.0);
         // log_srv6_sel_desc_beta.SetBounds(-5.0, 5.0);
         log_srv6_sel_desc_alpha = atl::Variable<T>(2.9957);
         log_srv6_sel_desc_beta  = atl::Variable<T>(1.0);
         log_srv6_sel_desc_alpha.SetName(std::string("log_srv6_sel_desc_alpha"));
         log_srv6_sel_desc_beta.SetName(std::string("log_srv6_sel_desc_beta"));
+        // this->RegisterParameter(log_srv6_sel_desc_alpha, 8);
+        // this->RegisterParameter(log_srv6_sel_desc_beta, 8);
 
 
-        // this->RegisterParameter(log_srv_1a_q,5);
-        // log_srv_1a_q.SetBounds(-10.0,10.0);
         log_srv_1a_q.SetBounds(-10.0, 10.0);
         log_srv_1a_q = atl::Variable<T>(0.0);
         log_srv_1a_q.SetName(std::string("log_srv_1a_q"));
@@ -1765,7 +1761,7 @@ public:
         log_srv_1b_q.SetName(std::string("log_srv_1b_q"));
         this->RegisterParameter(log_srv_1b_q, 5);
 
-        log_srv_1_q.SetBounds(-10.0, 10.0);
+        // log_srv_1_q.SetBounds(-10.0, 10.0);
         log_srv_1_q = atl::Variable<T>(-0.1);
         log_srv_1_q.SetName(std::string("log_srv_1_q"));
         // this->RegisterParameter(log_srv_1_q, 5);
@@ -1795,10 +1791,10 @@ public:
         log_srv_5_q.SetName(std::string("log_srv_5_q"));
         this->RegisterParameter(log_srv_5_q, 6);
 
-        // srv_5_q_pow.SetBounds(-10.0, 10.0);
+        srv_5_q_pow.SetBounds(-10.0, 10.0);
         srv_5_q_pow = atl::Variable<T>(0.0);
         srv_5_q_pow.SetName(std::string("srv_5_q_pow"));
-        // this->RegisterParameter(srv_5_q_pow, 7);
+        this->RegisterParameter(srv_5_q_pow, 7);
 
         log_srv_6_q.SetBounds(-10.0, 10.0);
         log_srv_6_q = atl::Variable<T>(0.0);
@@ -1823,8 +1819,8 @@ public:
 
         recruit_devs.Resize(nyrs);
         recruits.Resize(nyrs + 1);
-        recruit_proj_devs.Resize(nyrs_proj);
-        recruit_proj.Resize(nyrs_proj);
+        // recruit_proj_devs.Resize(nyrs_proj);
+        // recruit_proj.Resize(nyrs_proj);
 
         fsh_mort_devs.Resize(nyrs);
         fsh_mort.Resize(nyrs);
@@ -1843,7 +1839,7 @@ public:
         this->RegisterParameterDevVector(recruit_devs, std::string("recruit_devs"), 3);
 
         // recruit_proj_devs.SetBounds(-5.0, 5.0);
-        recruit_proj_devs = T(0.0);
+        // recruit_proj_devs = T(0.0);
         // this->RegisterParameterDevVector(recruit_proj_devs, std::string("recruit_proj_devs"), 9);
 
         fsh_mort_devs.SetBounds(-10.0, 10.0);
